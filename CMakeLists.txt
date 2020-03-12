@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.4)
-project(MyTemplate C)
+project(MyTemplate)
 message("")
 
-if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
-    -std=c18 \
+    -std=gnu++2a \
     -ftrapv \
     -Waggregate-return \
     -Wall \
@@ -28,11 +28,11 @@ message("")
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     message("CMAKE IN DEBUG MODE")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Og")
+    set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Og")
 elseif (CMAKE_BUILD_TYPE MATCHES Release)
     message("CMAKE IN RELEASE MODE")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast")
+    set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Ofast")
 endif ()
 message("")
 
-add_executable(MyTemplate main.c)
+add_executable(MyTemplate main.cpp)
