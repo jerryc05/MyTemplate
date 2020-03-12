@@ -17,7 +17,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     -Wno-unused-parameter \
     -Wpointer-arith \
     -Wshadow \
-    -Wstrict-prototypes \
     -Wswitch-default \
     -Wswitch-enum \
     -Wundef \
