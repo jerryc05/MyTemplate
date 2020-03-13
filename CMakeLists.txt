@@ -14,14 +14,14 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 -Wextra \
 -Wfloat-equal \
 -Winit-self \
--Wno-unused-parameter \
 -Wpointer-arith \
 -Wshadow \
 -Wstrict-prototypes \
 -Wswitch-default \
 -Wswitch-enum \
 -Wundef \
--Wwrite-strings")
+-Wwrite-strings \
+")
 endif ()
 message("")
 
