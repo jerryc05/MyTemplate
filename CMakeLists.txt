@@ -5,22 +5,34 @@ message("")
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--std=gnu++2a \
--ftrapv \
--Waggregate-return \
 -Wall \
 -Wcast-align \
 -Wconversion \
+-Wdouble-promotion \
+-Wduplicated-branches \
+-Wduplicated-cond \
 -Wextra \
 -Wfloat-equal \
 -Winit-self \
--Wno-unused-parameter \
+-Wlogical-op \
+-Wmisleading-indentation \
+-Wnon-virtual-dtor \
+-Wnull-dereference \
+-Wold-style-cast \
+-Woverloaded-virtual \
+-Wpedantic \
 -Wpointer-arith \
 -Wshadow \
+-Wsign-conversion \
 -Wswitch-default \
 -Wswitch-enum \
 -Wundef \
--Wwrite-strings")
+-Wunused \
+-Wuseless-cast \
+-Wwrite-strings \
+-ftrapv \
+-std=gnu++2a \
+")
 endif ()
 message("")
 
