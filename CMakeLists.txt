@@ -5,9 +5,16 @@ message("")
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fstrict-enums \
+-ftrapv \
+-funroll-loops \
+-std=gnu++2a \
 -Wall \
 -Wcast-align \
 -Wconversion \
+-Wctor-dtor-privacy \
+-Wdelete-non-virtual-dtor \
+-Wdeprecated-copy \
 -Wdouble-promotion \
 -Wduplicated-branches \
 -Wduplicated-cond \
@@ -30,8 +37,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wunused \
 -Wuseless-cast \
 -Wwrite-strings \
--ftrapv \
--std=gnu++2a \
 ")
 endif ()
 message("")
@@ -41,7 +46,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og")
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
     message("CMAKE IN RELEASE MODE")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native")
 endif ()
 message("")
 
