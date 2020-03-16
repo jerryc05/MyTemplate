@@ -5,6 +5,7 @@ message("")
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fdelete-dead-exceptions \
 -fstrict-enums \
 -ftrapv \
 -funroll-loops \
