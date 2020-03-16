@@ -20,8 +20,7 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 -Wswitch-default \
 -Wswitch-enum \
 -Wundef \
--Wwrite-strings \
-")
+-Wwrite-strings")
 endif ()
 message("")
 
@@ -30,6 +29,9 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
     message("CMAKE IN RELEASE MODE")
+    if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s")
+    endif ()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast -fexpensive-optimizations")
 endif ()
 message("")
