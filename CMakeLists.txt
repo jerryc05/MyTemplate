@@ -30,7 +30,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Og")
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
     message("CMAKE IN RELEASE MODE")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast -fexpensive-optimizations")
 endif ()
 message("")
 
