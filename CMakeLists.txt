@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.4)
 project(MyTemplate C)
 message("")
 
+add_executable(MyTemplate main.c)
+
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
@@ -38,5 +40,3 @@ message("")
 
 message("[${CMAKE_C_FLAGS}]")
 message("")
-
-add_executable(MyTemplate main.c)
