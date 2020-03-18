@@ -19,8 +19,6 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 -Wpointer-arith \
 -Wshadow \
 -Wstrict-prototypes \
--Wswitch-default \
--Wswitch-enum \
 -Wundef \
 -Wwrite-strings")
 endif ()
