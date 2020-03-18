@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.4)
 project(MyTemplate)
 message("")
 
+add_executable(MyTemplate main.cpp)
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
@@ -56,5 +58,3 @@ message("")
 
 message("[${CMAKE_CXX_FLAGS}]")
 message("")
-
-add_executable(MyTemplate main.cpp)
