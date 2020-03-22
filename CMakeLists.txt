@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 2.4)
 project(MyTemplate)
 message("")
 
-add_executable(MyTemplate main.cpp)
+add_executable(MyTemplate main.cpp
+        utils/logger.hpp utils/logger.hpp
+        utils/env-settings.hpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
