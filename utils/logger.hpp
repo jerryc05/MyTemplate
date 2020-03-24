@@ -3,14 +3,42 @@
 
 #include <iostream>
 
-using std::cout, std::cerr, std::ostream;
+using std::cout, std::cerr;
+using OutStream = std::ostream;
 
-[[maybe_unused]] ostream &log_e();
+class BaseLogger {
+public:
+  template<typename T>
+  BaseLogger &operator<<(T msg);
 
-[[maybe_unused]] ostream &log_i();
+  explicit operator OutStream &();
+
+protected:
+  OutStream &stream_;
+  const char *const type_str_;
+
+  BaseLogger(OutStream &stream, const char *type_str);
+};
+
+class [[maybe_unused]] ErrLogger : public BaseLogger {
+public:
+  ErrLogger();
+
+  ~ErrLogger();
+};
+
+class [[maybe_unused]] InfoLogger : public BaseLogger {
+public:
+  InfoLogger();
+};
 
 #ifndef NDEBUG
-[[maybe_unused]] ostream &log_d();
+
+class [[maybe_unused]] DbgLogger : public BaseLogger {
+public:
+  DbgLogger();
+};
+
 #endif
 
 #endif //LOGGER_HPP
