@@ -15,6 +15,6 @@ rr = "run --release"
 rustflags = [
     "-C",
     "link-arg=-s",
-#    "-C",
-#    "target-cpu=native"
+    "-C",
+    "target-cpu=native"
 ]
