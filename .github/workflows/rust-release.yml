@@ -11,7 +11,8 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
   
       - name: Switch Rust to Nightly
         run: rustup default nightly
@@ -25,8 +26,11 @@ jobs:
       - name: Run tests
         run: cargo test -v
   
-      - name: Upload to File.io
-        run: curl -F "file=@target/release/my-template" https://file.io
+      - name: Upload to Artifact
+        uses: actions/upload-artifact@latest
+        with:
+          name: my-template-linux
+          path: ./target/release/my-template
 
   build-macos:
     name: Build on Mac OS
@@ -44,6 +48,9 @@ jobs:
   
       - name: Build
         run: cargo br -v
-  
-      - name: Upload to File.io
-        run: curl -F "file=@target/release/my-template" https://file.io
+
+      - name: Upload to Artifact
+        uses: actions/upload-artifact@latest
+        with:
+          name: my-template-mac
+          path: ./target/release/my-template
