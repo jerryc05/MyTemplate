@@ -1,5 +1,5 @@
-pub(crate) mod my_err;
-pub(crate) mod utils;
+pub mod my_err;
+pub mod utils;
 
 fn main() {
     println!("Hello, world!");
