@@ -1,5 +1,8 @@
 #![allow(dead_code)]
 
+#[macro_use]
+pub mod my_err;
+
 #[inline]
 pub(crate) const fn is_debug() -> bool {
   cfg!(debug_assertions)

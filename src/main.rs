@@ -1,4 +1,4 @@
-pub mod my_err;
+#[macro_use]
 pub mod utils;
 
 fn main() {
