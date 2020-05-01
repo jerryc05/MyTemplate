@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+#![allow(unused_macros)]
 
 use core::result;
 use std::borrow::Cow;
@@ -35,6 +36,16 @@ macro_rules! my_err_of_str {
   };
   ($s:expr, $offset:expr $(, )?) => {
     MyErr::from_str($s, file!(), line!() - $offset)
+  };
+}
+
+#[macro_use]
+macro_rules! my_err_of_err {
+  ($e:expr $(, )?) => {
+    MyErr::from_err(&$e, file!(), line!())
+  };
+  ($e:expr, $offset:expr $(, )?) => {
+    MyErr::from_err(&$e, file!(), line!() - $offset)
   };
 }
 
