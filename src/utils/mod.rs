@@ -5,7 +5,7 @@
 pub mod my_err;
 
 #[inline]
-pub(crate) const fn is_debug() -> bool {
+pub const fn is_debug() -> bool {
   cfg!(debug_assertions)
 }
 
