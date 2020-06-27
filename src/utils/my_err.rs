@@ -50,7 +50,7 @@ macro_rules! my_err_of_err {
 }
 
 impl Debug for MyErr {
-  fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+  fn fmt(&self, f: &mut Formatter<'_>) -> Result {
     const ERROR: &str = "ERROR";
     writeln!(
       f, "
