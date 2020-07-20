@@ -32,8 +32,8 @@ android {
     }
     
     buildFeatures {
-        compose true
-//        viewBinding true
+//        compose true
+        viewBinding true
     }
     
     splits.abi {
@@ -47,10 +47,10 @@ android {
     }
     kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
     
-    composeOptions {
-        kotlinCompilerExtensionVersion "${compose_version}"
-        kotlinCompilerVersion '1.3.70-dev-withExperimentalGoogleExtensions-20200424'
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion "${compose_version}"
+//        kotlinCompilerVersion '1.3.70-dev-withExperimentalGoogleExtensions-20200424'
+//    }
 }
 
 dependencies {  // todo use Jetpack Compose in the future
