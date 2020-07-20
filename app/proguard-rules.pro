@@ -1,4 +1,4 @@
--assumenosideeffects class android.util.Log { public * ;}
+-assumenosideeffects class android.util.Log { public static * ;}
 
 -optimizationpasses 2333
 
