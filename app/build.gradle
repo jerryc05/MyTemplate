@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "io.jerryc05.example"
         minSdkVersion 24
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "0.1.0"
         resConfigs "xxhdpi", "en-rUS", "zh-rCN"
