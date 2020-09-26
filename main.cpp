@@ -1,10 +1,14 @@
 #include <iostream>
 
-int main(int argc, char *argv[]) {
-#ifndef NDEBUG
-  // debug mode
+#ifdef NDEBUG
+  #define __RELEASE__
 #else
-  // non-debug mode
+  #define __DEBUG__
+#endif
+
+int main(int argc, char *argv[]) {
+
+#ifdef __RELEASE__
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #endif

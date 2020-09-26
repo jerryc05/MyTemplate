@@ -6,6 +6,7 @@ add_executable(MyTemplate main.cpp
         utils/logger.hpp utils/logger.hpp
         utils/env-settings.hpp)
 
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
@@ -20,6 +21,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wctor-dtor-privacy \
 -Wdelete-non-virtual-dtor \
 -Wdeprecated-copy \
+-Wdisabled-optimization \
 -Wdouble-promotion \
 -Wduplicated-branches \
 -Wduplicated-cond \
@@ -27,7 +29,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wfloat-equal \
 -Winit-self \
 -Wlogical-op \
--Wmisleading-indentation \
 -Wnon-virtual-dtor \
 -Wnull-dereference \
 -Wold-style-cast \
@@ -37,7 +38,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wshadow \
 -Wsign-conversion \
 -Wundef \
--Wunused \
 -Wuseless-cast \
 -Wwrite-strings \
 ")
@@ -46,15 +46,16 @@ message("")
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
     message("CMAKE IN DEBUG MODE")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og -D__DEBUG__")
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
     message("CMAKE IN RELEASE MODE")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native -D__RELEASE__")
+
     if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s")
     endif ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -fexpensive-optimizations -march=native")
 endif ()
 message("")
 
-message("[${CMAKE_CXX_FLAGS}]")
+message("CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
 message("")
