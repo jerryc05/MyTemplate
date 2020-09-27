@@ -28,13 +28,16 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wextra \
 -Wfloat-equal \
 -Winit-self \
+-Winline \
 -Wlogical-op \
 -Wnon-virtual-dtor \
 -Wnull-dereference \
 -Wold-style-cast \
 -Woverloaded-virtual \
+-Wpadded \
 -Wpedantic \
 -Wpointer-arith \
+-Wredundant-decls \
 -Wshadow \
 -Wsign-conversion \
 -Wundef \
