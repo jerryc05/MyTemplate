@@ -49,10 +49,13 @@ message("")
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
     message("CMAKE IN DEBUG MODE")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og -D__DEBUG__")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og")
+    add_compile_definitions(__DEBUG__)
+
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
     message("CMAKE IN RELEASE MODE")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native -D__RELEASE__")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native")
+    add_compile_definitions(__RELEASE__)
 
     if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s")
