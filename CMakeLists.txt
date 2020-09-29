@@ -49,7 +49,7 @@ message("")
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
     message("CMAKE IN DEBUG MODE")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
     add_compile_definitions(__DEBUG__)
 
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
