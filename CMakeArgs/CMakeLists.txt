@@ -1,3 +1,8 @@
+# CMakeLists.txt in CMakeArgs that enables most warnings and optimizations via
+#   available.
+# Copyright (C) jerryc05@github.com All rights reserved.
+
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
@@ -29,7 +34,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Winvalid-pch \
 -Wliteral-suffix \
 -Wmismatched-tags \
--Wmissing-declarations \
 -Wmissing-format-attribute \
 -Wmissing-include-dirs \
 -Wmultichar \
@@ -69,6 +73,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wuseless-cast \
 -Wzero-as-null-pointer-constant \
 ")
+    # "-Wmissing-declarations" disabled due to convenience
 endif ()
 message("")
 
@@ -135,7 +140,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
     # "-fsanitize-coverage=trace-pc" needs kernel support
 
 
-#[[
+    #[[
 
 
 
@@ -152,7 +157,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
 
 
-]]
+    ]]
 
 
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
