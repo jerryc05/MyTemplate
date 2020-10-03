@@ -197,35 +197,49 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("")
 
 
+    #[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ]]
+
+
     message("CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
     message("")
+
+
+    #[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ]]
 
 else ()
     message("Flags currently not tuned for compiler: [${CMAKE_CXX_COMPILER_ID}]")
 endif ()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
