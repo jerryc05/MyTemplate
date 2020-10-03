@@ -73,7 +73,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wuseless-cast \
 -Wzero-as-null-pointer-constant \
 ")
-    # "-Wmissing-declarations" disabled due to convenience
+# "-Wmissing-declarations" disabled due to convenience
 endif ()
 message("")
 
@@ -193,11 +193,8 @@ elseif (CMAKE_BUILD_TYPE MATCHES "Release")
 -funroll-loops \
 -fvariable-expansion-in-unroller \
 -funsafe-math-optimizations \
+-s \
 ")
-
-    if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s")
-    endif ()
 endif ()
 message("")
 
