@@ -73,13 +73,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wzero-as-null-pointer-constant \
 ")
     # "-Wmissing-declarations" disabled due to convenience
-endif ()
-message("")
+    message("")
 
 
-#[[
-
-
+    #[[
 
 
 
@@ -94,12 +91,14 @@ message("")
 
 
 
-]]
 
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
-    message("CMAKE IN DEBUG MODE")
-    add_compile_definitions(__DEBUG__=true)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 \
+
+    ]]
+
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")
+        message("CMAKE IN DEBUG MODE")
+        add_compile_definitions(__DEBUG__=true)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 \
 -fexceptions \
 -fstack-protector-all \
 -ftrapv \
@@ -107,9 +106,9 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 -Wvector-operation-performance \
 ")
 
-    #[[ "-fsanitize=thread" not compatible with neither
-        "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+        #[[ "-fsanitize=thread" not compatible with neither
+            "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=address \
 -fsanitize=pointer-compare \
 -fsanitize=pointer-subtract \
@@ -135,14 +134,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 -fsanitize-address-use-after-scope \
 -fsanitize-coverage=trace-cmp \
 ")
-    # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
-    # "-fsanitize-coverage=trace-pc" needs kernel support
+        # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+        # "-fsanitize-coverage=trace-pc" needs kernel support
 
 
-    #[[
-
-
-
+        #[[
 
 
 
@@ -156,16 +152,19 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
 
 
-    ]]
 
 
-elseif (CMAKE_BUILD_TYPE MATCHES "Release")
-    message("CMAKE IN RELEASE MODE")
-    add_compile_definitions(__DEBUG__=false)
 
-    include(ProcessorCount)
-    ProcessorCount(N_CORES)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
+        ]]
+
+
+    elseif (CMAKE_BUILD_TYPE MATCHES "Release")
+        message("CMAKE IN RELEASE MODE")
+        add_compile_definitions(__DEBUG__=false)
+
+        include(ProcessorCount)
+        ProcessorCount(N_CORES)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
 -fassociative-math \
 -fdelete-dead-exceptions \
 -ffinite-loops -ffinite-math-only \
@@ -194,12 +193,16 @@ elseif (CMAKE_BUILD_TYPE MATCHES "Release")
 -funsafe-math-optimizations \
 -s \
 ")
+    endif ()
+    message("")
+
+
+    message("CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
+    message("")
+
+else ()
+    message("Flags currently not tuned for compiler: [${CMAKE_CXX_COMPILER_ID}]")
 endif ()
-message("")
-
-
-message("CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
-message("")
 
 
 
