@@ -1,6 +1,5 @@
-# CMakeLists.txt in CMakeArgs that enables most warnings and optimizations via
-#   available.
-# Copyright (C) jerryc05@github.com All rights reserved.
+# CMakeLists.txt in CMakeArgs that enables most warnings and optimizations available.
+# Copyright (C) github.com/jerryc05 All rights reserved.
 
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -73,7 +72,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wuseless-cast \
 -Wzero-as-null-pointer-constant \
 ")
-# "-Wmissing-declarations" disabled due to convenience
+    # "-Wmissing-declarations" disabled due to convenience
 endif ()
 message("")
 
@@ -99,7 +98,7 @@ message("")
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
     message("CMAKE IN DEBUG MODE")
-    add_compile_definitions(__DEBUG__)
+    add_compile_definitions(__DEBUG__=true)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 \
 -fexceptions \
 -fstack-protector-all \
@@ -162,7 +161,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug")
 
 elseif (CMAKE_BUILD_TYPE MATCHES "Release")
     message("CMAKE IN RELEASE MODE")
-    add_compile_definitions(__RELEASE__)
+    add_compile_definitions(__DEBUG__=false)
 
     include(ProcessorCount)
     ProcessorCount(N_CORES)
