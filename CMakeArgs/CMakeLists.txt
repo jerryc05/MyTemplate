@@ -97,7 +97,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
     if (CMAKE_BUILD_TYPE MATCHES "Debug")
         message("CMAKE IN DEBUG MODE")
-        add_compile_definitions(__DEBUG__=true)
+        add_compile_definitions(__DEBUG__)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 \
 -fexceptions \
 -fstack-protector-all \
@@ -160,7 +160,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
     elseif (CMAKE_BUILD_TYPE MATCHES "Release")
         message("CMAKE IN RELEASE MODE")
-        add_compile_definitions(__DEBUG__=false)
 
         include(ProcessorCount)
         ProcessorCount(N_CORES)
