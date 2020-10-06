@@ -26,6 +26,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wduplicated-branches \
 -Wduplicated-cond \
 -Weffc++ \
+-Werror=return-type \
 -Wextra-semi \
 -Wfloat-equal \
 -Wformat=2 \
