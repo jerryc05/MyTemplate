@@ -115,7 +115,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         #[[ "-fsanitize=thread" not compatible with neither
             "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
 
-        if (__USE_ADDR_SANITIZER__)
+        if (NOT __NO_USE_ADDR_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=address \
 -fsanitize=pointer-compare \
@@ -124,13 +124,23 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             message("\t[ADDRESS SANITIZER] \tDISABLED")
         endif ()
 
+        #[[
+
+
+        ]]
+
         if (__USE_THD_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread")
         else ()
             message("\t[THREAD SANITIZER] \tDISABLED")
         endif ()
 
-        if (__USE_UB_SANITIZER__)
+        #[[
+
+
+        ]]
+
+        if (NOT __NO_USE_UB_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=leak \
 -fsanitize=undefined \

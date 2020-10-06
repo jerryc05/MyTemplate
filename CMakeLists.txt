@@ -8,8 +8,8 @@ add_executable(MyTemplate main.cpp
 
 
 set(__USE_ANALYZER__            false)
-set(__USE_ADDR_SANITIZER__      true)
+set(__NO_USE_ADDR_SANITIZER__   false)
 set(__USE_THD_SANITIZER__       false)
-set(__USE_UB_SANITIZER__        true)
+set(__NO_USE_UB_SANITIZER__     false)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/CMakeLists.txt)
