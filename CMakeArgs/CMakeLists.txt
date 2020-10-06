@@ -4,9 +4,15 @@
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("Adding GCC Flags...")
+
+    if (__USE_ANALYZER__)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fanalyzer")
+    else ()
+        message("\t[STATIC ANALYZER] \tDISABLED")
+    endif ()
+
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -std=gnu++2a \
--fanalyzer \
 -Wall \
 -Wextra \
 \
@@ -108,10 +114,24 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
         #[[ "-fsanitize=thread" not compatible with neither
             "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+
+        if (__USE_ADDR_SANITIZER__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=address \
 -fsanitize=pointer-compare \
--fsanitize=pointer-subtract \
+-fsanitize=pointer-subtract")
+        else ()
+            message("\t[ADDRESS SANITIZER] \tDISABLED")
+        endif ()
+
+        if (__USE_THD_SANITIZER__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread")
+        else ()
+            message("\t[THREAD SANITIZER] \tDISABLED")
+        endif ()
+
+        if (__USE_UB_SANITIZER__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=leak \
 -fsanitize=undefined \
 -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base \
@@ -134,8 +154,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fsanitize-address-use-after-scope \
 -fsanitize-coverage=trace-cmp \
 ")
-        # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
-        # "-fsanitize-coverage=trace-pc" needs kernel support
+            # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+            # "-fsanitize-coverage=trace-pc" needs kernel support
+        else ()
+            message("\t[UNDEF. BHVR. SANITIZER] \tDISABLED")
+        endif ()
 
 
         #[[
@@ -162,7 +185,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message("CMAKE IN RELEASE MODE")
 
         include(ProcessorCount)
-        ProcessorCount(N_CORES)
+        ProcessorCount(__N_CORES__)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
 -fassociative-math \
 -fdelete-dead-exceptions \
@@ -186,7 +209,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fselective-scheduling -fselective-scheduling2 \
 -fsplit-wide-types-early \
 -fstrict-enums \
--ftree-lrs -ftree-parallelize-loops=${N_CORES} -ftree-vectorize \
+-ftree-lrs -ftree-parallelize-loops=${__N_CORES__} -ftree-vectorize \
 -funroll-loops \
 -fvariable-expansion-in-unroller \
 -funsafe-math-optimizations \
