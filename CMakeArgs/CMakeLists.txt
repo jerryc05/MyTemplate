@@ -34,8 +34,7 @@ message(CHECK_START "Finding [CCACHE] ...")
 find_program(__CCACHE__ ccache)
 
 if (__CCACHE__)
-    set(CMAKE_C_COMPILER_LAUNCHER "${__CCACHE__}")
-    set(CMAKE_CXX_COMPILER_LAUNCHER "${__CCACHE__}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${__CCACHE__}")
 
     # print info
     execute_process(COMMAND ${__CCACHE__} --version
