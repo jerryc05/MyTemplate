@@ -13,4 +13,4 @@ add_executable(MyTemplate main.cpp
 #set(__NO_USE_UB_SANITIZER__    ON)
 #set(__NO_GCC6_COMPAT_FLAGS__   ON)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/CMakeLists.txt)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/MoreArgs.cmake)
