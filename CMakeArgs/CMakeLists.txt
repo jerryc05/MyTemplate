@@ -35,6 +35,8 @@ find_program(__CCACHE__ ccache)
 
 if (__CCACHE__)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${__CCACHE__}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_CUSTOM "${__CCACHE__}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${__CCACHE__}")
 
     # print info
     execute_process(COMMAND ${__CCACHE__} --version
@@ -73,7 +75,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
     message(CHECK_START "\t[STATIC ANALYZER]")
     if (__USE_ANALYZER__)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fanalyzer")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fanalyzer \
+--param=analyzer-bb-explosion-factor=20 \
+--param=analyzer-max-recursion-depth=10 \
+")
         message(CHECK_PASS "ON")
     else ()
         message(CHECK_FAIL "OFF")
@@ -284,6 +290,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
 -fassociative-math \
 -fdelete-dead-exceptions \
+-ffast-math \
 -ffinite-math-only \
 -fgcse-las -fgcse-sm \
 -fipa-pta -fira-loop-pressure \
