@@ -7,9 +7,10 @@ add_executable(MyTemplate main.cpp
         utils/env-settings.hpp)
 
 
-set(__USE_ANALYZER__            false)
-set(__NO_USE_ADDR_SANITIZER__   false)
-set(__USE_THD_SANITIZER__       false)
-set(__NO_USE_UB_SANITIZER__     false)
+#set(__USE_ANALYZER__           ON)
+#set(__NO_USE_ADDR_SANITIZER__  ON)
+#set(__USE_THD_SANITIZER__      ON)
+#set(__NO_USE_UB_SANITIZER__    ON)
+#set(__NO_GCC6_COMPAT_FLAGS__   ON)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/CMakeLists.txt)

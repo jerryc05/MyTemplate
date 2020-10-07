@@ -1,14 +1,83 @@
 # CMakeLists.txt in CMakeArgs that enables most warnings and optimizations available.
 # Copyright (C) github.com/jerryc05 All rights reserved.
 
+# Parsing args
+option(__USE_ANALYZER__             "STATIC ANALYZER"           OFF)
+option(__NO_USE_ADDR_SANITIZER__    "NO ADDR SANITIZER"         OFF)
+option(__NO_USE_UB_SANITIZER__      "NO UNDEF. BHVR. SANITIZER" OFF)
+if (NOT __NO_USE_ADDR_SANITIZER__)
+    set(__USE_THD_SANITIZER__                                   OFF)
+endif ()
+option(__NO_GCC6_COMPAT_FLAGS__     "GCC6 COMPAT. FLAGS"        OFF)
+
+#[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]
+
+# Using ccache if possible
+message(CHECK_START "Finding [CCACHE] ...")
+find_program(__CCACHE__ ccache)
+
+if (__CCACHE__)
+    set(CMAKE_C_COMPILER_LAUNCHER "${__CCACHE__}")
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${__CCACHE__}")
+
+    # print info
+    execute_process(COMMAND ${__CCACHE__} --version
+            OUTPUT_VARIABLE __CCACHE_INFO__)
+    string(REGEX MATCH "[^\r\n]+"
+            __CCACHE_INFO__ ${__CCACHE_INFO__})
+    message(CHECK_PASS "OK! ${__CCACHE_INFO__}")
+
+else ()
+    message(CHECK_FAIL "NOT FOUND!")
+endif ()
+message(STATUS "")
+
+#[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    message("Adding GCC Flags...")
+    message(STATUS "USING [GNU GCC]")
+    message(STATUS "")
 
+    message(CHECK_START "\t[STATIC ANALYZER]")
     if (__USE_ANALYZER__)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fanalyzer")
+        message(CHECK_PASS "ON")
     else ()
-        message("\t[STATIC ANALYZER] \tDISABLED")
+        message(CHECK_FAIL "OFF")
     endif ()
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
@@ -80,7 +149,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wzero-as-null-pointer-constant \
 ")
     # "-Wmissing-declarations" disabled due to convenience
-    message("")
+    message(STATUS "")
 
 
     #[[
@@ -103,7 +172,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ]]
 
     if (CMAKE_BUILD_TYPE MATCHES "Debug")
-        message("CMAKE IN DEBUG MODE")
+        message(STATUS "CMAKE IN DEBUG MODE")
+        message(STATUS "")
+
         add_compile_definitions(__DEBUG__)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 \
 -fexceptions \
@@ -113,34 +184,45 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wvector-operation-performance \
 ")
 
-        #[[ "-fsanitize=thread" not compatible with neither
-            "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
+        #[[
 
+
+        ]]
+
+        message(CHECK_START "\t[ADDRESS SANITIZER]")
         if (NOT __NO_USE_ADDR_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=address \
 -fsanitize=pointer-compare \
 -fsanitize=pointer-subtract")
+            message(CHECK_PASS "ON")
         else ()
-            message("\t[ADDRESS SANITIZER] \tDISABLED")
+            message(CHECK_FAIL "OFF")
         endif ()
+        message(STATUS "")
 
         #[[
 
 
         ]]
 
+        #[[ "-fsanitize=thread" not compatible with neither
+            "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
+        message(CHECK_START "\t[THREAD SANITIZER]")
         if (__USE_THD_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread")
+            message(CHECK_PASS "ON")
         else ()
-            message("\t[THREAD SANITIZER] \tDISABLED")
+            message(CHECK_FAIL "OFF")
         endif ()
+        message(STATUS "")
 
         #[[
 
 
         ]]
 
+        message(CHECK_START "\t[UNDEF. BHVR. SANITIZER]")
         if (NOT __NO_USE_UB_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=leak \
@@ -165,12 +247,13 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fsanitize-address-use-after-scope \
 -fsanitize-coverage=trace-cmp \
 ")
+            message(CHECK_PASS "ON")
             # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
             # "-fsanitize-coverage=trace-pc" needs kernel support
         else ()
-            message("\t[UNDEF. BHVR. SANITIZER] \tDISABLED")
+            message(CHECK_FAIL "OFF")
         endif ()
-
+        message(STATUS "")
 
         #[[
 
@@ -193,14 +276,16 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
 
     elseif (CMAKE_BUILD_TYPE MATCHES "Release")
-        message("CMAKE IN RELEASE MODE")
+        message(STATUS "CMAKE IN RELEASE MODE")
+        message(STATUS "")
 
         include(ProcessorCount)
         ProcessorCount(__N_CORES__)
+
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
 -fassociative-math \
 -fdelete-dead-exceptions \
--ffinite-loops -ffinite-math-only \
+-ffinite-math-only \
 -fgcse-las -fgcse-sm \
 -fipa-pta -fira-loop-pressure \
 -fisolate-erroneous-paths-attribute \
@@ -218,7 +303,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fschedule-insns \
 -fsel-sched-pipelining -fsel-sched-pipelining-outer-loops \
 -fselective-scheduling -fselective-scheduling2 \
--fsplit-wide-types-early \
 -fstrict-enums \
 -ftree-lrs -ftree-parallelize-loops=${__N_CORES__} -ftree-vectorize \
 -funroll-loops \
@@ -226,8 +310,29 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -funsafe-math-optimizations \
 -s \
 ")
+
+        #[[
+
+
+        ]]
+
+        message(CHECK_START "\t[GCC6 NON-COMPAT. FLAGS]")
+        if (NOT __NO_GCC6_COMPAT_FLAGS__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-ffinite-loops \
+-fsplit-wide-types-early \
+")
+            message(CHECK_PASS "ON")
+            # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+            # "-fsanitize-coverage=trace-pc" needs kernel support
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+
     endif ()
-    message("")
+    message(STATUS "")
 
 
     #[[
@@ -250,8 +355,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ]]
 
 
-    message("CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
-    message("")
+    message(STATUS "CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
+    message(STATUS "")
 
 
     #[[
@@ -274,5 +379,5 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ]]
 
 else ()
-    message("Flags currently not tuned for compiler: [${CMAKE_CXX_COMPILER_ID}]")
+    message(WARNING "Flags currently not tuned for compiler: [${CMAKE_CXX_COMPILER_ID}]")
 endif ()
