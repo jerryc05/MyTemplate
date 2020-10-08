@@ -1,33 +1,5 @@
-# CMakeLists.txt in CMakeArgs that enables most warnings and optimizations available.
+# MoreArgs.cmake in CMakeArgs that enables most warnings and optimizations available.
 # Copyright (C) github.com/jerryc05 All rights reserved.
-
-# Parsing args
-option(__USE_ANALYZER__             "STATIC ANALYZER"           OFF)
-option(__NO_USE_ADDR_SANITIZER__    "NO ADDR SANITIZER"         OFF)
-option(__NO_USE_UB_SANITIZER__      "NO UNDEF. BHVR. SANITIZER" OFF)
-if (NOT __NO_USE_ADDR_SANITIZER__)
-    set(__USE_THD_SANITIZER__                                   OFF)
-endif ()
-option(__NO_GCC6_COMPAT_FLAGS__     "GCC6 COMPAT. FLAGS"        OFF)
-
-#[[
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]
 
 # Using ccache if possible
 message(CHECK_START "Finding [CCACHE] ...")
@@ -85,8 +57,31 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message(CHECK_FAIL "OFF")
     endif ()
 
+    #[[
+
+
+    ]]
+
+    message(CHECK_START "\t[USE LATEST C++ STD]")
+    if (__USE_LATEST_CPP_STD__)
+        execute_process(COMMAND ${CMAKE_CXX_COMPILER} -v --help
+                OUTPUT_VARIABLE __LATEST_CPP_STD__
+                ERROR_QUIET)
+        string(REGEX MATCHALL "-std=gnu\\+\\+[^9 ]+"
+                __LATEST_CPP_STD__ ${__LATEST_CPP_STD__})
+        list(GET __LATEST_CPP_STD__ -1 __LATEST_CPP_STD__)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${__LATEST_CPP_STD__}")
+        message(CHECK_PASS "ON: [${__LATEST_CPP_STD__}]")
+    else ()
+        message(CHECK_FAIL "OFF")
+    endif ()
+
+    #[[
+
+
+    ]]
+
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--std=gnu++2a \
 -Wall \
 -Wextra \
 \
@@ -195,7 +190,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         ]]
 
         message(CHECK_START "\t[ADDRESS SANITIZER]")
-        if (NOT __NO_USE_ADDR_SANITIZER__)
+        if (__USE_ADDR_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=address \
 -fsanitize=pointer-compare \
@@ -211,24 +206,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
         ]]
 
-        #[[ "-fsanitize=thread" not compatible with neither
-            "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
-        message(CHECK_START "\t[THREAD SANITIZER]")
-        if (__USE_THD_SANITIZER__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread")
-            message(CHECK_PASS "ON")
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
-
-        #[[
-
-
-        ]]
-
         message(CHECK_START "\t[UNDEF. BHVR. SANITIZER]")
-        if (NOT __NO_USE_UB_SANITIZER__)
+        if (__USE_UB_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=leak \
 -fsanitize=undefined \
@@ -255,6 +234,22 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             message(CHECK_PASS "ON")
             # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
             # "-fsanitize-coverage=trace-pc" needs kernel support
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+        #[[
+
+
+        ]]
+
+        #[[ "-fsanitize=thread" not compatible with neither
+            "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
+        message(CHECK_START "\t[THREAD SANITIZER]")
+        if (__USE_THD_SANITIZER__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread")
+            message(CHECK_PASS "ON")
         else ()
             message(CHECK_FAIL "OFF")
         endif ()
@@ -291,6 +286,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fassociative-math \
 -fdelete-dead-exceptions \
 -ffast-math \
+-ffinite-loops \
 -ffinite-math-only \
 -fgcse-las -fgcse-sm \
 -fipa-pta -fira-loop-pressure \
@@ -309,6 +305,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fschedule-insns \
 -fsel-sched-pipelining -fsel-sched-pipelining-outer-loops \
 -fselective-scheduling -fselective-scheduling2 \
+-fsplit-wide-types-early \
 -fstrict-enums \
 -ftree-lrs -ftree-parallelize-loops=${__N_CORES__} -ftree-vectorize \
 -funroll-loops \
@@ -316,27 +313,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -funsafe-math-optimizations \
 -s \
 ")
-
-        #[[
-
-
-        ]]
-
-        message(CHECK_START "\t[GCC6 NON-COMPAT. FLAGS]")
-        if (NOT __NO_GCC6_COMPAT_FLAGS__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--ffinite-loops \
--fsplit-wide-types-early \
-")
-            message(CHECK_PASS "ON")
-            # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
-            # "-fsanitize-coverage=trace-pc" needs kernel support
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
-
-
+        # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+        # "-fsanitize-coverage=trace-pc" needs kernel support
     endif ()
     message(STATUS "")
 
