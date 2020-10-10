@@ -10,7 +10,9 @@ add_executable(MyTemplate main.cpp
 #set(__USE_ANALYZER__            ON)
 set(__USE_LATEST_CPP_STD__      ON)
 set(__USE_ADDR_SANITIZER__      ON)
+set(__USE_LEAK_SANITIZER__      ON)
 set(__USE_UB_SANITIZER__        ON)
+set(__COVERAGE_SANITIZERS__     ON)
 #set(__USE_THD_SANITIZER__       ON)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/MoreArgs.cmake)

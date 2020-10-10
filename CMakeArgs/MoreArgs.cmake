@@ -48,9 +48,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message(CHECK_START "\t[STATIC ANALYZER]")
     if (__USE_ANALYZER__)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fanalyzer \
 --param=analyzer-bb-explosion-factor=20 \
 --param=analyzer-max-recursion-depth=10 \
+-fanalyzer \
+-Wanalyzer-too-complex \
 ")
         message(CHECK_PASS "ON")
     else ()
@@ -86,7 +87,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wextra \
 \
 -Walloc-zero -Walloca \
--Wanalyzer-too-complex \
 -Wcast-align \
 -Wcast-qual \
 -Wconversion \
@@ -177,6 +177,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
         add_compile_definitions(__DEBUG__)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 \
+-fcf-protection=full \
 -fexceptions \
 -fstack-protector-all \
 -ftrapv \
@@ -192,9 +193,27 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message(CHECK_START "\t[ADDRESS SANITIZER]")
         if (__USE_ADDR_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fsanitize-address-use-after-scope \
 -fsanitize=address \
 -fsanitize=pointer-compare \
--fsanitize=pointer-subtract")
+-fsanitize=pointer-subtract \
+")
+            message(CHECK_PASS "ON")
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+        #[[
+
+
+        ]]
+
+        message(CHECK_START "\t[LEAK SANITIZER]")
+        if (__USE_LEAK_SANITIZER__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fsanitize=leak \
+")
             message(CHECK_PASS "ON")
         else ()
             message(CHECK_FAIL "OFF")
@@ -209,7 +228,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message(CHECK_START "\t[UNDEF. BHVR. SANITIZER]")
         if (__USE_UB_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fsanitize=leak \
 -fsanitize=undefined \
 -fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base \
 -fsanitize=integer-divide-by-zero \
@@ -228,11 +246,25 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fsanitize=vptr \
 -fsanitize=pointer-overflow \
 -fsanitize=builtin \
--fsanitize-address-use-after-scope \
--fsanitize-coverage=trace-cmp \
 ")
             message(CHECK_PASS "ON")
             # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+        #[[
+
+
+        ]]
+
+        message(CHECK_START "\t[COVERAGE SANITIZERS]")
+        if (__COVERAGE_SANITIZERS__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fsanitize-coverage=trace-cmp \
+")
+            message(CHECK_PASS "ON")
             # "-fsanitize-coverage=trace-pc" needs kernel support
         else ()
             message(CHECK_FAIL "OFF")
@@ -292,6 +324,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -fipa-pta -fira-loop-pressure \
 -fisolate-erroneous-paths-attribute \
 -floop-nest-optimize \
+-floop-parallelize-all \
 -flto \
 -fmodulo-sched -fmodulo-sched-allow-regmoves \
 -fno-math-errno \
