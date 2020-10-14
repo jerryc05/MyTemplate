@@ -9,11 +9,19 @@ rr = "run --release"
 
 [build]
 rustflags = [
-    "-C",
-    "link-arg=-s",
-    "-C",
-    "target-cpu=native"
+    "-Clink-arg=-s",
+    "-Ctarget-cpu=native",
 ]
+
+
+[profile.release]
+codegen-units = 1
+lto = true
+
+[profile.bench]
+codegen-units = 1
+lto = true
+
 
 #[target.x86_64-unknown-linux-gnu]
 #runner = 'sudo -E'
