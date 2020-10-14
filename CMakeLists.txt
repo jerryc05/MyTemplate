@@ -16,3 +16,5 @@ set(__COVERAGE_SANITIZERS__     ON)
 #set(__USE_THD_SANITIZER__       ON)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/MoreArgs.cmake)
+
+#set(CMAKE_EXECUTABLE_SUFFIX ".exe")
