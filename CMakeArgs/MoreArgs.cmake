@@ -193,8 +193,64 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message(CHECK_START "\t[ADDRESS SANITIZER]")
         if (__USE_ADDR_SANITIZER__)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fno-common \
+-fno-omit-frame-pointer \
 -fsanitize-address-use-after-scope \
 -fsanitize=address \
+-lasan \
+")
+            set(ENV{ASAN_OPTIONS} "$ENV{ASAN_OPTIONS}\
+:allow_addr2line=1\
+:check_initialization_order=1\
+:check_printf=1\
+:detect_deadlocks=1\
+:detect_invalid_pointer_pairs=2\
+:detect_leaks=1\
+:detect_stack_use_after_return=1\
+:exitcode=1\
+:handle_abort=1\
+:handle_segv=1\
+:handle_sigbus=1\
+:handle_sigfpe=1\
+:handle_sigill=1\
+:handle_sigtrap=1\
+:intercept_intrin=1\
+:intercept_memcmp=1\
+:intercept_memmem=1\
+:intercept_send=1\
+:intercept_stat=1\
+:intercept_strchr=1\
+:intercept_strlen=1\
+:intercept_strndup=1\
+:intercept_strpbrk=1\
+:intercept_strspn=1\
+:intercept_strstr=1\
+:intercept_strtok=1\
+:leak_check_at_exit=1\
+:print_module_map=1\
+:print_stats=1\
+:print_summary=1\
+:strict_init_order=1\
+:strict_string_checks=1\
+:symbolize=1\
+:unmap_shadow_on_exit=1\
+:windows_hook_rtl_allocators=1\
+")
+            # "handle_ioctl=1" does not work properly?
+            message(CHECK_PASS "ON [$ENV{ASAN_OPTIONS}]")
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+        #[[
+
+
+        ]]
+
+        message(CHECK_START "\t[POINTER SANITIZER]")
+        if (__USE_POINTER_SANITIZER__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=pointer-compare \
 -fsanitize=pointer-subtract \
 ")
