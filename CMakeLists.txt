@@ -7,14 +7,21 @@ add_executable(MyTemplate main.cpp
         utils/env-settings.hpp)
 
 
-#set(__USE_ANALYZER__            ON)
-set(__USE_LATEST_CPP_STD__      ON)
-set(__USE_ADDR_SANITIZER__      ON)
-set(__USE_POINTER_SANITIZER__   ON)
-set(__USE_LEAK_SANITIZER__      ON)
-set(__USE_UB_SANITIZER__        ON)
-set(__COVERAGE_SANITIZERS__     ON)
-#set(__USE_THD_SANITIZER__       ON)
+
+#set(__USE_ANALYZER__                    ON)
+set(__USE_LATEST_CPP_STD__              ON)
+
+# At most one of the following three
+#set(__DBG_SANITIZE_ADDR__               ON)
+#set(__DBG_SANITIZE_MEMORY__             ON) # Linux only
+#set(__DBG_SANITIZE_THRD__               ON) # [IN PROGRESS]
+
+set(__DBG_SANITIZE_LEAK_STANDALONE__    ON)
+set(__DBG_SANITIZE_UB__                 ON)
+
+set(__REL_USE_HACKED_MATH__             ON)
+
+
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/MoreArgs.cmake)
 

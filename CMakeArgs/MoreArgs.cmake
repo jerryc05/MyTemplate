@@ -57,6 +57,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     else ()
         message(CHECK_FAIL "OFF")
     endif ()
+    message(STATUS "")
 
     #[[
 
@@ -151,7 +152,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # "-Wmissing-declarations" disabled due to convenience
     message(STATUS "")
 
-
     #[[
 
 
@@ -185,163 +185,13 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wvector-operation-performance \
 ")
 
-        #[[
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Asan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/LsanStandalone.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Msan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Ubsan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Tsan.cmake)
 
-
-        ]]
-
-        message(CHECK_START "\t[ADDRESS SANITIZER]")
-        if (__USE_ADDR_SANITIZER__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fno-common \
--fno-omit-frame-pointer \
--fsanitize-address-use-after-scope \
--fsanitize=address \
--lasan \
-")
-            set(ENV{ASAN_OPTIONS} "$ENV{ASAN_OPTIONS}\
-:allow_addr2line=1\
-:check_initialization_order=1\
-:check_printf=1\
-:detect_deadlocks=1\
-:detect_invalid_pointer_pairs=2\
-:detect_leaks=1\
-:detect_stack_use_after_return=1\
-:exitcode=1\
-:handle_abort=1\
-:handle_segv=1\
-:handle_sigbus=1\
-:handle_sigfpe=1\
-:handle_sigill=1\
-:handle_sigtrap=1\
-:intercept_intrin=1\
-:intercept_memcmp=1\
-:intercept_memmem=1\
-:intercept_send=1\
-:intercept_stat=1\
-:intercept_strchr=1\
-:intercept_strlen=1\
-:intercept_strndup=1\
-:intercept_strpbrk=1\
-:intercept_strspn=1\
-:intercept_strstr=1\
-:intercept_strtok=1\
-:leak_check_at_exit=1\
-:print_module_map=1\
-:print_stats=1\
-:print_summary=1\
-:strict_init_order=1\
-:strict_string_checks=1\
-:symbolize=1\
-:unmap_shadow_on_exit=1\
-:windows_hook_rtl_allocators=1\
-")
-            # "handle_ioctl=1" does not work properly?
-            message(CHECK_PASS "ON [$ENV{ASAN_OPTIONS}]")
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
-
-        #[[
-
-
-        ]]
-
-        message(CHECK_START "\t[POINTER SANITIZER]")
-        if (__USE_POINTER_SANITIZER__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fsanitize=pointer-compare \
--fsanitize=pointer-subtract \
-")
-            message(CHECK_PASS "ON")
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
-
-        #[[
-
-
-        ]]
-
-        message(CHECK_START "\t[LEAK SANITIZER]")
-        if (__USE_LEAK_SANITIZER__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fsanitize=leak \
-")
-            message(CHECK_PASS "ON")
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
-
-        #[[
-
-
-        ]]
-
-        message(CHECK_START "\t[UNDEF. BHVR. SANITIZER]")
-        if (__USE_UB_SANITIZER__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fsanitize=undefined \
--fsanitize=shift -fsanitize=shift-exponent -fsanitize=shift-base \
--fsanitize=integer-divide-by-zero \
--fsanitize=unreachable \
--fsanitize=vla-bound \
--fsanitize=null \
--fsanitize=return \
--fsanitize=signed-integer-overflow \
--fsanitize=bounds -fsanitize=bounds-strict \
--fsanitize=alignment \
--fsanitize=object-size \
--fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow \
--fsanitize=nonnull-attribute -fsanitize=returns-nonnull-attribute \
--fsanitize=bool \
--fsanitize=enum \
--fsanitize=vptr \
--fsanitize=pointer-overflow \
--fsanitize=builtin \
-")
-            message(CHECK_PASS "ON")
-            # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
-
-        #[[
-
-
-        ]]
-
-        message(CHECK_START "\t[COVERAGE SANITIZERS]")
-        if (__COVERAGE_SANITIZERS__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fsanitize-coverage=trace-cmp \
-")
-            message(CHECK_PASS "ON")
-            # "-fsanitize-coverage=trace-pc" needs kernel support
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
-
-        #[[
-
-
-        ]]
-
-        #[[ "-fsanitize=thread" not compatible with neither
-            "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
-        message(CHECK_START "\t[THREAD SANITIZER]")
-        if (__USE_THD_SANITIZER__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread")
-            message(CHECK_PASS "ON")
-        else ()
-            message(CHECK_FAIL "OFF")
-        endif ()
-        message(STATUS "")
+        # todo cfi sanitizer, safe-stack
 
         #[[
 
@@ -370,6 +220,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         include(ProcessorCount)
         ProcessorCount(__N_CORES__)
 
+        #        todo floating point flags
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
 -fassociative-math \
 -fdelete-dead-exceptions \
@@ -407,6 +258,27 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     endif ()
     message(STATUS "")
 
+    #[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ]]
+
+    message(STATUS "CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
+    message(STATUS "")
 
     #[[
 
@@ -427,10 +299,180 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
     ]]
 
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    message(STATUS "USING [LLVM Clang]")
+    message(STATUS "")
+
+    #[[message(CHECK_START "\t[STATIC ANALYZER]")
+    if (__USE_ANALYZER__)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+--param=analyzer-bb-explosion-factor=20 \
+--param=analyzer-max-recursion-depth=10 \
+-fanalyzer \
+-Wanalyzer-too-complex \
+")
+        message(CHECK_PASS "ON")
+    else ()
+        message(CHECK_FAIL "OFF")
+    endif ()
+    message(STATUS "")]]
+
+    #[[
+
+
+    ]]
+
+    #[[message(CHECK_START "\t[USE LATEST C++ STD]")
+    if (__USE_LATEST_CPP_STD__)
+        execute_process(COMMAND ${CMAKE_CXX_COMPILER} -v --help
+                OUTPUT_VARIABLE __LATEST_CPP_STD__
+                ERROR_QUIET)
+        string(REGEX MATCHALL "-std=gnu\\+\\+[^9 ]+"
+                __LATEST_CPP_STD__ ${__LATEST_CPP_STD__})
+        list(GET __LATEST_CPP_STD__ -1 __LATEST_CPP_STD__)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${__LATEST_CPP_STD__}")
+        message(CHECK_PASS "ON: [${__LATEST_CPP_STD__}]")
+    else ()
+        message(CHECK_FAIL "OFF")
+    endif ()]]
+
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-Wall \
+-Wextra \
+\
+\
+")
+    message(STATUS "")
+
+    #[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ]]
+
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")
+        message(STATUS "CMAKE IN DEBUG MODE")
+        message(STATUS "")
+
+        add_compile_definitions(__DEBUG__)
+
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Asan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/LsanStandalone.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Msan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Ubsan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Tsan.cmake)
+
+        #[[
+
+
+        ]]
+
+        message(CHECK_START "\t[C.F.I. SANITIZER]") # todo
+        if (__DBG_SANITIZE_CFI__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fsanitize-cfi-cross-dso \
+")
+            # "-fsanitize-cfi-icall-generalize-pointers" is not compatible
+            # with "-fsanitize-cfi-cross-dso"
+            message(CHECK_PASS "ON")
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+        # todo -fsanitize=safe-stack
+
+        #[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ]]
+
+
+    elseif (CMAKE_BUILD_TYPE MATCHES "Release")
+        message(STATUS "CMAKE IN RELEASE MODE")
+        message(STATUS "")
+
+        include(ProcessorCount)
+        ProcessorCount(__N_CORES__)
+
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
+")
+
+        #[[
+
+
+        ]]
+
+        message(CHECK_START "\t[HACKED MATH]")
+        if (__REL_USE_HACKED_MATH__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-ffast-math \
+-ffp-model=fast \
+-funsafe-math-optimizations \
+")
+            message(CHECK_PASS "ON")
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+        #[[
+
+
+        ]]
+
+    endif ()
+    message(STATUS "")
+
+    #[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ]]
 
     message(STATUS "CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
     message(STATUS "")
-
 
     #[[
 
