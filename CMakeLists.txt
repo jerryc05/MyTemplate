@@ -23,6 +23,6 @@ set(__REL_USE_HACKED_MATH__             ON)
 
 
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/MoreArgs.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/!main.cmake)
 
 #set(CMAKE_EXECUTABLE_SUFFIX ".exe")

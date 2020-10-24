@@ -1,4 +1,4 @@
-# MoreArgs.cmake in CMakeArgs that enables most warnings and optimizations available.
+# Highly customized CMake scripts that enables most warnings and optimizations available.
 # Copyright (C) github.com/jerryc05 All rights reserved.
 
 # Using ccache if possible
@@ -185,11 +185,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 -Wvector-operation-performance \
 ")
 
-        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Asan.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/LsanStandalone.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Msan.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Ubsan.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/Tsan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/asan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/lsan-standalone.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/msan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/ubsan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeArgs/tsan.cmake)
 
         # todo cfi sanitizer, safe-stack
 
