@@ -8,7 +8,7 @@ if (__USE_LATEST_CPP_STD__)
                 __LATEST_CPP_STD__ ${__LATEST_CPP_STD__})
         list(GET __LATEST_CPP_STD__ -1 __LATEST_CPP_STD__)
 
-    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         execute_process(COMMAND ${CMAKE_CXX_COMPILER} -std= -xc++ -
                 ERROR_VARIABLE __LATEST_CPP_STD__)
         string(REGEX MATCHALL "gnu[^']+"

@@ -13,7 +13,8 @@ if (__DBG_SANITIZE_MEMORY__)
     -fsanitize=memory \
     ")
         message(CHECK_PASS "ON [WARNING: DO NOT USE WITH VALGRIND!]")
-    else()
+
+    else ()
         message(SEND_ERROR "\t[MEMORY SANITIZER] NOT SUPPORTED BY COMPILER")
     endif ()
 

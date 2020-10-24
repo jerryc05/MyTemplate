@@ -15,8 +15,8 @@ set(__REL_USE_HACKED_MATH__             ON)
 
 
 # At most one of the following three
-#set(__DBG_SANITIZE_ADDR__               ON)
-#set(__DBG_SANITIZE_MEMORY__             ON) # Linux only
+set(__DBG_SANITIZE_ADDR__               ON)
+#set(__DBG_SANITIZE_MEMORY__             ON) # Linux/BSD only
 #set(__DBG_SANITIZE_THRD__               ON) # [IN PROGRESS]
 
 set(__DBG_SANITIZE_LEAK_STANDALONE__    ON)

@@ -10,3 +10,10 @@ else ()
     message(CHECK_FAIL "OFF")
 endif ()
 message(STATUS "")
+
+# todo Clang
+#[[
+  -fsanitize-thread-atomics
+  -fsanitize-thread-func-entry-exit
+  -fsanitize-thread-memory-access
+]]

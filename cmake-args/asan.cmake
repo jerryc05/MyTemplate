@@ -8,6 +8,7 @@ if (__DBG_SANITIZE_ADDR__)
 -fsanitize=address \
 -fsanitize=pointer-compare \
 -fsanitize=pointer-subtract \
+-g3 \
 ")
     # any optimization level will fail leak check
 
@@ -51,12 +52,14 @@ if (__DBG_SANITIZE_ADDR__)
     # "print_module_map=1" prints too much text
     # "print_stats=1" prints too much text
 
+    #[[  # Seems like unnecessary if compiled with "-g"
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         message(CHECK_START "\t[ADDRESS SANITIZER SYMBOLIZER")
         get_filename_component(__COMPILER_DIR__ ${CMAKE_CXX_COMPILER} DIRECTORY)
         find_file(__SYMBOLIZER_PATH__ llvm-symbolizer
                 PATH ${__COMPILER_DIR__})
-        # todo parse /usr/lib/llvm*/llvm-symbolizer
+        # also parse /usr/lib/llvm*/llvm-symbolizer
+
         if (__SYMBOLIZER_PATH__)
             set(ENV{ASAN_SYMBOLIZER_PATH} "$ENV{ASAN_SYMBOLIZER_PATH}\
 :__SYMBOLIZER_PATH__\
@@ -66,9 +69,9 @@ if (__DBG_SANITIZE_ADDR__)
             message(CHECK_FAIL "OFF")
         endif ()
     endif ()
+    ]]
 
-    message(CHECK_PASS "ON [WARNING: DO NOT USE WITH VALGRIND!] [$ENV{ASAN_OPTIONS}]")
-    message(CHECK_PASS "ON ASAN_OPTIONS=[$ENV{ASAN_OPTIONS}]")
+    message(CHECK_PASS "ON [WARNING: DO NOT USE WITH VALGRIND!] \n\n\tASAN_OPTIONS=$ENV{ASAN_OPTIONS}")
 else ()
     message(CHECK_FAIL "OFF")
 endif ()
