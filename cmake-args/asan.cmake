@@ -76,3 +76,6 @@ else ()
     message(CHECK_FAIL "OFF")
 endif ()
 message(STATUS "")
+
+# "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+# "-fsanitize-coverage=trace-pc" needs kernel support

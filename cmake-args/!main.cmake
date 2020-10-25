@@ -176,8 +176,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/asan.cmake)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/lsan-standalone.cmake)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/msan.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/ubsan.cmake)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/tsan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/ubsan.cmake)
 
         # todo cfi sanitizer, safe-stack
 
@@ -208,13 +208,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
         include(ProcessorCount)
         ProcessorCount(__N_CORES__)
 
-        #        todo floating point flags
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
--fassociative-math \
 -fdelete-dead-exceptions \
--ffast-math \
 -ffinite-loops \
--ffinite-math-only \
 -fgcse-las -fgcse-sm \
 -fipa-pta -fira-loop-pressure \
 -fisolate-erroneous-paths-attribute \
@@ -222,10 +218,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -floop-parallelize-all \
 -flto \
 -fmodulo-sched -fmodulo-sched-allow-regmoves \
--fno-math-errno \
 -fno-exceptions \
--fno-signed-zeros -fno-trapping-math \
--freciprocal-math \
 -fsched-pressure \
 -fsched-spec-load -fsched-spec-load-dangerous \
 -fsched-stalled-insns=0 -fsched-stalled-insns-dep \
@@ -238,11 +231,26 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -ftree-lrs -ftree-parallelize-loops=${__N_CORES__} -ftree-vectorize \
 -funroll-loops \
 -fvariable-expansion-in-unroller \
--funsafe-math-optimizations \
 -s \
 ")
-        # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
-        # "-fsanitize-coverage=trace-pc" needs kernel support
+
+        #[[
+
+
+        ]]
+
+        message(CHECK_START "\t[HACKED MATH]")
+        if (__REL_USE_HACKED_MATH__)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-ffast-math \
+")
+            message(CHECK_PASS "ON")
+        else ()
+            message(CHECK_FAIL "OFF")
+        endif ()
+        message(STATUS "")
+
+
     endif ()
     message(STATUS "")
 
@@ -291,19 +299,24 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
     message(STATUS "USING [LLVM Clang]")
     message(STATUS "")
 
-    #[[message(CHECK_START "\t[STATIC ANALYZER]")
+    #[[
+
+
+    ]]
+
+    message(CHECK_START "\t[STATIC ANALYZER]")
     if (__USE_ANALYZER__)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
---param=analyzer-bb-explosion-factor=20 \
---param=analyzer-max-recursion-depth=10 \
--fanalyzer \
--Wanalyzer-too-complex \
+--analyze \
+-analyzer-output=text \
+-Xanalyzer -analyzer-checker=alpha \
+-Xclang -analyzer-config -Xclang aggressive-binary-operation-simplification=true \
 ")
         message(CHECK_PASS "ON")
     else ()
         message(CHECK_FAIL "OFF")
     endif ()
-    message(STATUS "")]]
+    message(STATUS "")
 
     #[[
 
@@ -339,7 +352,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
     ]]
 
-    if (CMAKE_BUILD_TYPE MATCHES "Debug")
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")  # todo CMAKE_CXX_FLAGS_DEBUG
         message(STATUS "CMAKE IN DEBUG MODE")
         message(STATUS "")
 
@@ -350,8 +363,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/asan.cmake)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/lsan-standalone.cmake)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/msan.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/ubsan.cmake)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/tsan.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/ubsan.cmake)
 
         #[[
 

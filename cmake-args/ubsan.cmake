@@ -24,7 +24,7 @@ if (__DBG_SANITIZE_UB__)
 -fsanitize=vptr \
 ")
     # "-O0" has no effect for object-size sanitizer [clang]
-    # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+    # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is unavailable
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \

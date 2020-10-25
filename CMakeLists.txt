@@ -2,14 +2,12 @@ cmake_minimum_required(VERSION 2.4)
 project(MyTemplate)
 message("")
 
-add_executable(MyTemplate main.cpp
-        utils/logger.hpp utils/logger.hpp
-        utils/env-settings.hpp)
+add_executable(${PROJECT_NAME} main.cpp)
 
 
 # ===== BEGIN OF CMAKE TEMPLATE =====
 
-#set(__USE_ANALYZER__                    ON)
+set(__USE_ANALYZER__                    ON)
 set(__USE_LATEST_CPP_STD__              ON)
 set(__REL_USE_HACKED_MATH__             ON)
 
