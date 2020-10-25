@@ -10,26 +10,18 @@ if (__USE_ANALYZER__)
 
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 
-        # todo  clang-tidy --use-color --checks=*,-llvmlibc*,-clang-analyzer* --format-style=google ../main.cpp --
-
         find_program(__CLANG_TIDY__ clang-tidy)
 
         if (__CLANG_TIDY__)
             set(__CLANG_TIDY_ARGS__
                     --use-color
-                    --checks=*,-llvmlibc*,-clang-analyzer*
+                    --checks=*,-android-*,-altera-*,-clang-analyzer*,-darwin-*,-fuchsia-*,-llvm-*,-llvmlibc-*,-objc-*,-zircon-*
                     --format-style=google
-                    -extra-arg=--analyze
-                    -extra-arg=-Xanalyzer
-                    -extra-arg=-analyzer-checker=alpha
-                    -extra-arg=-Xclang
-                    -extra-arg=-analyzer-config
-                    -extra-arg=-Xclang
-                    -extra-arg=aggressive-binary-operation-simplification=true
                     )
         else ()
             message(WARNING "\t[STATIC ANALYZER] clang-tidy NOT FOUND! SKIPPED!")
         endif ()
+
 
         set(__CLANG_ANALYZER_ARGS__
                 --analyze
