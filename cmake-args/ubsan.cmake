@@ -13,7 +13,6 @@ if (__DBG_SANITIZE_UB__)
 -fsanitize=integer-divide-by-zero \
 -fsanitize=nonnull-attribute \
 -fsanitize=null \
--fsanitize=object-size \
 -fsanitize=pointer-overflow \
 -fsanitize=return \
 -fsanitize=returns-nonnull-attribute \
@@ -23,13 +22,15 @@ if (__DBG_SANITIZE_UB__)
 -fsanitize=vla-bound \
 -fsanitize=vptr \
 ")
-    # "-O0" has no effect for object-size sanitizer [clang]
     # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is unavailable
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=bounds-strict \
+-fsanitize=object-size \
 ")
+        # "-O0" has no effect for object-size sanitizer [clang]
+
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fsanitize=array-bounds \

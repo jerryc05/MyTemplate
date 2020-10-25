@@ -1,6 +1,8 @@
 # Highly customized CMake scripts that enables most warnings and optimizations available.
 # Copyright (C) github.com/jerryc05 All rights reserved.
 
+cmake_minimum_required(VERSION 3.7)
+
 # Using ccache if possible
 message(CHECK_START "Finding [CCACHE] ...")
 find_program(__CCACHE__ ccache)
@@ -45,25 +47,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
     message(STATUS "USING [GNU GCC]")
     message(STATUS "")
 
-    message(CHECK_START "\t[STATIC ANALYZER]")
-    if (__USE_ANALYZER__)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
---param=analyzer-bb-explosion-factor=20 \
---param=analyzer-max-recursion-depth=10 \
--fanalyzer \
--Wanalyzer-too-complex \
-")
-        message(CHECK_PASS "ON")
-    else ()
-        message(CHECK_FAIL "OFF")
-    endif ()
-    message(STATUS "")
 
-    #[[
-
-
-    ]]
-
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/static-analyzer.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/latest-std.cmake)
 
     #[[
@@ -299,30 +284,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
     message(STATUS "USING [LLVM Clang]")
     message(STATUS "")
 
-    #[[
 
-
-    ]]
-
-    message(CHECK_START "\t[STATIC ANALYZER]")
-    if (__USE_ANALYZER__)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
---analyze \
--analyzer-output=text \
--Xanalyzer -analyzer-checker=alpha \
--Xclang -analyzer-config -Xclang aggressive-binary-operation-simplification=true \
-")
-        message(CHECK_PASS "ON")
-    else ()
-        message(CHECK_FAIL "OFF")
-    endif ()
-    message(STATUS "")
-
-    #[[
-
-
-    ]]
-
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/static-analyzer.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/latest-std.cmake)
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
