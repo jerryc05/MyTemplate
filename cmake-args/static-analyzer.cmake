@@ -9,6 +9,28 @@ if (__USE_ANALYZER__)
 ")
 
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+
+        # todo  clang-tidy --use-color --checks=*,-llvmlibc*,-clang-analyzer* --format-style=google ../main.cpp --
+
+        find_program(__CLANG_TIDY__ clang-tidy)
+
+        if (__CLANG_TIDY__)
+            set(__CLANG_TIDY_ARGS__
+                    --use-color
+                    --checks=*,-llvmlibc*,-clang-analyzer*
+                    --format-style=google
+                    -extra-arg=--analyze
+                    -extra-arg=-Xanalyzer
+                    -extra-arg=-analyzer-checker=alpha
+                    -extra-arg=-Xclang
+                    -extra-arg=-analyzer-config
+                    -extra-arg=-Xclang
+                    -extra-arg=aggressive-binary-operation-simplification=true
+                    )
+        else ()
+            message(WARNING "\t[STATIC ANALYZER] clang-tidy NOT FOUND! SKIPPED!")
+        endif ()
+
         set(__CLANG_ANALYZER_ARGS__
                 --analyze
                 -fcolor-diagnostics
@@ -30,9 +52,17 @@ if (__USE_ANALYZER__)
             endforeach ()
 
             add_custom_command(TARGET ${__TARGET_NAME__}
-                    PRE_BUILD
+                    POST_BUILD
                     COMMAND ${CMAKE_CXX_COMPILER} ${__CLANG_ANALYZER_ARGS__} ${__TARGET_SOURCES__}
                     VERBATIM)
+
+            if (__CLANG_TIDY__)
+                add_custom_command(TARGET ${__TARGET_NAME__}
+                        POST_BUILD
+                        COMMAND ${__CLANG_TIDY__} ${__CLANG_TIDY_ARGS__} ${__TARGET_SOURCES__} --
+                        VERBATIM)
+            endif ()
+
         endforeach ()
     else ()
         message(SEND_ERROR "\t[STATIC ANALYZER] SWITCH UNIMPLEMENTED FOR THIS COMPILER CURRENTLY")

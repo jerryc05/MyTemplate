@@ -299,7 +299,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -Wextra \
 \
 \
-")
+")  # todo copy to Languages & Frameworks > C/C++ > Clangd
+    # todo Settings/Preferences | Editor | Inspections, C/C++ | General | Clang-Tidy
     message(STATUS "")
 
     #[[
