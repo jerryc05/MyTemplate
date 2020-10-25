@@ -11,6 +11,7 @@ if (__USE_ANALYZER__)
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         set(__CLANG_ANALYZER_ARGS__
                 --analyze
+                -fcolor-diagnostics
                 -Xanalyzer -analyzer-checker=alpha
                 -Xanalyzer -analyzer-output=text
                 -Xclang -analyzer-config -Xclang aggressive-binary-operation-simplification=true

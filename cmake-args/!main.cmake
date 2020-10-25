@@ -57,6 +57,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
     ]]
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fdiagnostics-color=always \
 -Wall \
 -Wextra \
 \
@@ -149,7 +150,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
         message(STATUS "")
 
         add_compile_definitions(__DEBUG__)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3 \
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
+-O0 -g3 \
+\
 -fcf-protection=full \
 -fexceptions \
 -fstack-protector-all \
@@ -193,7 +196,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
         include(ProcessorCount)
         ProcessorCount(__N_CORES__)
 
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
+-Ofast -march=native \
+\
 -fdelete-dead-exceptions \
 -ffinite-loops \
 -fgcse-las -fgcse-sm \
@@ -226,7 +231,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 
         message(CHECK_START "\t[HACKED MATH]")
         if (__REL_USE_HACKED_MATH__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+            set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
 -ffast-math \
 ")
             message(CHECK_PASS "ON")
@@ -289,6 +294,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/latest-std.cmake)
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-fcolor-diagnostics \
 -Wall \
 -Wextra \
 \
@@ -315,12 +321,13 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
     ]]
 
-    if (CMAKE_BUILD_TYPE MATCHES "Debug")  # todo CMAKE_CXX_FLAGS_DEBUG
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")
         message(STATUS "CMAKE IN DEBUG MODE")
         message(STATUS "")
 
         add_compile_definitions(__DEBUG__)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
+\
 ")
 
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/asan.cmake)
@@ -376,7 +383,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
         include(ProcessorCount)
         ProcessorCount(__N_CORES__)
 
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native \
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
+-Ofast -march=native \
 ")
 
         #[[
@@ -386,7 +394,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
         message(CHECK_START "\t[HACKED MATH]")
         if (__REL_USE_HACKED_MATH__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+            set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
 -ffast-math \
 -ffp-model=fast \
 -funsafe-math-optimizations \
