@@ -10,9 +10,7 @@ unset(__CCACHE__ CACHE)
 find_program(__CCACHE__ ccache)
 
 if (__CCACHE__)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${__CCACHE__}")
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_CUSTOM "${__CCACHE__}")
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${__CCACHE__}")
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CMAKE_CXX_COMPILER_LAUNCHER} ${__CCACHE__})
 
     # print info
     execute_process(COMMAND ${__CCACHE__} --version
@@ -298,7 +296,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fcolor-diagnostics \
 -fexperimental-new-pass-manager \
--fglobal-isel -fexperimental-isel \
 \
 -Wall \
 -Wextra \
@@ -435,6 +432,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
     ]]
 
     # [BUG] "-fexperimental-new-constant-interpreter" will produce error with <iostream>.
+    # [EXP] "-fglobal-isel -fexperimental-isel" not stable
     # [WTF] "-fexperimental-relative-c++-abi-vtables" wtf is this?
     # [WTF] "-fallow-unsupported" wtf is this?
 

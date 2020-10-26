@@ -2,10 +2,8 @@ cmake_minimum_required(VERSION 3.7)
 project(MyTemplate)
 message("")
 
-add_executable(${PROJECT_NAME} main.cpp)
 
-
-# ===== BEGIN OF CMAKE TEMPLATE =====
+# ===== BEGIN OF CMAKE ARGS TEMPLATE =====
 
 set(__USE_ANALYZER__                    ON)
 set(__USE_LATEST_CPP_STD__              ON)
@@ -27,3 +25,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/!main.cmake)
 
 # Compatibility with Windows systems
 #set(CMAKE_EXECUTABLE_SUFFIX ".exe")
+
+# ===== END OF CMAKE ARGS TEMPLATE =====
+# ===== BEGIN OF TARGET CREATION =====
+
+
+add_executable(${PROJECT_NAME} main.cpp)
