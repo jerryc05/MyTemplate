@@ -47,7 +47,7 @@ if (__USE_ANALYZER__)
                     -analyzer-config aggressive-binary-operation-simplification=true
                     -enable-checker alpha
                     -maxloop 16
-                    -o ./static-analyzer)
+                    -o "../__analyzer-report")
 
             set(CMAKE_CXX_COMPILER_LAUNCHER ${CMAKE_CXX_COMPILER_LAUNCHER} ${__SCAN_BUILD__} ${__SCAN_BUILD_ARGS__})
 
