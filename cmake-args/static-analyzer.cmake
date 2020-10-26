@@ -10,6 +10,7 @@ if (__USE_ANALYZER__)
 
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 
+        unset(__CLANG_TIDY__ CACHE)
         find_program(__CLANG_TIDY__ clang-tidy)
 
         if (__CLANG_TIDY__)
@@ -60,7 +61,12 @@ if (__USE_ANALYZER__)
         message(SEND_ERROR "\t[STATIC ANALYZER] SWITCH UNIMPLEMENTED FOR THIS COMPILER CURRENTLY")
     endif ()
 
-    message(CHECK_PASS "ON")
+    if (__CLANG_TIDY__)
+        message(CHECK_PASS "ON: clang-tidy @ [${__CLANG_TIDY__}]")
+    else()
+        message(CHECK_PASS "ON")
+    endif ()
+
 else ()
     message(CHECK_FAIL "OFF")
 endif ()

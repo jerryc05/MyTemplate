@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.7)
 
 # Using ccache if possible
 message(CHECK_START "Finding [CCACHE] ...")
+
+unset(__CCACHE__ CACHE)
 find_program(__CCACHE__ ccache)
 
 if (__CCACHE__)
