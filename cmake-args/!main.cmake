@@ -119,8 +119,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -Wswitch-default \
 -Wswitch-enum \
 -Wundef \
+-Wunknown-pragmas \
 -Wunused-macros \
 -Wuseless-cast \
+-Wvector-operation-performance \
 -Wzero-as-null-pointer-constant \
 ")
     # "-Wmissing-declarations" disabled due to convenience
@@ -157,8 +159,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -fexceptions \
 -fstack-protector-all \
 -ftrapv \
--Wunknown-pragmas \
--Wvector-operation-performance \
 ")
 
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/asan.cmake)
@@ -295,6 +295,9 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -fcolor-diagnostics \
+-fexperimental-new-pass-manager \
+-fglobal-isel -fexperimental-isel \
+\
 -Wall \
 -Wextra \
 \
@@ -429,6 +432,10 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -Wcompound-token-split \
     ]]
 
+    # [BUG] "-fexperimental-new-constant-interpreter" will produce error with <iostream>.
+    # [WTF] "-fexperimental-relative-c++-abi-vtables" wtf is this?
+    # [WTF] "-fallow-unsupported" wtf is this?
+
     # CLion Settings/Preferences | Languages & Frameworks | C/C++ | Clangd
     # CLion Settings/Preferences | Editor | Inspections, C/C++ | General | Clang-Tidy
     message(STATUS "")
@@ -458,7 +465,12 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
         add_compile_definitions(__DEBUG__)
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
+-O0 -g3 \
 \
+-fcf-protection=full \
+-fexceptions \
+-fstack-protector-all \
+-ftrapv \
 ")
 
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/asan.cmake)
@@ -516,6 +528,20 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
 -Ofast -march=native \
+\
+-finline-functions \
+-finline-hint-functions \
+-flto=full \
+-fmerge-all-constants \
+-fno-exceptions \
+-foptimize-sibling-calls \
+-fstrict-enums \
+-fstrict-vtable-pointers \
+-funroll-loops \
+-fvirtual-function-elimination \
+-fwhole-program-vtables \
+-mllvm -inline-threshold=1000 \
+-mllvm -polly \
 ")
 
         #[[
@@ -532,6 +558,9 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 ")
             message(CHECK_PASS "ON")
         else ()
+            set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
+-fno-fast-math \
+")
             message(CHECK_FAIL "OFF")
         endif ()
         message(STATUS "")
