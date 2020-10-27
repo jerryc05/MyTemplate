@@ -44,7 +44,7 @@ message(STATUS "")
 ]]
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
-    message(STATUS "USING [GNU GCC]")
+    message(STATUS "USING COMPILER [GNU GCC]")
     message(STATUS "")
 
 
@@ -288,7 +288,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
     ]]
 
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 11
-    message(STATUS "USING [LLVM Clang]")
+    message(STATUS "USING COMPILER [LLVM Clang]")
     message(STATUS "")
 
 

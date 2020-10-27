@@ -68,6 +68,8 @@ Use at your **OWN** risk.
 
 ### [LLVM Clang](https://llvm.org/)
 
+*Pro tip:* LLVM Clang is different from Apple Clang (comes with XCode in MacOS) in many ways (e.g. Apple Clang lacks sanitizers).
+
 #### Download & Install
 
 - MacOS(brew): `brew install llvm`
@@ -78,7 +80,9 @@ Use at your **OWN** risk.
 
 - *CLion*:
     - Follow [this link](https://www.jetbrains.com/help/clion/how-to-create-toolchain-in-clion.html)
-    - *Note*: You might want to set **C/C++ Compiler** to `clang/clang++` respectively to use Clang.
+    - *Pro tip*: You might want to set **C/C++ Compiler** to `clang/clang++` respectively to use Clang.
+    - *Pro tip*: Make sure you are using Clang from **LLVM**, not **Apple**. 
+    - *Pro tip*: If you followed [First things first](#first-things-first), CMake will print `USING COMPILER [<compiler_name>]` to stdout.
 
 
 ### [Clang-Tidy](https://clang.llvm.org/extra/clang-tidy/)
@@ -114,7 +118,7 @@ Use at your **OWN** risk.
 
 ### Sanitizer flags
 
-*Note: only effective in **DEBUG** mode.*
+*Pro tip*: Sanitizers are effective in **DEBUG** mode only.
 
 - `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**. `Default: ON`.
     - Pros:
