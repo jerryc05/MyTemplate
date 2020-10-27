@@ -16,7 +16,7 @@ if (__USE_ANALYZER__)
         if (__CLANG_TIDY__)
             set(__CLANG_TIDY_ARGS__
                     --allow-enabling-analyzer-alpha-checkers
-                    --checks=*,-android-*,-altera-*,-darwin-*,-fuchsia-*,-llvm-*,-llvmlibc-*,-objc-*,-zircon-*
+                    --checks=*,-android-*,-altera-*,-darwin-*,-fuchsia-*,-google-runtime-references,-llvm-*,-llvmlibc-*,-objc-*,-zircon-*
                     --format-style=google
                     --use-color
 
