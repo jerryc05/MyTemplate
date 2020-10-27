@@ -44,7 +44,7 @@ Use at your **OWN** risk.
 
 #### How to enable **Ccache**
 
-*No action needed if you followed [First things first](#first-things-first).*
+- *No action needed if you followed [First things first](#first-things-first).*
 
 
 ### [Ninja](https://ninja-build.org/)
@@ -91,28 +91,33 @@ Use at your **OWN** risk.
 
 - Linux(apt): `apt install clang-tidy`
 
-*Clang-tidy usually comes with Clang altogether and no additional installation is required.*
+*Pro tip*: Clang-tidy usually comes with Clang altogether and no additional installation is required.
 
 #### How to enable **Clang-Tidy**
 
-*No action needed if you followed [First things first](#first-things-first).*
+- *No action needed if you followed [First things first](#first-things-first).*
 
 
 ## High-level switches
 
 ### Non-sanitizer flags
 
-- `__USE_ANALYZER__`: Use compiler-builtin static analyzer. `Default: OFF`.
-	- Pros: Catch simple mistakes at compile time easily.
+- `__USE_ANALYZER__`: Use compiler-builtin static analyzer. 
+    - `Default: OFF`.
+	- Pros: 
+	    - Catch known mistakes at compile time.
+	    - Warns about bad practices/styles. \[Clang-Tidy only\]
 	- Cons:
   	    - **SIGNIFICANTLY** slows down compilation time,
         - Might not work for big projects.
 
-- `__USE_LATEST_CPP_STD__`: Compile with the latest `C++` std available. `Default: ON`.
+- `__USE_LATEST_CPP_STD__`: Compile with the latest `C++` std available. 
+    - `Default: ON`.
     - Pros: Compile with the latest std automatically.
     - Cons: *Refer to incompatibilities between `C++` stds*
 
-- `__REL_USE_HACKED_MATH__`: Compile with aggressive/hacky/dirty math optimizations in **RELEASE** mode. `Default: ON`.
+- `__REL_USE_HACKED_MATH__`: Compile with aggressive/hacky/dirty math optimizations in **RELEASE** mode. 
+    - `Default: ON`.
     - Pros: Might speed up arithmetic calculation.
     - Cons: Might break IEEE 754 floating-point implementation std.
 
@@ -120,7 +125,8 @@ Use at your **OWN** risk.
 
 *Pro tip*: Sanitizers will be effective in **DEBUG** mode only.
 
-- `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**. `Default: ON`.
+- `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**. 
+    - `Default: ON`.
     - Pros:
         - Catch memory errors in runtime without sacrificing much performance.
         - Works with IDE debuggers.
@@ -129,7 +135,8 @@ Use at your **OWN** risk.
         - Not compatible with either `Memory` or `Thread` sanitizer.
 
 
-- ~~`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.~~ `Default: OFF | Support: DROPPED`.
+- ~~`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.~~ 
+    - `Default: OFF | Support: DROPPED`.
     - Pros:
         - Catch uninitialized memory reads in runtime without sacrificing much performance.
         - Works with IDE debuggers.
@@ -140,7 +147,8 @@ Use at your **OWN** risk.
         - Produces false positives if **ANY** part of the code isn't built with `MSAN` (e.g. `C++ Std Lib`).
 
 
-- `__DBG_SANITIZE_THRD__`: Compile with **Thread Sanitizer**. `Default: OFF | Support: WIP`.
+- `__DBG_SANITIZE_THRD__`: Compile with **Thread Sanitizer**. 
+    - `Default: OFF | Support: WIP`.
     - Pros:
         - Catch data races in runtime without sacrificing much performance.
         - Works with IDE debuggers.
@@ -198,5 +206,5 @@ A: Sanitizers (except UBSAN) are incompatible with Valgrind.
 Q: ASAN/LSAN does not catch memory leak on MacOS.
 
 A: You have 2 options:
-- [RECOMMENDED] Follow ASAN runtime flags settings above.
-- [NOT RECOMMENDED] Disable ASAN and run with LSAN instead (other ASAN checks will also be disabled).
+- \[RECOMMENDED\] Follow ASAN runtime flags settings above.
+- \[NOT RECOMMENDED\] Disable ASAN and run with LSAN instead (other ASAN checks will also be disabled).
