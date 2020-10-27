@@ -94,7 +94,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -Wold-style-cast \
 -Woverloaded-virtual \
 -Wpacked \
--Wpadded \
 -Wpedantic \
 -Wpointer-arith \
 -Wredundant-decls \
@@ -125,7 +124,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -Wvector-operation-performance \
 -Wzero-as-null-pointer-constant \
 ")
-    # "-Wmissing-declarations" disabled due to convenience
+    # [DEL] "-Wmissing-declarations" is not useful in practice
+    # [DEL] "Wpadded" is not useful in practice (much too verbose)
     message(STATUS "")
 
     #[[
@@ -378,7 +378,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -Woverlength-strings \
 -Woverriding-method-mismatch \
 -Wpacked \
--Wpadded \
 -Wpointer-arith \
 -Wpoison-system-directories \
 -Wpragmas \
@@ -431,6 +430,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -Wcompound-token-split \
     ]]
 
+    # [DEL] "Wpadded" is not useful in practice (much too verbose)
     # [BUG] "-fexperimental-new-constant-interpreter" will produce error with <iostream>.
     # [EXP] "-fglobal-isel -fexperimental-isel" not stable
     # [WTF] "-fexperimental-relative-c++-abi-vtables" wtf is this?
