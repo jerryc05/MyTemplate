@@ -13,6 +13,18 @@ if (__USE_ANALYZER__)
         unset(__CLANG_TIDY__ CACHE)
         find_program(__CLANG_TIDY__ clang-tidy)
 
+        if (NOT __CLANG_TIDY__)
+            file(READ_SYMLINK ${CMAKE_CXX_COMPILER} __ABS_COMPILER_PATH__)
+            if (NOT IS_ABSOLUTE "${__ABS_COMPILER_PATH__}")
+                get_filename_component(__COMPILER_DIR__ ${CMAKE_CXX_COMPILER} DIRECTORY)
+                set(__ABS_COMPILER_PATH__ "${__COMPILER_DIR__}/${__ABS_COMPILER_PATH__}")
+            endif ()
+            get_filename_component(__ABS_COMPILER_DIR__ ${__ABS_COMPILER_PATH__} DIRECTORY)
+
+            find_program(__CLANG_TIDY__ clang-tidy
+                    PATHS ${__ABS_COMPILER_DIR__})
+        endif ()
+
         if (__CLANG_TIDY__)
             set(__CLANG_TIDY_ARGS__
                     --allow-enabling-analyzer-alpha-checkers
@@ -28,7 +40,7 @@ if (__USE_ANALYZER__)
             set(CMAKE_CXX_CLANG_TIDY ${__CLANG_TIDY__} ${__CLANG_TIDY_ARGS__})
 
         else ()
-            message(WARNING "\t[STATIC ANALYZER] clang-tidy NOT FOUND! SKIPPED!")
+            message(SEND_ERROR "\t[STATIC ANALYZER] clang-tidy NOT FOUND! SKIPPED!")
         endif ()
 
     else ()
