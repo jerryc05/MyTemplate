@@ -4,35 +4,28 @@ This is a personal template/starter-files/starter-repo for `C++` development.
 
 Use at your **OWN** risk.
 
-## Usage and Examples
-
----
-
 ## Table of Contents
 
-- [First things first](#first-things-first)
 
-- [Recommended tools](#recommended-tools)
-
-- [High-level switches](#high-level-switches)
-
+1. [First things first](#first-things-first)
+2. [Recommended tools](#recommended-tools)
+    - [Ccache](#ccache)
+    - [Ninja](#ninja)
+    - [LLVM Clang](#llvm-clang)
+    - [Clang-Tidy](#clang-tidy)
+3. [High-level switches](#high-level-switches)
     - [Non-sanitizer flags](#non-sanitizer-flags)
-
     - [Sanitizer flags](#sanitizer-flags)
-
         - [Address sanitizer]()
             - [Pros and cons]()
             - [Runtime flags]()
-
         - [Memory sanitizer]()
             - [Pros and cons]()
             - [Runtime flags]()
-
         - [Thread sanitizer]()
             - [Pros and cons]()
             - [Runtime flags]()
-    
-- [Misc](#misc)
+4. [Misc](#misc)
     - [Why I dropped MSAN](#why-i-dropped-msan)
     - [Sanitizer vs Valgrind](#sanitizer-vs-valgrind)
 
@@ -138,7 +131,7 @@ Use at your **OWN** risk.
         - Not compatible with either `Memory` or `Thread` sanitizer.
 
 
-- <del>`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.</del> `Default: OFF | Support: DROPPED`.
+- ~~`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.~~ `Default: OFF | Support: DROPPED`.
     - Pros: 
         - Catch uninitialized memory reads in runtime without sacrificing much performance.
         - Works with IDE debuggers.
