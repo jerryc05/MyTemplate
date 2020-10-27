@@ -296,9 +296,18 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/latest-std.cmake)
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
--fcolor-diagnostics \
+-fcoroutines-ts \
+-fdouble-square-bracket-attributes \
 -fexperimental-new-pass-manager \
+-fenable-matrix \
+-fforce-enable-int128 \
+-fmodules \
+-fmodules-ts \
+-frelaxed-template-template-args \
+-fsized-deallocation \
+-fzvector \
 \
+-fcolor-diagnostics \
 -Wall \
 -Wextra \
 \
@@ -432,11 +441,19 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -Wcompound-token-split \
     ]]
 
-    # [DEL] "Wpadded" is not useful in practice (much too verbose)
-    # [BUG] "-fexperimental-new-constant-interpreter" will produce error with <iostream>.
+    # [BUG] "-fexperimental-new-constant-interpreter" will produce error with <iostream>
+    # [DEL] "-fignore-exceptions" might not be what we want.
+    # [DEL] "-fms-compatibility" might not be what we want.
+    # [DEL] "-Wpadded" is not useful in practice (much too verbose)
     # [EXP] "-fglobal-isel -fexperimental-isel" not stable
-    # [WTF] "-fexperimental-relative-c++-abi-vtables" wtf is this?
     # [WTF] "-fallow-unsupported" wtf is this?
+    # [WTF] "-fassume-sane-operator-new" wtf is this?
+    # [WTF] "-fast" wtf is this?
+    # [WTF] "-fastcp" wtf is this?
+    # [WTF] "-fastf" wtf is this?
+    # [WTF] "-fautolink" wtf is this?
+    # [WTF] "-fbuiltin" wtf is this?
+    # [WTF] "-fexperimental-relative-c++-abi-vtables" wtf is this?
 
     # CLion Settings/Preferences | Languages & Frameworks | C/C++ | Clangd
     # CLion Settings/Preferences | Editor | Inspections, C/C++ | General | Clang-Tidy
@@ -470,7 +487,9 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -O0 -g3 \
 \
 -fcf-protection=full \
+-fcxx-exceptions \
 -fexceptions \
+-fstack-clash-protection \
 -fstack-protector-all \
 -ftrapv \
 ")
@@ -535,15 +554,42 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -finline-hint-functions \
 -flto=full \
 -fmerge-all-constants \
+-fno-cxx-exceptions \
 -fno-exceptions \
 -foptimize-sibling-calls \
+-fslp-vectorize -ftree-slp-vectorize \
 -fstrict-enums \
 -fstrict-vtable-pointers \
 -funroll-loops \
 -fvirtual-function-elimination \
 -fwhole-program-vtables \
--mllvm -inline-threshold=1000 \
--mllvm -polly \
+-mllvm --inline-threshold=1000 \
+-mllvm --polly \
+-mllvm --polly-2nd-level-tiling \
+-mllvm --polly-ast-detect-parallel \
+-mllvm --polly-ast-use-context \
+-mllvm --polly-check-parallel \
+-mllvm --polly-check-vectorizable \
+-mllvm --polly-delicm-compute-known  \
+-mllvm --polly-delicm-partial-writes \
+-mllvm --polly-delinearize \
+-mllvm --polly-detect-full-functions \
+-mllvm --polly-detect-reductions \
+-mllvm --polly-enable-delicm \
+-mllvm --polly-enable-mse \
+-mllvm --polly-enable-optree \
+-mllvm --polly-enable-prune-unprofitable \
+-mllvm --polly-enable-simplify \
+-mllvm --polly-optimized-scops \
+-mllvm --polly-optree-analyze-known \
+-mllvm --polly-optree-normalize-phi \
+-mllvm --polly-parallel \
+-mllvm --polly-precise-fold-accesses \
+-mllvm --polly-register-tiling \
+-mllvm --polly-run-dce \
+-mllvm --polly-run-inliner \
+-mllvm --polly-tiling \
+-mllvm --polly-vectorizer=polly \
 ")
 
         #[[
