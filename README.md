@@ -118,7 +118,7 @@ Use at your **OWN** risk.
 
 ### Sanitizer flags
 
-*Pro tip*: Sanitizers are effective in **DEBUG** mode only.
+*Pro tip*: Sanitizers will be effective in **DEBUG** mode only.
 
 - `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**. `Default: ON`.
     - Pros:
