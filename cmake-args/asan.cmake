@@ -13,7 +13,11 @@ if (__DBG_SANITIZE_ADDR__)
     # any optimization level will fail leak check
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
+-fsanitize-address-globals-dead-stripping \
+-fsanitize-address-poison-custom-array-cookie \
+-fsanitize-address-use-odr-indicator \
+")
     endif ()
 
     #[[
