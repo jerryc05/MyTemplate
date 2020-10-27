@@ -17,14 +17,8 @@ Use at your **OWN** risk.
     - [Non-sanitizer flags](#non-sanitizer-flags)
     - [Sanitizer flags](#sanitizer-flags)
         - [Address sanitizer]()
-            - [Pros and cons]()
-            - [Runtime flags]()
         - [Memory sanitizer]()
-            - [Pros and cons]()
-            - [Runtime flags]()
         - [Thread sanitizer]()
-            - [Pros and cons]()
-            - [Runtime flags]()
 4. [Misc](#misc)
     - [Why I dropped MSAN](#why-i-dropped-msan)
     - [Sanitizer vs Valgrind](#sanitizer-vs-valgrind)
@@ -48,7 +42,7 @@ Use at your **OWN** risk.
 - MacOS(brew): `brew install ccache`
 - Linux(apt): `apt install ccache`
 
-#### How to enable **Ccache** 
+#### How to enable **Ccache**
 
 *No action needed if you followed [First things first](#first-things-first).*
 
@@ -106,9 +100,9 @@ Use at your **OWN** risk.
 
 - `__USE_ANALYZER__`: Use compiler-builtin static analyzer. `Default: OFF`.
 	- Pros: Catch simple mistakes at compile time easily.
-	- Cons: 
-  	    - **SIGNIFICANTLY** slows down compilation time, 
-        - Might not work for big projects. 
+	- Cons:
+  	    - **SIGNIFICANTLY** slows down compilation time,
+        - Might not work for big projects.
 
 - `__USE_LATEST_CPP_STD__`: Compile with the latest `C++` std available. `Default: ON`.
     - Pros: Compile with the latest std automatically.
@@ -118,24 +112,24 @@ Use at your **OWN** risk.
     - Pros: Might speed up arithmetic calculation.
     - Cons: Might break IEEE 754 floating-point implementation std.
 
-### Sanitizer flags 
+### Sanitizer flags
 
 *Note: only effective in **DEBUG** mode.*
 
 - `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**. `Default: ON`.
-    - Pros: 
+    - Pros:
         - Catch memory errors in runtime without sacrificing much performance.
         - Works with IDE debuggers.
-    - Cons: 
+    - Cons:
         - Not compatible with `Valgrind`.
         - Not compatible with either `Memory` or `Thread` sanitizer.
 
 
 - ~~`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.~~ `Default: OFF | Support: DROPPED`.
-    - Pros: 
+    - Pros:
         - Catch uninitialized memory reads in runtime without sacrificing much performance.
         - Works with IDE debuggers.
-    - Cons: 
+    - Cons:
         - Not compatible with `Valgrind`.
         - Not compatible with either `Memory` or `Thread` sanitizer.
         - Only supported on `Linux` and `*BSD`.
@@ -143,25 +137,25 @@ Use at your **OWN** risk.
 
 
 - `__DBG_SANITIZE_THRD__`: Compile with **Thread Sanitizer**. `Default: OFF | Support: WIP`.
-    - Pros: 
+    - Pros:
         - Catch data races in runtime without sacrificing much performance.
         - Works with IDE debuggers.
-    - Cons: 
+    - Cons:
         - Not compatible with `Valgrind`.
         - Not compatible with either `Address` or `Memory` sanitizer.
 
-    
-    
-    
-<!-- todo 
 
-__DBG_SANITIZE_LEAK_STANDALONE__ 
-__DBG_SANITIZE_UB__         
 
--->  
+
+<!-- todo
+
+__DBG_SANITIZE_LEAK_STANDALONE__
+__DBG_SANITIZE_UB__
+
+-->
 
 ## Misc
-    
+
 ### Why I dropped MSAN
 
 See:
@@ -169,8 +163,36 @@ See:
 -   [Using instrumented libraries](https://github.com/google/sanitizers/wiki/MemorySanitizer#using-instrumented-libraries).
 
 
-#### Sanitizer vs Valgrind
+### Sanitizer vs Valgrind
+
+Reference: [Memory/Address Sanitizer vs Valgrind](https://stackoverflow.com/questions/47251533/memory-address-sanitizer-vs-valgrind)
+
+#### Sanitizer
+
+- Much faster.
+- Much smaller memory overhead.
+- Can detect more errors (e.g. non-heap overflows)
+- Works with IDE debuggers.
+
+#### Valgrind
+
+- Detects most of ASAN & MSAN & TSAN at the same time.
 
 
+### Common FAQ
 
+#### 1. Misuse with Valgrind:
+Q: When I run Valgrind, I am stuck at something like ` Warning: set address range perms: ...`.
 
+A: Kill Valgrind (or memcheck) immediately , or Valgrind will use up all system resources and run forever.
+
+A: A useful command for `*ix` systems is: `ps | grep -F valgrind | grep -v grep | awk '{print "kill -9 " $1}'`. You need to pipe its output to `sh`.
+
+A: Sanitizers (except UBSAN) are incompatible with Valgrind.
+
+#### 2. Leak check option in ASAN:
+Q: ASAN/LSAN does not catch memory leak on MacOS.
+
+A: You have 2 options:
+- [RECOMMENDED] Follow ASAN runtime flags settings above.
+- [NOT RECOMMENDED] Disable ASAN and run with LSAN instead (other ASAN checks will also be disabled).
