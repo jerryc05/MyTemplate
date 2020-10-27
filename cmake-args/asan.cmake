@@ -1,6 +1,6 @@
 message(CHECK_START "\t[ADDRESS SANITIZER]")
 if (__DBG_SANITIZE_ADDR__)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -fno-common \
 -fno-omit-frame-pointer \
 -fno-optimize-sibling-calls \
@@ -11,6 +11,15 @@ if (__DBG_SANITIZE_ADDR__)
 -g3 \
 ")
     # any optimization level will fail leak check
+
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+
+    endif ()
+
+    #[[
+
+
+    ]]
 
     set(ENV{ASAN_OPTIONS} "$ENV{ASAN_OPTIONS}\
 :allow_addr2line=1\
@@ -47,29 +56,12 @@ if (__DBG_SANITIZE_ADDR__)
 :unmap_shadow_on_exit=1\
 :windows_hook_rtl_allocators=1\
 ")
-    # "check_initialization_order=1" is not supported on MacOS
-    # "handle_ioctl=1" does not work properly?
-    # "print_module_map=1" prints too much text
-    # "print_stats=1" prints too much text
+    # [MSG] "check_initialization_order=1" is not supported on MacOS
+    # [BUG] "handle_ioctl=1" does not work properly?
+    # [DEL] "print_module_map=1" prints too much text
+    # [DEL] "print_stats=1" prints too much text
 
-    #[[  # Seems like unnecessary if compiled with "-g"
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        message(CHECK_START "\t[ADDRESS SANITIZER SYMBOLIZER")
-        get_filename_component(__COMPILER_DIR__ ${CMAKE_CXX_COMPILER} DIRECTORY)
-        find_file(__SYMBOLIZER_PATH__ llvm-symbolizer
-                PATH ${__COMPILER_DIR__})
-        # also parse /usr/lib/llvm*/llvm-symbolizer
-
-        if (__SYMBOLIZER_PATH__)
-            set(ENV{ASAN_SYMBOLIZER_PATH} "$ENV{ASAN_SYMBOLIZER_PATH}\
-:__SYMBOLIZER_PATH__\
-")
-            message(CHECK_PASS "ON [${__SYMBOLIZER_PATH__}]")
-        else()
-            message(CHECK_FAIL "OFF")
-        endif ()
-    endif ()
-    ]]
+    # "ASAN_SYMBOLIZER_PATH" seems unnecessary if compiled with "-g"
 
     message(CHECK_PASS "ON [WARNING: DO NOT USE WITH VALGRIND!] \n\n\tASAN_OPTIONS=$ENV{ASAN_OPTIONS}")
 else ()
@@ -77,5 +69,5 @@ else ()
 endif ()
 message(STATUS "")
 
-# "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
-# "-fsanitize-coverage=trace-pc" needs kernel support
+# [MSG] "-fsanitize-undefined-trap-on-error" enable this only when libubsan is available
+# [DEL] "-fsanitize-coverage=trace-pc" needs kernel support

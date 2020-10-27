@@ -5,7 +5,7 @@ if (__DBG_SANITIZE_MEMORY__)
     check_cxx_compiler_flag("-fsanitize=memory" __IS_MSAN_SUPPORTED__)
 
     if (__IS_MSAN_SUPPORTED__)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
     -fno-omit-frame-pointer \
     -fPIE -pie \
     -fsanitize-memory-track-origins=1 \

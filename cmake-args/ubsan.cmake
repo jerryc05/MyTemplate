@@ -1,6 +1,6 @@
 message(CHECK_START "\t[UNDEF. BHVR. SANITIZER]")
 if (__DBG_SANITIZE_UB__)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -fsanitize=undefined \
 \
 -fsanitize=alignment \
@@ -25,14 +25,14 @@ if (__DBG_SANITIZE_UB__)
     # "-fsanitize-undefined-trap-on-error" enable this only when libubsan is unavailable
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -fsanitize=bounds-strict \
 -fsanitize=object-size \
 ")
         # "-O0" has no effect for object-size sanitizer [clang]
 
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -fsanitize=array-bounds \
 -fsanitize=function \
 -fsanitize=implicit-conversion \

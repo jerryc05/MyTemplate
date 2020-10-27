@@ -264,6 +264,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
     ]]
 
     message(STATUS "CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
+    message(STATUS "CXX_FLAGS_DEBUG: [${CMAKE_CXX_FLAGS_DEBUG}]")
+    message(STATUS "CXX_FLAGS_RELEASE: [${CMAKE_CXX_FLAGS_RELEASE}]")
     message(STATUS "")
 
     #[[
@@ -486,7 +488,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
         message(CHECK_START "\t[C.F.I. SANITIZER]") # todo
         if (__DBG_SANITIZE_CFI__)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+            set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -fsanitize-cfi-cross-dso \
 ")
             # "-fsanitize-cfi-icall-generalize-pointers" is not compatible
@@ -593,6 +595,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
     ]]
 
     message(STATUS "CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
+    message(STATUS "CXX_FLAGS_DEBUG: [${CMAKE_CXX_FLAGS_DEBUG}]")
+    message(STATUS "CXX_FLAGS_RELEASE: [${CMAKE_CXX_FLAGS_RELEASE}]")
     message(STATUS "")
 
     #[[

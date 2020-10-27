@@ -2,7 +2,7 @@
             "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
 message(CHECK_START "\t[THREAD SANITIZER]")
 if (__DBG_SANITIZE_THRD__)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -fsanitize=thread \
 ")
     message(CHECK_PASS "ON")
