@@ -10,12 +10,12 @@ set(__USE_LATEST_CPP_STD__              ON)
 set(__REL_USE_HACKED_MATH__             ON)
 
 
-# At most one of the following three
+# At most one of the following three can be used at the same time
 set(__DBG_SANITIZE_ADDR__               ON)
-#set(__DBG_SANITIZE_MEMORY__             ON) # [WIP] Linux/BSD only
-#set(__DBG_SANITIZE_THRD__               ON) # [WIP]
+#set(__DBG_SANITIZE_MEMORY__             OFF) # [SUPPORT DROPPED!] Read README first!
+#set(__DBG_SANITIZE_THRD__               ON)  # [WIP]
 
-set(__DBG_SANITIZE_LEAK_STANDALONE__    ON)
+#set(__DBG_SANITIZE_LEAK_STANDALONE__    ON)
 set(__DBG_SANITIZE_UB__                 ON)
 
 
