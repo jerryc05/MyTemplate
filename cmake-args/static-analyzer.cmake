@@ -23,7 +23,7 @@ if (__USE_ANALYZER__)
                     --extra-arg=-Xclang
                     --extra-arg=-analyzer-config
                     --extra-arg=-Xclang
-                    --extra-arg=aggressive-binary-operation-simplification=true,c++-container-inlining=true,c++-shared_ptr-inlining=true,unroll-loops=true,widen-loops=true
+                    --extra-arg=aggressive-binary-operation-simplification=true,c++-shared_ptr-inlining=true,unroll-loops=true,widen-loops=true
                     )
             set(CMAKE_CXX_CLANG_TIDY ${__CLANG_TIDY__} ${__CLANG_TIDY_ARGS__})
 
