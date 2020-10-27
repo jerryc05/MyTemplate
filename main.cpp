@@ -1,6 +1,6 @@
 #include <iostream>
 
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
 #ifndef __DEBUG__
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
