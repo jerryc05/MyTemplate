@@ -40,7 +40,7 @@ if (__USE_ANALYZER__)
             set(CMAKE_CXX_CLANG_TIDY ${__CLANG_TIDY__} ${__CLANG_TIDY_ARGS__})
 
         else ()
-            message(SEND_ERROR "\t[STATIC ANALYZER] clang-tidy NOT FOUND! SKIPPED!")
+            message(SEND_ERROR "\t[STATIC ANALYZER] clang-tidy NOT FOUND!")
         endif ()
 
     else ()
