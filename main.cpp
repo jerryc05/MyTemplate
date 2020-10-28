@@ -5,6 +5,11 @@ auto main(int argc, char *argv[]) -> int {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #endif
+  // Read `bool` as `true` and `false`
+  {
+    std::cin >> std::boolalpha;
+    std::cout << std::boolalpha;
+  }
 
   std::cout << "Hello, World!" << std::endl;
   std::cout << argc << ',' << argv[0] << std::endl;  // NOLINT
