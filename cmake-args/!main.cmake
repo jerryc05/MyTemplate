@@ -301,7 +301,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -fexperimental-new-pass-manager \
 -fenable-matrix \
 -fforce-enable-int128 \
--fmodules \
 -fmodules-ts \
 -frelaxed-template-template-args \
 -fsized-deallocation \
@@ -443,6 +442,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
     # [BUG] "-fexperimental-new-constant-interpreter" will produce error with <iostream>
     # [DEL] "-fignore-exceptions" might not be what we want.
+    # [DEL] "-fmodules" will conflict with any variabe named "module".
     # [DEL] "-fms-compatibility" might not be what we want.
     # [DEL] "-Wpadded" is not useful in practice (much too verbose)
     # [EXP] "-fglobal-isel -fexperimental-isel" not stable
@@ -590,6 +590,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -mllvm --polly-run-inliner \
 -mllvm --polly-tiling \
 -mllvm --polly-vectorizer=polly \
+-s \
 ")
 
         #[[

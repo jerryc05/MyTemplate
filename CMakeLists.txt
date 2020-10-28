@@ -5,7 +5,7 @@ message("")
 
 # ===== BEGIN OF CMAKE ARGS TEMPLATE =====
 
-set(__USE_ANALYZER__                    ON)
+#set(__USE_ANALYZER__                    ON)
 set(__USE_LATEST_CPP_STD__              ON)
 set(__REL_USE_HACKED_MATH__             ON)
 
