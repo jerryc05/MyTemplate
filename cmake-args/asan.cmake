@@ -8,7 +8,6 @@ if (__DBG_SANITIZE_ADDR__)
 -fsanitize=address \
 -fsanitize=pointer-compare \
 -fsanitize=pointer-subtract \
--g3 \
 ")
     # any optimization level will fail leak check
 
