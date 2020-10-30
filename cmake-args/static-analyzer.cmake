@@ -28,7 +28,7 @@ if (__USE_ANALYZER__)
         if (__CLANG_TIDY__)
             set(__CLANG_TIDY_ARGS__
                     --allow-enabling-analyzer-alpha-checkers
-                    --checks=*,-android-*,-altera-*,-clang-analyzer-alpha.webkit.*,-cppcoreguidelines-init-variables,-darwin-*,-fuchsia-*,-google-runtime-references,-llvm-*,-llvmlibc-*,-objc-*,-zircon-*
+                    --checks=*,-android-*,-altera-*,-clang-analyzer-alpha.webkit.*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-init-variables,-darwin-*,-fuchsia-*,-google-runtime-references,-llvm-*,-llvmlibc-*,-objc-*,-zircon-*
                     --format-style=google
                     --use-color
 
