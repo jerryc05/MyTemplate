@@ -15,9 +15,12 @@ Use at your **OWN** risk.
 3. [High-level switches](#high-level-switches)
     - [Non-sanitizer flags](#non-sanitizer-flags)
     - [Sanitizer flags](#sanitizer-flags)
-        - [Address sanitizer]()
-        - [Memory sanitizer]()
-        - [Thread sanitizer]()
+        - [The "Big-Three" sanitizers](#the-big-three-sanitizers)
+            - [Address sanitizer](#address-sanitizer)
+            - [~~Memory sanitizer~~](#memory-sanitizer)
+            - [Thread sanitizer](#thread-sanitizer)
+        - [Other sanitizers](#other-sanitizers)
+            - [Undefined-Behavior sanitizer](#undefined-behavior-sanitizer)
 4. [Misc](#misc)
     - [Why I dropped MSAN](#why-i-dropped-msan)
     - [Sanitizer vs Valgrind](#sanitizer-vs-valgrind)
@@ -135,6 +138,10 @@ required.
 
 *Pro tip*: Sanitizers will be effective in **DEBUG** mode only.
 
+#### The "Big-Three" sanitizers
+
+##### Address sanitizer
+
 - `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**.
     - `Default: ON`.
     - Pros:
@@ -144,6 +151,8 @@ required.
         - Not compatible with `Valgrind`.
         - Not compatible with either `Memory` or `Thread` sanitizer.
 
+
+##### ~~Memory sanitizer~~
 
 - ~~`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.~~
     - `Default: OFF | Support: DROPPED`.
@@ -158,6 +167,8 @@ required.
           e.g. `C++ Std Lib`).
 
 
+##### Thread sanitizer
+
 - `__DBG_SANITIZE_THRD__`: Compile with **Thread Sanitizer**.
     - `Default: OFF | Support: WIP`.
     - Pros:
@@ -167,6 +178,9 @@ required.
         - Not compatible with `Valgrind`.
         - Not compatible with either `Address` or `Memory` sanitizer.
 
+#### Other sanitizers
+
+##### Undefined-Behavior sanitizer
 
 - todo ...
 
