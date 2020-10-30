@@ -81,7 +81,7 @@ Use at your **OWN** risk.
         - Append `-GNinja` to `CMake options` of every profile (notice spaces between args)
     - `File`
       - `New Project Settings`
-      - `Settings for New Projects..`. - *(Repeat same actions above)*
+      - `Settings for New Projects...` - *(Repeat same actions above)*
 
 ### [LLVM Clang](https://llvm.org/)
 
@@ -101,7 +101,7 @@ Use at your **OWN** risk.
     - *Pro tip*: You might want to set **C/C++ Compiler** to `clang/clang++` respectively to use Clang.
     - *Pro tip*: Make sure you are using Clang from **LLVM**, not **Apple**.
     - *Pro tip*: If you followed [First things first](#first-things-first), CMake will print `USING COMPILER [<compiler_name>]` to stdout.
-        - Check that out. It is very useful.
+        - Check that out. Shall be very useful.
 
 ### [Clang-Tidy](https://clang.llvm.org/extra/clang-tidy/)
 
