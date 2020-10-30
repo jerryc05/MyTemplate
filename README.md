@@ -16,28 +16,35 @@ Use at your **OWN** risk.
     - [Non-sanitizer flags](#non-sanitizer-flags)
     - [Sanitizer flags](#sanitizer-flags)
         - [The "Big-Three" sanitizers](#the-big-three-sanitizers)
-            - [Address sanitizer](#address-sanitizer)
-            - [~~Memory sanitizer~~](#memory-sanitizer)
-            - [Thread sanitizer](#thread-sanitizer)
+            - [Address sanitizer (`ASAN`)](#address-sanitizer-asan)
+            - [~~Memory sanitizer (`MSAN`)~~](#memory-sanitizer-msan)
+            - [Thread sanitizer (`TSAN`)](#thread-sanitizer-tsan)
         - [Other sanitizers](#other-sanitizers)
-            - [Undefined-Behavior sanitizer](#undefined-behavior-sanitizer)
+            - [Undefined-Behavior sanitizer (`UBSAN`)](#undefined-behavior-sanitizer-ubsan)
 4. [Misc](#misc)
-    - [Why I dropped MSAN](#why-i-dropped-msan)
+    - [Why I quitted `MSAN`](#why-i-quitted-msan)
     - [Sanitizer vs Valgrind](#sanitizer-vs-valgrind)
     - [Common FAQ](#common-faq)
 
 ## First things first
 
-1. Copy *everything* in file `CMakeLists.txt` between the
-   line: `===== BEGIN OF CMAKE ARGS TEMPLATE =====` and the
-   line `===== BEGIN OF TARGET CREATION =====` to your `CMakelists.txt` accordingly.
+1. Copy *everything* in this `CMakeLists.txt` file between the line:
 
-2. Copy *everything* in folder `cmake-args` (including the folder itself) accordingly.
+   `===== BEGIN OF CMAKE ARGS TEMPLATE =====`
 
-3. Make sure all target creation commands (e.g. `add_executable()`) are below the
-   line: `===== BEGIN OF TARGET CREATION =====`.
+   and the line:
 
-4. *Optional:* You might also want to use `main.cpp` and `.gitignore`.
+   `===== BEGIN OF TARGET CREATION =====`
+
+   to your `CMakelists.txt` accordingly.
+
+2. Copy *everything* in this `cmake-args` folder (including the folder itself) to your project root accordingly.
+
+3. Make sure all target creation commands (e.g. `add_executable()`) are below the line:
+
+   `===== BEGIN OF TARGET CREATION =====`
+
+4. *Optional:* You might also want to copy (and use) `main.cpp` and `.gitignore`.
 
 ## Recommended tools
 
@@ -78,8 +85,8 @@ Use at your **OWN** risk.
 
 ### [LLVM Clang](https://llvm.org/)
 
-*Pro tip:* LLVM Clang is different from Apple Clang (comes with XCode in MacOS) in many ways (e.g.
-Apple Clang lacks sanitizers).
+*Pro tip:* LLVM Clang is different from Apple Clang (comes with XCode in MacOS) in many ways
+- e.g. Apple Clang has no sanitizers.
 
 #### Download & Install
 
@@ -91,11 +98,10 @@ Apple Clang lacks sanitizers).
 
 - *CLion*:
     - Follow [this link](https://www.jetbrains.com/help/clion/how-to-create-toolchain-in-clion.html)
-    - *Pro tip*: You might want to set **C/C++ Compiler** to `clang/clang++` respectively to use
-      Clang.
+    - *Pro tip*: You might want to set **C/C++ Compiler** to `clang/clang++` respectively to use Clang.
     - *Pro tip*: Make sure you are using Clang from **LLVM**, not **Apple**.
-    - *Pro tip*: If you followed [First things first](#first-things-first), CMake will
-      print `USING COMPILER [<compiler_name>]` to stdout.
+    - *Pro tip*: If you followed [First things first](#first-things-first), CMake will print `USING COMPILER [<compiler_name>]` to stdout.
+        - Check that out. It is very useful.
 
 ### [Clang-Tidy](https://clang.llvm.org/extra/clang-tidy/)
 
@@ -103,8 +109,7 @@ Apple Clang lacks sanitizers).
 
 - Linux(apt): `apt install clang-tidy`
 
-*Pro tip*: Clang-tidy usually comes with Clang altogether and no additional installation is
-required.
+*Pro tip*: Clang-tidy usually comes with Clang altogether and no additional installation is required.
 
 #### How to enable **Clang-Tidy**
 
@@ -128,8 +133,7 @@ required.
     - Pros: Compile with the latest std automatically.
     - Cons: *Refer to incompatibilities between `C++` stds*
 
-- `__REL_USE_HACKED_MATH__`: Compile with aggressive/hacky/dirty math optimizations in **RELEASE**
-  mode.
+- `__REL_USE_HACKED_MATH__`: Compile with aggressive/hacky/dirty math optimizations in **RELEASE** mode.
     - `Default: ON`.
     - Pros: Might speed up arithmetic calculation.
     - Cons: Might break IEEE 754 floating-point implementation std.
@@ -140,7 +144,7 @@ required.
 
 #### The "Big-Three" sanitizers
 
-##### Address sanitizer
+##### Address sanitizer (`ASAN`)
 
 - `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**.
     - `Default: ON`.
@@ -152,22 +156,23 @@ required.
         - Not compatible with either `Memory` or `Thread` sanitizer.
 
 
-##### ~~Memory sanitizer~~
+##### ~~Memory sanitizer (`MSAN`)~~
 
 - ~~`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.~~
+    - **DO NOT USE THIS** unless you know what you are doing.
+    -  See below: [why I quitted `MSAN`](#why-i-quitted-msan).
     - `Default: OFF | Support: DROPPED`.
-    - Pros:
-        - Catch uninitialized memory reads in runtime without sacrificing much performance.
-        - Works with IDE debuggers.
-    - Cons:
-        - Not compatible with `Valgrind`.
-        - Not compatible with either `Memory` or `Thread` sanitizer.
-        - Only supported on `Linux` and `*BSD`.
-        - Produces false positives if **ANY** part of the code isn't built with `MSAN` (
-          e.g. `C++ Std Lib`).
+        - Pros:
+            - Catch uninitialized memory reads in runtime without sacrificing much performance.
+            - Works with IDE debuggers.
+        - Cons:
+            - Not compatible with `Valgrind`.
+            - Not compatible with either `Memory` or `Thread` sanitizer.
+            - Only supported on `Linux` and `*BSD`.
+            - Produces false positives if **ANY** part of the code isn't built with `MSAN` (e.g. `C++ Std Lib`).
 
 
-##### Thread sanitizer
+##### Thread sanitizer (`TSAN`)
 
 - `__DBG_SANITIZE_THRD__`: Compile with **Thread Sanitizer**.
     - `Default: OFF | Support: WIP`.
@@ -178,9 +183,14 @@ required.
         - Not compatible with `Valgrind`.
         - Not compatible with either `Address` or `Memory` sanitizer.
 
+
 #### Other sanitizers
 
-##### Undefined-Behavior sanitizer
+##### Undefined-Behavior sanitizer (`UBSAN`)
+
+- `__DBG_SANITIZE_UB__`: Compile with **Undefined-Behavior Sanitizer**.
+    - `Default: ON`.
+    - todo ..
 
 - todo ...
 
@@ -193,15 +203,19 @@ __DBG_SANITIZE_UB__
 clang tidy/d args in clion
 -->
 
+
 ## Misc
 
-### Why I dropped MSAN
+### Why I quitted `MSAN`
 
-See:
+**TL; DR**:
+- `MSAN` will produce false positives unless all parts of code are compiled with `MSAN`.
+- However, 99.9% of chance are that you are using compiler-builtin `C++ standard library`, which is not compiled with `MSAN`.
 
+For more info, check these:
 - [Handling external code](https://clang.llvm.org/docs/MemorySanitizer.html#id10).
-- [Using instrumented libraries](https://github.com/google/sanitizers/wiki/MemorySanitizer#using-instrumented-libraries)
-  .
+- [Using instrumented libraries](https://github.com/google/sanitizers/wiki/MemorySanitizer#using-instrumented-libraries).
+
 
 ### Sanitizer vs Valgrind
 
@@ -211,16 +225,15 @@ Reference: [Memory/Address Sanitizer vs Valgrind](https://stackoverflow.com/ques
 
 - Much faster.
 - Much smaller memory overhead.
-- Can detect more errors (e.g. non-heap overflows in ASAN), but cannot run all sanitizers at the same time.
+- Can detect more errors (e.g. non-heap overflows in `ASAN`), but cannot run all sanitizers at the same time.
 - Works with IDE debuggers.
 
 #### Valgrind
 
-- Detects most of what ASAN & MSAN & TSAN can do at the same time.
-
+- Detects most of what `ASAN` & `MSAN` & `TSAN` can do at the same time.
 - Runs the programi inside a VM (super slow but super accurate).
+- *Currently* might still need Valgrind to do what `MSAN` can do, since `MSAN` is unsupported.
 
-- *Currently* might still need Valgrind to do what MSAN can do, since MSAN is unsupported.
 
 ### Common FAQ
 
@@ -228,21 +241,15 @@ Reference: [Memory/Address Sanitizer vs Valgrind](https://stackoverflow.com/ques
 
 Q: When I run Valgrind, I am stuck at something like ` Warning: set address range perms: ...`.
 
-A: Kill Valgrind (or memcheck) immediately , or it will use up most system resources and run
-forever.
+A: Kill Valgrind (or memcheck) immediately , or it will (*likely*) use up **all** system resources and run **forever**.
+- A useful command for `*ix` systems is: `ps | grep -F valgrind | grep -v grep | awk '{print "kill -9 " $1}'`. You need to pipe its output to `sh`.
+- \[*WARNING AGAIN* !!!\] Any sanitizer that touches memory is incompatible with Valgrind.
+    - e.g. `ASAN`, `MSAN`, `LSAN`, (*haven't tested`TSAN`*)
 
-- A useful command for `*ix` systems
-is: `ps | grep -F valgrind | grep -v grep | awk '{print "kill -9 " $1}'`. You need to pipe its
-output to `sh`.
+#### 2. Leak check option in `ASAN`:
 
-- \[*WARNING AGAIN* !!!\] The "Big-Three" sanitizers are incompatible with Valgrind.
-
-#### 2. Leak check option in ASAN:
-
-Q: ASAN/LSAN does not catch memory leak on MacOS.
+Q: `ASAN`/`LSAN` does not catch memory leak on MacOS.
 
 A: You have 2 options:
-
-- \[RECOMMENDED\] Follow ASAN runtime flags settings above.
-- \[NOT RECOMMENDED\] Disable ASAN and run with LSAN instead (other ASAN checks will also be
-  disabled).
+- \[RECOMMENDED\] Follow `ASAN` runtime flags settings above.
+- \[NOT RECOMMENDED\] Disable `ASAN` and run with LSAN instead (other `ASAN` checks will also be disabled).
