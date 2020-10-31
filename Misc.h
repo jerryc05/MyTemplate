@@ -26,6 +26,7 @@ template<typename T> using Vec = std::vector<T>;
 
 template<typename T, typename Cmp=std::less<T>> using Pq = std::priority_queue<T, Vec<T>, Cmp>;
 
-auto inline skip_current_line(InputStream &is) -> void {
-  is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+auto inline skip_current_line(InputStream &is,
+                              InputStream::int_type delim = '\n') -> void {
+  is.ignore(std::numeric_limits<std::streamsize>::max(), delim);
 }
