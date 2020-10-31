@@ -151,7 +151,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
         message(STATUS "CMAKE IN DEBUG MODE")
         message(STATUS "")
 
-        add_compile_definitions(__DEBUG__)
+        add_compile_definitions(DEBUG__)
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -O0 -g3 \
 \
@@ -482,7 +482,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
         message(STATUS "CMAKE IN DEBUG MODE")
         message(STATUS "")
 
-        add_compile_definitions(__DEBUG__)
+        add_compile_definitions(DEBUG__)
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -O0 -g3 \
 \
