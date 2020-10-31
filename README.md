@@ -44,7 +44,7 @@ Use at your **OWN** risk.
 
    `===== BEGIN OF TARGET CREATION =====`
 
-4. *Optional:* You might also want to copy (and use) `main.cpp` and `.gitignore`.
+4. *Optional:* You might also want to copy (and use) `.gitignore`, `main.cpp` and `Misc.h`.
 
 ## Recommended tools
 
