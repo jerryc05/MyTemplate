@@ -30,10 +30,9 @@ else
 fi
 
 # Load the oh-my-zsh's library.
-antigen use oh-my-zsh
+#antigen use oh-my-zsh
 
 # Bundles
-antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions && export ZSH_AUTOSUGGEST_USE_ASYNC=1
 antigen bundle zsh-users/zsh-completions
 antigen bundle safe-paste
