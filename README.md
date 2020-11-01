@@ -82,6 +82,8 @@ Use at your **OWN** risk.
 
 - Installation:
     - Append `antigen bundle supercrabtree/k` to `~/.sh-antigen`.
+    - MacOS users might want to install `coreutils` to show file sizes in human-readable format. [More info](https://github.com/supercrabtree/k#file-weight-colours).
+        - Append `which numfmt >/dev/null || which brew >/dev/null && brew install coreutils` to `~/.sh-antigen` as well.
 
 ##### Pip autocomplete: [`pip`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/pip)
 
