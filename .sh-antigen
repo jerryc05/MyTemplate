@@ -1,10 +1,8 @@
 # Load Antigen
 if [ -f /usr/share/zsh-antigen/antigen.zsh ]; then
   source /usr/share/zsh-antigen/antigen.zsh
-  __found_antigen=1
 elif [ -f $HOME/antigen.zsh ]; then
   source $HOME/antigen.zsh
-  __found_antigen=1
 else
   if [ -f $HOME/.antigen/.antigen_zsh_path ]; then
     __antigen_zsh_path=$(cat $HOME/.antigen/.antigen_zsh_path)
@@ -24,36 +22,32 @@ else
       # We lost this file
       else
         echo -e '\e[5m\e[1;31mWARNING:\e[0m \e[1;33mantigen.zsh\e[0m not found!'
+        return
       fi
     fi
   fi
   unset __antigen_zsh_path
 fi
 
-if [ ! -z "$__found_antigen" ]; then
-  # Load the oh-my-zsh's library.
-  antigen use oh-my-zsh
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
 
-  # Bundles
-  antigen bundle zsh-users/zsh-syntax-highlighting
-  antigen bundle zsh-users/zsh-autosuggestions && export ZSH_AUTOSUGGEST_USE_ASYNC=1
-  antigen bundle zsh-users/zsh-completions
-  antigen bundle safe-paste
-  antigen bundle z
-  antigen bundle command-not-found
-  antigen bundle supercrabtree/k && which numfmt >/dev/null || { which brew >/dev/null && brew install coreutils }
-  antigen bundle pip
-  antigen bundle zsh-256color
+# Bundles
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions && export ZSH_AUTOSUGGEST_USE_ASYNC=1
+antigen bundle zsh-users/zsh-completions
+antigen bundle safe-paste
+antigen bundle z
+antigen bundle command-not-found
+antigen bundle supercrabtree/k && which numfmt >/dev/null || { which brew >/dev/null && brew install coreutils }
+antigen bundle pip
+antigen bundle zsh-256color
 
-  # Syntax highlighting bundle (MUST BE THE LAST BUNBDLE)
-  antigen bundle zsh-users/zsh-syntax-highlighting
+# Syntax highlighting bundle (MUST BE THE LAST BUNBDLE)
+antigen bundle zsh-users/zsh-syntax-highlighting
 
-  # Load the theme
-  antigen theme romkatv/powerlevel10k
+# Load the theme
+antigen theme romkatv/powerlevel10k
 
-  # Tell Antigen that you're done
-  antigen apply
-
-  # Unser variable
-  unset __found_antigen
-fi
+# Tell Antigen that you're done
+antigen apply
