@@ -137,8 +137,9 @@ Use at your **OWN** risk.
   ```
 - **[RECOMMENDED]** Change terminal's font to one that supports **Emoji** (or at least **Unicode**) characters.
     - Some recommended font-families:
-        - [Cascadia Code](https://github.com/microsoft/cascadia-code)
-        - [MesloLGS NF (used by `p10k` theme)](https://github.com/romkatv/powerlevel10k/blob/master/font.md)
+        - [Cascadia Code](https://github.com/microsoft/cascadia-code) (my top choice)
+        - [Fira Code](https://github.com/tonsky/FiraCode) (quite good)
+        - [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md) (used by `p10k` theme, but not really recommended)
     - If you decided to change terminal's font, make sure to:
         - Download all fonts in the font-family (e.g. `Regular`, `Bold`, etc).
         - Install all fonts in the font-family.
