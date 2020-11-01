@@ -19,7 +19,7 @@ if [ ! -z "$__found_antigen" ]; then
   antigen bundle safe-paste
   antigen bundle z
   antigen bundle command-not-found
-  antigen bundle k
+  antigen bundle supercrabtree/k
   antigen bundle pip
   antigen bundle zsh-256color
 
