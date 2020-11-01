@@ -144,23 +144,43 @@ Use at your **OWN** risk.
 - Restart terminal.
 - If you are using `powerlevel10k`:
     - Run the following script in terminal (just for customization):
-    ```sh
-    sed -i \
-    -e 's/# *node_version/node_version/g' \
-    -e 's/# *go_version/go_version/g' \
-    -e 's/# *rust_version/rust_version/g' \
-    -e 's/# *dotnet_version/dotnet_version/g' \
-    -e 's/# *php_version/php_version/g' \
-    -e 's/# *laravel_version/laravel_version/g' \
-    -e 's/# *java_version/java_version/g' \
-    -e 's/# *package/package/g' \
-    -e 's/# *load/load/g' \
-    -e 's/# *disk_usage/disk_usage/g' \
-    -e 's/# *ram/ram/g' \
-    -e 's/# *battery/battery/g' \
-    -e 's/# *wifi  /wifi  /g' \
-    ~/.p10k.zsh && \
-    source ~/.p10k.zsh
-    ```
+        - Linux:
+        ```sh
+        sed -i \
+        -e 's/# *node_version/node_version/g' \
+        -e 's/# *go_version/go_version/g' \
+        -e 's/# *rust_version/rust_version/g' \
+        -e 's/# *dotnet_version/dotnet_version/g' \
+        -e 's/# *php_version/php_version/g' \
+        -e 's/# *laravel_version/laravel_version/g' \
+        -e 's/# *java_version/java_version/g' \
+        -e 's/# *package/package/g' \
+        -e 's/# *load/load/g' \
+        -e 's/# *disk_usage/disk_usage/g' \
+        -e 's/# *ram/ram/g' \
+        -e 's/# *battery/battery/g' \
+        -e 's/# *wifi  /wifi  /g' \
+        ~/.p10k.zsh && \
+        source ~/.p10k.zsh
+        ```
+        - MacOS:
+        ```sh
+        sed \
+        -e 's/# *node_version/node_version/g' \
+        -e 's/# *go_version/go_version/g' \
+        -e 's/# *rust_version/rust_version/g' \
+        -e 's/# *dotnet_version/dotnet_version/g' \
+        -e 's/# *php_version/php_version/g' \
+        -e 's/# *laravel_version/laravel_version/g' \
+        -e 's/# *java_version/java_version/g' \
+        -e 's/# *package/package/g' \
+        -e 's/# *load/load/g' \
+        -e 's/# *disk_usage/disk_usage/g' \
+        -e 's/# *ram/ram/g' \
+        -e 's/# *battery/battery/g' \
+        -e 's/# *wifi  /wifi  /g' \
+        -i '' ~/.p10k.zsh && \
+        source ~/.p10k.zsh
+        ```
     - You can tweak `~/.p10k.zsh` yourself as well if you are interested.
         - Don't forget to run `source ~/.p10k.zsh` to apply changes.
