@@ -34,13 +34,13 @@ Use at your **OWN** risk.
 4. Set `zsh` as default:
     - If you are on MacOS, run this first: `echo $(which zsh) | sudo tee -a /etc/shells`
     - Run `chsh -s $(which zsh)`
-5. Copy all env variables statements (e.g. `$PATH`) from `~/.bash_profile` (or other profile like `~/.profile`).
-6. Paste them to `~/.zshenv` (create the file if you don’t have it).
-7. Copy your alias, functions, key bindings and more from `~/.bash_profile` (or other profile like `~/.profile`).
-8. Paste them to `~/.zshrc` (create the file if you don’t have it), or link them to `~/.zshrc` accordingly if you don't want to.
+5. **[RECOMMENDED]** Copy all env variables statements (e.g. `$PATH`) from `~/.bash_profile` (or other profile like `~/.profile`).
+6. **[RECOMMENDED]** Paste them to `~/.zshenv` (create the file if you don’t have it).
+7. **[RECOMMENDED]** Copy your alias, functions, key bindings and more from `~/.bash_profile` (or other profile like `~/.profile`).
+8. **[RECOMMENDED]** Paste them to `~/.zshrc` (create the file if you don’t have it), or link them to `~/.zshrc` accordingly if you don't want to.
 9. Restart your terminal.
 10. You will be prompted with `zsh`'s first-use wizard.
-    - Prompt `0` if the config asks whether to create files like `.zshrc`
+    - Prompt `0` if the wizard asks whether to create files like `.zshrc`
 
 #### Configure plugins
 
@@ -127,7 +127,7 @@ Use at your **OWN** risk.
 
 - Your `~/.sh-antigen` file shall look very similar to [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
     - If you don't have `~/.sh-antigen` file:
-        - Create this file by running: `nano ~/.sh-antigen`
+        - Create it by running: `nano ~/.sh-antigen`
         - Copy-paste the contents from [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
@@ -136,13 +136,15 @@ Use at your **OWN** risk.
   fi
   ```
 - **[RECOMMENDED]** Change terminal's font to one that supports **Emoji** (or at least **Unicode**) characters.
-    - A recommended font-family can be found at [this link](https://github.com/romkatv/powerlevel10k/blob/master/font.md)
+    - Some recommended font-families:
+        - [Cascadia Code](https://github.com/microsoft/cascadia-code)
+        - [MesloLGS NF (used by `p10k` theme)](https://github.com/romkatv/powerlevel10k/blob/master/font.md)
     - If you decided to change terminal's font, make sure to:
         - Download all fonts in the font-family (e.g. `Regular`, `Bold`, etc).
         - Install all fonts in the font-family.
         - Change the font of the terminal.
 - Restart terminal.
-- If you are using `powerlevel10k`:
+- If you are using `powerlevel10k` (default theme of this tutorial):
     - Run the following script in terminal (just for customization):
         - Linux:
         ```sh
@@ -183,4 +185,4 @@ Use at your **OWN** risk.
         source ~/.p10k.zsh
         ```
     - You can tweak `~/.p10k.zsh` yourself as well if you are interested.
-        - Don't forget to run `source ~/.p10k.zsh` to apply changes.
+        - Don't forget to run `source ~/.p10k.zsh` afterwards to apply changes.
