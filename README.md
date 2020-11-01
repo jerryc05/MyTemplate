@@ -115,6 +115,8 @@ Use at your **OWN** risk.
 
 - *No action needed if you followed [First things first](#first-things-first).*
 
+<details><summary>Details & explanations (you can safely ignore these)</summary><p>
+
 ## High-level switches
 
 ### Non-sanitizer flags
@@ -233,6 +235,8 @@ Reference: [Memory/Address Sanitizer vs Valgrind](https://stackoverflow.com/ques
 - Detects most of what `ASAN` & `MSAN` & `TSAN` can do at the same time.
 - Runs the programi inside a VM (super slow but super accurate).
 - *Currently* might still need Valgrind to do what `MSAN` can do, since `MSAN` is unsupported.
+
+</p></details>
 
 
 ### Common FAQ
