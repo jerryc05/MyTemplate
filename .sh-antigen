@@ -14,14 +14,13 @@ if [ ! -z "$__found_antigen" ]; then
   antigen use oh-my-zsh
 
   # Bundles
-  antigen bundle zsh-autosuggestions
-  export ZSH_AUTOSUGGEST_USE_ASYNC=1
-  antigen bundle zsh-completions
+  antigen bundle zsh-users/zsh-syntax-highlighting
+  antigen bundle zsh-users/zsh-autosuggestions && export ZSH_AUTOSUGGEST_USE_ASYNC=1
+  antigen bundle zsh-users/zsh-completions
   antigen bundle safe-paste
   antigen bundle z
   antigen bundle command-not-found
-  antigen bundle supercrabtree/k
-  which numfmt >/dev/null || { which brew >/dev/null && brew install coreutils }
+  antigen bundle supercrabtree/k && which numfmt >/dev/null || { which brew >/dev/null && brew install coreutils }
   antigen bundle pip
   antigen bundle zsh-256color
 
