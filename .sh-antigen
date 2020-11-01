@@ -10,15 +10,16 @@ else
     __antigen_zsh_path=$(cat $HOME/.antigen/.antigen_zsh_path)
 
     # Path from cache is valid
-    if [ -f __antigen_zsh_path ]; then
-      source __antigen_zsh_path
+    if [ -f $__antigen_zsh_path ]; then
+      source $__antigen_zsh_path
     else
-      __antigen_zsh_path=$(find /usr -name antigen.zsh)
+      __antigen_zsh_path=$(find /usr -name antigen.zsh 2>/dev/null)
 
       # Update cache of path
       if [ ! -z "$__antigen_zsh_path" ]; then
+        mkdir -p $HOME/.antigen
         echo $__antigen_zsh_path > $HOME/.antigen/.antigen_zsh_path
-        source __antigen_zsh_path
+        source $__antigen_zsh_path
 
       # We lost this file
       else
