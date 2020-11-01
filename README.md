@@ -123,7 +123,8 @@ Use at your **OWN** risk.
 
 #### Summary
 
-- Your `~/.sh-antigen` shall look very similar to [`.sh-antigen`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen) in the repo.
+- Your `~/.sh-antigen` file shall look very similar to [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
+    - If you don't have `~/.sh-antigen` file, use `nano ~/.sh-antigen` to create one and copy-paste the contents from [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
   if [ -f $HOME/.sh-antigen ]; then
