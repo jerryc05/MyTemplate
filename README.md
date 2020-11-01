@@ -39,6 +39,8 @@ Use at your **OWN** risk.
 7. Copy your alias, functions, key bindings and more from `~/.bash_profile` (or other profile like `~/.profile`).
 8. Paste them to `~/.zshrc` (create the file if you don’t have it), or link them to `~/.zshrc` accordingly if you don't want to.
 9. Restart your terminal.
+10. You will be prompted with `zsh`'s first-use wizard.
+    - Prompt `0` if the config asks whether to create files like `.zshrc`
 
 #### Configure plugins
 
@@ -133,6 +135,12 @@ Use at your **OWN** risk.
     source $HOME/.sh-antigen
   fi
   ```
+- **[RECOMMENDED]** Change terminal's font to one that supports **Emoji** (or at least **Unicode**) characters.
+    - A recommended font-family can be found at [this link](https://github.com/romkatv/powerlevel10k/blob/master/font.md)
+    - If you decided to change terminal's font, make sure to:
+        - Download all fonts in the font-family (e.g. `Regular`, `Bold`, etc).
+        - Install all fonts in the font-family.
+        - Change the font of the terminal.
 - Restart terminal.
 - If you are using `powerlevel10k`:
     - Run the following script in terminal (just for customization):
