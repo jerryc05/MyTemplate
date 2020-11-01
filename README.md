@@ -52,6 +52,9 @@ Use at your **OWN** risk.
 
 - Installation:
     - Append `antigen bundle zsh-users/zsh-syntax-highlighting` as the **LAST** (**LAST!** **LAST!**) `antigen bundle ...` in `~/.sh-antigen`.
+- Configuration:
+    - Maybe you will like to enable async mode:
+        - Append `export ZSH_AUTOSUGGEST_USE_ASYNC=1` as well.
 
 ##### Automatic suggestions: [`zsh-autosuggestions`](https://github.com/zsh-users/zsh-autosuggestions)
 

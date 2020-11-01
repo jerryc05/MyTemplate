@@ -15,6 +15,7 @@ if [ ! -z "$__found_antigen" ]; then
 
   # Bundles
   antigen bundle zsh-autosuggestions
+  export ZSH_AUTOSUGGEST_USE_ASYNC=1
   antigen bundle zsh-completions
   antigen bundle safe-paste
   antigen bundle z
