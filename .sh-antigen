@@ -6,7 +6,27 @@ elif [ -f $HOME/antigen.zsh ]; then
   source $HOME/antigen.zsh
   __found_antigen=1
 else
-  echo -e '\e[5m\e[1;31mWARNING:\e[0m \e[1;33mantigen.zsh\e[0m not found!'
+  if [ -f $HOME/.antigen/.antigen_zsh_path ]; then
+    __antigen_zsh_path=$(cat $HOME/.antigen/.antigen_zsh_path)
+
+    # Path from cache is valid
+    if [ -f __antigen_zsh_path ]; then
+      source __antigen_zsh_path
+    else
+      __antigen_zsh_path=$(find /usr -name antigen.zsh)
+
+      # Update cache of path
+      if [ ! -z "$__antigen_zsh_path" ]; then
+        echo $__antigen_zsh_path > $HOME/.antigen/.antigen_zsh_path
+        source __antigen_zsh_path
+
+      # We lost this file
+      else
+        echo -e '\e[5m\e[1;31mWARNING:\e[0m \e[1;33mantigen.zsh\e[0m not found!'
+      fi
+    fi
+  fi
+  unset __antigen_zsh_path
 fi
 
 if [ ! -z "$__found_antigen" ]; then
@@ -32,4 +52,7 @@ if [ ! -z "$__found_antigen" ]; then
 
   # Tell Antigen that you're done
   antigen apply
+
+  # Unser variable
+  unset __found_antigen
 fi
