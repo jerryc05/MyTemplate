@@ -19,7 +19,7 @@ Use at your **OWN** risk.
 
 ### Handy aliases/vars/cmds/...
 
-- Check out [`.sh-aliases`]() and [`.sh-env-vars`]() in the repo.
+- Check out [`.sh-aliases`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-aliases) and [`.sh-env-vars`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-env.vars) in the repo.
 - Copy anything at your will.
 
 ### Still Bash? No! Try Zsh! (Unix-like)
