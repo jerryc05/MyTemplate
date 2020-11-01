@@ -85,6 +85,11 @@ Use at your **OWN** risk.
 - Installation:
     - Append `antigen bundle command-not-found` to `~/.sh-antigen`.
 
+##### Automatic update: [`autoupdate-antigen.zshplugin`](https://github.com/unixorn/autoupdate-antigen.zshplugin)
+
+- Installation:
+    - Append `antigen bundle unixorn/autoupdate-antigen.zshplugin` to `~/.sh-antigen`.
+
 ##### Directory listing: [`k`](https://github.com/supercrabtree/k)
 
 - Installation:
