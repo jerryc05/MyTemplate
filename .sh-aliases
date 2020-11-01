@@ -1,3 +1,4 @@
+# Color! More color!
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
@@ -8,4 +9,8 @@ alias egrep='egrep --color=auto'
 # Prevent unintended file overwrite
 alias cp="cp -i"
 
+# Show 256 colors
+alias show-256-colors='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done'
+
+# valgrind
 alias vg="valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes"
