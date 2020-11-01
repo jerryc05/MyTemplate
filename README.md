@@ -32,7 +32,7 @@ Use at your **OWN** risk.
     - Linux(`apt`): `apt install zsh`
     - MacOS(`brew`): `brew install zsh`
 4. Set `zsh` as default:
-    - If you are on MacOS, run `sudo echo $(which zsh) >> /etc/shells` first.
+    - If you are on MacOS, run this first: `sudo echo $(which zsh) >> /etc/shells`
     - Run `chsh -s $(which zsh)`
 5. Copy all env variables statements (e.g. `$PATH`) from `~/.bash_profile` (or other profile like `~/.profile`).
 6. Paste them to `~/.zshenv` (create the file if you don’t have it).
