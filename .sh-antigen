@@ -1,0 +1,34 @@
+# Load Antigen
+if [ -f /usr/share/zsh-antigen/antigen.zsh ]; then
+  source /usr/share/zsh-antigen/antigen.zsh
+  __found_antigen=1
+elif [ -f $HOME/antigen.zsh ]; then
+  source $HOME/antigen.zsh
+  __found_antigen=1
+else
+  echo -e '\e[5m\e[1;31mWARNING:\e[0m \e[1;33mantigen.zsh\e[0m not found!'
+fi
+
+if [ ! -z "$__found_antigen" ]; then
+  # Load the oh-my-zsh's library.
+  antigen use oh-my-zsh
+
+  # Bundles
+  antigen bundle zsh-autosuggestions
+  antigen bundle zsh-completions
+  antigen bundle safe-paste
+  antigen bundle z
+  antigen bundle command-not-found
+  antigen bundle k
+  antigen bundle pip
+  antigen bundle zsh-256color
+
+  # Syntax highlighting bundle (MUST BE THE LAST BUNBDLE)
+  antigen bundle zsh-users/zsh-syntax-highlighting
+
+  # Load the theme
+  antigen theme romkatv/powerlevel10k
+
+  # Tell Antigen that you're done
+  antigen apply
+fi

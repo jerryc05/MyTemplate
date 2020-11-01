@@ -1,0 +1,11 @@
+alias ls='ls --color=auto'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# Prevent unintended file overwrite
+alias cp="cp -i"
+
+alias vg="valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes"
