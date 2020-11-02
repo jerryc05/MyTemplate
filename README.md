@@ -28,23 +28,27 @@ Use at your **OWN** risk.
 
 ## First things first
 
-1. Copy *everything* in this `CMakeLists.txt` file between the line:
+*Pro tip*: Clone this repo to your computer first will make your life much easier:
 
-   `===== BEGIN OF CMAKE ARGS TEMPLATE =====`
+    `git clone --depth=1 --single-branch --branch cpp https://github.com/jerryc05/MyTemplate`
+
+1. Copy *everything* from `CMakeLists.txt` file between the line:
+
+   `#===== BEGIN OF CMAKE ARGS TEMPLATE =====`
 
    and the line:
 
-   `===== BEGIN OF TARGET CREATION =====`
+   `#===== BEGIN OF TARGET CREATION =====`
 
-   to your `CMakelists.txt` accordingly.
+   to your `CMakelists.txt` accordingly (inclusively).
+
+    - Make sure all target creation commands (e.g. `add_executable()`) are below the line:
+
+   `#===== BEGIN OF TARGET CREATION =====`
 
 2. Copy *everything* in this `cmake-args` folder (including the folder itself) to your project root accordingly.
 
-3. Make sure all target creation commands (e.g. `add_executable()`) are below the line:
-
-   `===== BEGIN OF TARGET CREATION =====`
-
-4. *Optional:* You might also want to copy (and use) `.gitignore`, `main.cpp` and `Misc.h`.
+3. *Optional:* You might also want to copy (and use) `.gitignore`, `main.cpp` and `Misc.h`.
 
 ## Recommended tools
 
