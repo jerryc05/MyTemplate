@@ -12,7 +12,7 @@ Use at your **OWN** risk.
     - [Ninja](#ninja)
     - [LLVM Clang](#llvm-clang)
     - [Clang-Tidy](#clang-tidy)
-3. [High-level switches](#high-level-switches)
+3. [High-level *"switches"*](#high-level-"switches")
     - [Non-sanitizer flags](#non-sanitizer-flags)
     - [Sanitizer flags](#sanitizer-flags)
         - [The "Big-Three" sanitizers](#the-big-three-sanitizers)
@@ -23,7 +23,7 @@ Use at your **OWN** risk.
             - [Undefined-Behavior sanitizer (`UBSAN`)](#undefined-behavior-sanitizer-ubsan)
 4. [Misc](#misc)
     - [Why I quitted `MSAN`](#why-i-quitted-msan)
-    - [Sanitizer vs Valgrind](#sanitizer-vs-valgrind)
+    - [Sanitizers vs Valgrind](#sanitizers-vs-valgrind)
     - [Common FAQ](#common-faq)
 
 ## First things first
@@ -53,10 +53,10 @@ Use at your **OWN** risk.
 #### Download & Install
 
 - [Windows](https://ccache.dev/download.html)
-- MacOS(brew): `brew install ccache`
-- Linux(apt): `apt install ccache`
+- Linux(`apt`): `apt install ccache`
+- MacOS(`brew`): `brew install ccache`
 
-#### How to enable **Ccache**
+#### How to enable **Ccache**?
 
 - *No action needed if you followed [First things first](#first-things-first).*
 
@@ -64,12 +64,12 @@ Use at your **OWN** risk.
 
 #### Download & Install
 
-- MacOS(brew): `brew install ninja`
-- Linux(apt): `apt install ninja-build`
+- Linux(`apt`): `apt install ninja-build`
+- MacOS(`brew`): `brew install ninja`
 - [Other pre-built packages](https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages)
 - [Zipped binary](https://github.com/ninja-build/ninja/releases)
 
-#### How to enable **Ninja**
+#### How to enable **Ninja** in *CLion*:
 
 - *CLion*:
     - `File` (or `CLion` in MacOS)
@@ -90,16 +90,16 @@ Use at your **OWN** risk.
 
 #### Download & Install
 
-- MacOS(brew): `brew install llvm`
-- Linux(apt): `apt install clang`
+- Linux(`apt`): `apt install clang`
+- MacOS(`brew`): `brew install llvm`
 - [Zipped binary](https://releases.llvm.org/download.html)
 
-#### How to enable **Clang**
+#### How to setup **Clang** in *CLion*?
 
 - *CLion*:
     - Follow [this link](https://www.jetbrains.com/help/clion/how-to-create-toolchain-in-clion.html)
     - *Pro tip*: You might want to set **C/C++ Compiler** to `clang/clang++` respectively to use Clang.
-    - *Pro tip*: Make sure you are using Clang from **LLVM**, not **Apple**.
+    - *Pro tip*: Make sure you are using Clang **from LLVM**, not Apple.
     - *Pro tip*: If you followed [First things first](#first-things-first), CMake will print `USING COMPILER [<compiler_name>]` to stdout.
         - Check that out. Shall be very useful.
 
@@ -107,17 +107,51 @@ Use at your **OWN** risk.
 
 #### Download & Install
 
-- Linux(apt): `apt install clang-tidy`
-
 *Pro tip*: Clang-tidy usually comes with Clang altogether and no additional installation is required.
 
-#### How to enable **Clang-Tidy**
+- How do I know if Clang-Tidy can be used in *CLion*?
+    - Follow [First things first](#first-things-first) to setup your CMake environment.
+    - Follow [How to setup Clang in CLion](#how-to-setup-clang-in-clion) to setup your **LLVM** Clang compiler.
+    - Enable static analyzer by uncommenting this line (remove the preceding `#`):
+        ```
+        #set(__USE_ANALYZER__                    ON)
+        ```
+    - If *CLion* prompt for reloading CMake changes, click `Reload changes` (or `Enable Auto-Reload`).
+    - CMake will print these lines to stdout:
+        - If succeeful:
+            ```
+            -- USING COMPILER [LLVM Clang]
+            --
+            -- 	[STATIC ANALYZER]
+            -- 	[STATIC ANALYZER] - ON
+            ```
+        - If not:
+            ```
+            -- USING COMPILER [LLVM Clang]
+            --
+            -- 	[STATIC ANALYZER]
+            CMake Error at cmake-args/static-analyzer.cmake:* (message):
+                [STATIC ANALYZER] clang-tidy NOT FOUND!
+            ```
+            - You might want to resolve this issue if you want to use this powerful tool.
+    - *[OPTIONAL]* Re-comment out the line that you just modified at your wish, since Clang-Tidy might slow down your build time.
+        - However, it will produce helpful insights when it is enabled.
+
+In case you really need to install it manually:
+
+- Linux(`apt`): `apt install clang-tidy`
+
+#### How to enable **Clang-Tidy**?
 
 - *No action needed if you followed [First things first](#first-things-first).*
 
-<details><summary>Details & explanations (you can safely ignore these)</summary><p>
 
-## High-level switches
+## High-level *"switches"*
+
+- *Pro tip*: How to turn on any of the following *"switches"*?
+    - Open `CMakeLists.txt`
+    - Uncomment that line (remove the preceding `#`) like you did before!
+- *Pro tip*: You can safely ignore those explanations about pros and cons.
 
 ### Non-sanitizer flags
 
@@ -127,18 +161,18 @@ Use at your **OWN** risk.
         - Catch known mistakes at compile time.
         - Warns about bad practices/styles. \[Clang-Tidy only\]
     - Cons:
-        - **SIGNIFICANTLY** slows down compilation time,
-        - Might not work for big projects.
+        - Might **SIGNIFICANTLY** slow down compilation time,
+        - Might not work for *too complicated* projects.
 
 - `__USE_LATEST_CPP_STD__`: Compile with the latest `C++` std available.
     - `Default: ON`.
     - Pros: Compile with the latest std automatically.
-    - Cons: *Refer to incompatibilities between `C++` stds*
+    - Cons: *Refer to incompatibilities between `C++` standards online.*
 
 - `__REL_USE_HACKED_MATH__`: Compile with aggressive/hacky/dirty math optimizations in **RELEASE** mode.
     - `Default: ON`.
     - Pros: Might speed up arithmetic calculation.
-    - Cons: Might break IEEE 754 floating-point implementation std.
+    - Cons: Might break IEEE 754 floating-point implementation standard.
 
 ### Sanitizer flags
 
@@ -146,10 +180,32 @@ Use at your **OWN** risk.
 
 #### The "Big-Three" sanitizers
 
+*Pro tip*: If you turned any of the "Big-THree" on, **DO NOT** (**DO NOT**! **DO NOT**!) run the program with `Valgrind`.
+
 ##### Address sanitizer (`ASAN`)
 
 - `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**.
     - `Default: ON`.
+    - How to enable extra checks of `ASAN` in *CLion*?
+        - Make sure you enabled `ASAN` in `CMakeLists.txt`
+        - CMake will print some lines to stdout similar to:
+            ```
+            -- 	[ADDRESS SANITIZER] - ON [WARNING: DO NOT USE WITH VALGRIND!]
+            -- 	[ADDRESS SANITIZER] - ASAN_OPTIONS=:allow_addr2line=1:...(blablabla...)
+            -- 	                Copy from here! ---^
+            ```
+        - See the "`^`" in last line?
+            - Copy all `options` from where it points to (everything after "`=`") until the end of line.
+                - *Be smart! You know what to copy! Don't make silly mistakes!*
+        - *CLion*:
+            - `File` (or `CLion` in MacOS)
+                - `Settings` (or `Preferences` in MacOS)
+                - `Build, Execution, Deployment`
+                - `Dynamic Analysis Tools`
+                - `Sanitizers`
+                - On the right panel
+                - Paste what you've just copied to `ASAN_OPTIONS` (the one to the right of `AddressSanitizer`)
+                - Click `Apply`
     - Pros:
         - Catch memory errors in runtime without sacrificing much performance.
         - Works with IDE debuggers.
@@ -192,6 +248,25 @@ Use at your **OWN** risk.
 
 - `__DBG_SANITIZE_UB__`: Compile with **Undefined-Behavior Sanitizer**.
     - `Default: ON`.
+    - How to enable extra checks of `UBSAN` in *CLion*?
+        - Did you remember how you enabled extra checks of `ASAN`? They are alike.
+        - Make sure you enabled `UBSAN` in `CMakeLists.txt`
+        - CMake will print some lines to stdout similar to:
+            ```
+            -- 	[UNDEF. BHVR. SANITIZER] - ON
+            -- 	[UNDEF. BHVR. SANITIZER] - UBSAN_OPTIONS=:allow_addr2line=1:...(blablabla...)
+            -- 	                      Copy from here! ---^
+            ```
+        - *You know what to copy! We did this before!*
+        - *CLion*:
+            - `File` (or `CLion` in MacOS)
+                - `Settings` (or `Preferences` in MacOS)
+                - `Build, Execution, Deployment`
+                - `Dynamic Analysis Tools`
+                - `Sanitizers`
+                - On the right panel
+                - Paste what you've just copied to `UBSAN_OPTIONS` (the one to the right of `UndefinedBehaviorSanitizer`)
+                - Click `Apply`
     - todo ..
 
 - todo ...
@@ -219,36 +294,38 @@ For more info, check these:
 - [Using instrumented libraries](https://github.com/google/sanitizers/wiki/MemorySanitizer#using-instrumented-libraries).
 
 
-### Sanitizer vs Valgrind
+### Sanitizers vs `Valgrind`
 
 Reference: [Memory/Address Sanitizer vs Valgrind](https://stackoverflow.com/questions/47251533/memory-address-sanitizer-vs-valgrind)
 
-#### Sanitizer
+#### Sanitizers
 
 - Much faster.
 - Much smaller memory overhead.
 - Can detect more errors (e.g. non-heap overflows in `ASAN`), but cannot run all sanitizers at the same time.
 - Works with IDE debuggers.
 
-#### Valgrind
+#### `Valgrind`
 
 - Detects most of what `ASAN` & `MSAN` & `TSAN` can do at the same time.
 - Runs the programi inside a VM (super slow but super accurate).
-- *Currently* might still need Valgrind to do what `MSAN` can do, since `MSAN` is unsupported.
-
-</p></details>
+- *Currently* might still need `Valgrind` to do what `MSAN` can do, since `MSAN` is unsupported.
 
 
 ### Common FAQ
 
-#### 1. Misuse with Valgrind:
+#### 1. Misuse with `Valgrind`:
 
-Q: When I run Valgrind, I am stuck at something like ` Warning: set address range perms: ...`.
+Q: When I run the compiled program with `Valgrind`, I am stuck at something like:
+```
+Warning: set address range perms: ...
+```
 
-A: Kill Valgrind (or memcheck) immediately , or it will (*likely*) use up **all** system resources and run **forever**.
+A: Kill `Valgrind` (or `memcheck`) immediately , or it will (*likely*) use up **all** system resources and run **forever**.
 - A useful command for `*ix` systems is: `ps | grep -F valgrind | grep -v grep | awk '{print "kill -9 " $1}'`. You need to pipe its output to `sh`.
-- \[*WARNING AGAIN* !!!\] Any sanitizer that touches memory is incompatible with Valgrind.
-    - e.g. `ASAN`, `MSAN`, `LSAN`, (*haven't tested`TSAN`*)
+- \[*WARNING AGAIN* !!!\] Any sanitizer that hacks program's memory is incompatible with `Valgrind`.
+    - e.g. `ASAN`, `MSAN`, `LSAN`, (*haven't tested`TSAN`*).
+    - `UBSAN` is fine.
 
 #### 2. Leak check option in `ASAN`:
 

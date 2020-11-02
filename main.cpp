@@ -1,6 +1,7 @@
 #include <iostream>
 
 auto main(int argc, char *argv[]) -> int {
+  // init starter
   {
     // Do not sync with C-style stdio
 #ifndef DEBUG__
