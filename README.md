@@ -214,6 +214,8 @@ In case you really need to install it manually:
         - Not compatible with either `Memory` or `Thread` sanitizer.
 
 
+<details><summary>Memory sanitizer is deliberately collapsed (you can safely ignore this)</summary><p>
+
 ##### ~~Memory sanitizer (`MSAN`)~~
 
 - ~~`__DBG_SANITIZE_MEMORY__`: Compile with **Memory Sanitizer**.~~
@@ -229,6 +231,7 @@ In case you really need to install it manually:
             - Only supported on `Linux` and `*BSD`.
             - Produces false positives if **ANY** part of the code isn't built with `MSAN` (e.g. `C++ Std Lib`).
 
+</p></details>
 
 ##### Thread sanitizer (`TSAN`)
 
