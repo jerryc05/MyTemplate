@@ -56,7 +56,7 @@ Use at your **OWN** risk.
 - Linux(`apt`): `apt install ccache`
 - MacOS(`brew`): `brew install ccache`
 
-#### How to enable **Ccache**?
+#### How to enable **Ccache**
 
 - *No action needed if you followed [First things first](#first-things-first).*
 
@@ -69,7 +69,7 @@ Use at your **OWN** risk.
 - [Other pre-built packages](https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages)
 - [Zipped binary](https://github.com/ninja-build/ninja/releases)
 
-#### How to enable **Ninja** in *CLion*:
+#### How to enable **Ninja** in *CLion*
 
 - *CLion*:
     - `File` (or `CLion` in MacOS)
@@ -94,7 +94,7 @@ Use at your **OWN** risk.
 - MacOS(`brew`): `brew install llvm`
 - [Zipped binary](https://releases.llvm.org/download.html)
 
-#### How to setup **Clang** in *CLion*?
+#### How to setup **Clang** in *CLion*
 
 - *CLion*:
     - Follow [this link](https://www.jetbrains.com/help/clion/how-to-create-toolchain-in-clion.html)
@@ -113,7 +113,7 @@ Use at your **OWN** risk.
     - Follow [First things first](#first-things-first) to setup your CMake environment.
     - Follow [How to setup Clang in CLion](#how-to-setup-clang-in-clion) to setup your **LLVM** Clang compiler.
     - Enable static analyzer by uncommenting this line (remove the preceding `#`):
-        ```
+        ```text
         #set(__USE_ANALYZER__                    ON)
         ```
     - If *CLion* prompt for reloading CMake changes, click `Reload changes` (or `Enable Auto-Reload`).
@@ -134,14 +134,14 @@ Use at your **OWN** risk.
                 [STATIC ANALYZER] clang-tidy NOT FOUND!
             ```
             - You might want to resolve this issue if you want to use this powerful tool.
-    - *[OPTIONAL]* Re-comment out the line that you just modified at your wish, since Clang-Tidy might slow down your build time.
+    - *\[OPTIONAL\]* Re-comment out the line that you just modified at your wish, since Clang-Tidy might slow down your build time.
         - However, it will produce helpful insights when it is enabled.
 
 In case you really need to install it manually:
 
 - Linux(`apt`): `apt install clang-tidy`
 
-#### How to enable **Clang-Tidy**?
+#### How to enable **Clang-Tidy**
 
 - *No action needed if you followed [First things first](#first-things-first).*
 
@@ -314,7 +314,7 @@ Reference: [Memory/Address Sanitizer vs Valgrind](https://stackoverflow.com/ques
 
 ### Common FAQ
 
-#### 1. Misuse with `Valgrind`:
+#### 1. Misuse with `Valgrind`
 
 Q: When I run the compiled program with `Valgrind`, I am stuck at something like:
 ```
@@ -327,7 +327,7 @@ A: Kill `Valgrind` (or `memcheck`) immediately , or it will (*likely*) use up **
     - e.g. `ASAN`, `MSAN`, `LSAN`, (*haven't tested`TSAN`*).
     - `UBSAN` is fine.
 
-#### 2. Leak check option in `ASAN`:
+#### 2. Leak check option in `ASAN`
 
 Q: `ASAN`/`LSAN` does not catch memory leak on MacOS.
 
