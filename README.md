@@ -85,7 +85,7 @@ Use at your **OWN** risk.
         - Append `-GNinja` to `CMake options` of every profile (notice spaces between args)
     - `File`
       - `New Project Settings`
-      - `Settings for New Projects...` - *(Repeat same actions above)*
+      - `Settings(Preferences) for New Projects...` - *(Repeat same actions above)*
 
 ### [LLVM Clang](https://llvm.org/)
 
@@ -116,7 +116,7 @@ Use at your **OWN** risk.
 - How do I know if Clang-Tidy can be used in *CLion*?
     - Follow [First things first](#first-things-first) to setup your CMake environment.
     - Follow [How to setup Clang in CLion](#how-to-setup-clang-in-clion) to setup your **LLVM** Clang compiler.
-    - Enable static analyzer by uncommenting this line (remove the preceding `#`):
+    - Enable static analyzer by uncommenting this line (remove the preceding `#`) in `CMakeLists.txt`:
         ```text
         #set(__USE_ANALYZER__                    ON)
         ```
