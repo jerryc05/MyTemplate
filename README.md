@@ -28,9 +28,9 @@ Use at your **OWN** risk.
 
 ## First things first
 
-*Pro tip*: Clone this repo to your computer first will make your life much easier:
-
-    `git clone --depth=1 --single-branch --branch cpp https://github.com/jerryc05/MyTemplate`
+- *Pro tip*: Clone this repo to your computer first will make your life much easier:
+    - If you have already cloned before, update it using `git pull`
+    - To clone, run: `git clone --depth=1 --single-branch --branch cpp https://github.com/jerryc05/MyTemplate`
 
 1. Copy *everything* from `CMakeLists.txt` file between the line:
 
