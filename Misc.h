@@ -15,7 +15,7 @@ using I16 = std::int16_t;
 using U32 = std::uint32_t;
 using Usize = std::size_t;
 
-template<typename T, size_t S> using Arr = std::array<T, S>;
+template<typename T, Usize S> using Arr = std::array<T, S>;
 template<typename T> using Deque = std::deque<T>;
 template<typename K, typename V> using HashMap = std::unordered_map<K, V>;
 using InputStream = std::istream;
