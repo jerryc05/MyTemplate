@@ -1,3 +1,6 @@
+# Copyright (c) 2019-2020 Ziyan "Jerry" Chen (@jerryc05).
+#                         All rights reserved.
+
 #[[ "-fsanitize=thread" not compatible with neither
             "-fsanitize=address" nor "-fsanitize=pointer-*" ]]
 message(CHECK_START "\t[THREAD SANITIZER]")

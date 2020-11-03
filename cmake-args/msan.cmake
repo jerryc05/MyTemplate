@@ -1,3 +1,6 @@
+# Copyright (c) 2019-2020 Ziyan "Jerry" Chen (@jerryc05).
+#                         All rights reserved.
+
 # todo not finished
 message(CHECK_START "\t[MEMORY SANITIZER]")
 if (__DBG_SANITIZE_MEMORY__)

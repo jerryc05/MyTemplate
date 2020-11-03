@@ -1,3 +1,6 @@
+# Copyright (c) 2019-2020 Ziyan "Jerry" Chen (@jerryc05).
+#                         All rights reserved.
+
 message(CHECK_START "\t[STATIC ANALYZER]")
 if (__USE_ANALYZER__)
 

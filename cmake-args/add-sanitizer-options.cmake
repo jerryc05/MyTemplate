@@ -1,3 +1,6 @@
+# Copyright (c) 2019-2020 Ziyan "Jerry" Chen (@jerryc05).
+#                         All rights reserved.
+
 if (__INCLUDE_SANITIZER_OPTIONS__ AND
         EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/sanitizer-options.cpp)
 

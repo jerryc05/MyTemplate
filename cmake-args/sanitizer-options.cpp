@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019-2020 Ziyan "Jerry" Chen (@jerryc05).
+ *                         All rights reserved.
+ */
+
 extern "C" const char *__asan_default_options() {
   return ":allow_addr2line=1"
          ":check_initialization_order=1"

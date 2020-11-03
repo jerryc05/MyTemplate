@@ -1,3 +1,6 @@
+# Copyright (c) 2019-2020 Ziyan "Jerry" Chen (@jerryc05).
+#                         All rights reserved.
+
 cmake_minimum_required(VERSION 3.7)
 project(MyTemplate)
 message("")

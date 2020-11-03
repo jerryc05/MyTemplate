@@ -1,3 +1,6 @@
+# Copyright (c) 2019-2020 Ziyan "Jerry" Chen (@jerryc05).
+#                         All rights reserved.
+
 message(CHECK_START "\t[USE LATEST C++ STD]")
 if (__USE_LATEST_CPP_STD__)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
