@@ -44,7 +44,7 @@ if (__USE_ANALYZER__)
         endif ()
 
     else ()
-        message(SEND_ERROR "\t[STATIC ANALYZER] SWITCH UNIMPLEMENTED FOR THIS COMPILER CURRENTLY")
+        message(SEND_ERROR "\t[STATIC ANALYZER] SWITCH UNIMPLEMENTED FOR THIS COMPILER CURRENTLY!")
     endif ()
 
     message(CHECK_PASS "ON")

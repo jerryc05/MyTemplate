@@ -34,17 +34,17 @@ Use at your **OWN** risk.
 
 1. Copy *everything* from `CMakeLists.txt` file between the line:
 
-   `#===== BEGIN OF CMAKE ARGS TEMPLATE =====`
+   `# ===== ALL TARGET CREATIONS GO ABOVE THIS LINE =====`
 
    and the line:
 
-   `#===== BEGIN OF TARGET CREATION =====`
+   `# ===== END OF CMAKE ARGS TEMPLATE =====`
 
    to your `CMakelists.txt` accordingly (inclusively).
 
-    - Make sure all target creation commands (e.g. `add_executable()`) are below the line:
+    - Make sure all target creation commands (e.g. `add_executable()`) are **BEFORE** the line:
 
-   `#===== BEGIN OF TARGET CREATION =====`
+   `# ===== ALL TARGET CREATIONS GO ABOVE THIS LINE =====`
 
 2. Copy *everything* in this `cmake-args` folder (including the folder itself) to your project root accordingly.
 
@@ -190,26 +190,6 @@ In case you really need to install it manually:
 
 - `__DBG_SANITIZE_ADDR__`: Compile with **Address Sanitizer**.
     - `Default: ON`.
-    - How to enable extra checks of `ASAN` in *CLion*?
-        - Make sure you enabled `ASAN` in `CMakeLists.txt`
-        - CMake will print some lines to stdout similar to:
-            ```
-            -- 	[ADDRESS SANITIZER] - ON [WARNING: DO NOT USE WITH VALGRIND!]
-            -- 	[ADDRESS SANITIZER] - ASAN_OPTIONS=:allow_addr2line=1:...(blablabla...)
-            -- 	                Copy from here! ---^
-            ```
-        - See the "`^`" in last line?
-            - Copy all `options` from where it points to (everything after "`=`") until the end of line.
-                - *Be smart! You know what to copy! Don't make silly mistakes!*
-        - *CLion*:
-            - `File` (or `CLion` in MacOS)
-                - `Settings` (or `Preferences` in MacOS)
-                - `Build, Execution, Deployment`
-                - `Dynamic Analysis Tools`
-                - `Sanitizers`
-                - On the right panel
-                - Paste what you've just copied to `ASAN_OPTIONS` (the one to the right of `AddressSanitizer`)
-                - Click `Apply`
     - Pros:
         - Catch memory errors in runtime without sacrificing much performance.
         - Works with IDE debuggers.
@@ -255,25 +235,6 @@ In case you really need to install it manually:
 
 - `__DBG_SANITIZE_UB__`: Compile with **Undefined-Behavior Sanitizer**.
     - `Default: ON`.
-    - How to enable extra checks of `UBSAN` in *CLion*?
-        - Did you remember how you enabled extra checks of `ASAN`? They are alike.
-        - Make sure you enabled `UBSAN` in `CMakeLists.txt`
-        - CMake will print some lines to stdout similar to:
-            ```
-            -- 	[UNDEF. BHVR. SANITIZER] - ON
-            -- 	[UNDEF. BHVR. SANITIZER] - UBSAN_OPTIONS=:allow_addr2line=1:...(blablabla...)
-            -- 	                      Copy from here! ---^
-            ```
-        - *You know what to copy! We did this before!*
-        - *CLion*:
-            - `File` (or `CLion` in MacOS)
-                - `Settings` (or `Preferences` in MacOS)
-                - `Build, Execution, Deployment`
-                - `Dynamic Analysis Tools`
-                - `Sanitizers`
-                - On the right panel
-                - Paste what you've just copied to `UBSAN_OPTIONS` (the one to the right of `UndefinedBehaviorSanitizer`)
-                - Click `Apply`
     - todo ..
 
 - todo ...
@@ -338,6 +299,8 @@ A: Kill `Valgrind` (or `memcheck`) immediately , or it will (*likely*) use up **
 
 Q: `ASAN`/`LSAN` does not catch memory leak on MacOS.
 
-A: You have 2 options:
-- \[RECOMMENDED\] Follow `ASAN` runtime flags settings above.
-- \[NOT RECOMMENDED\] Disable `ASAN` and run with LSAN instead (other `ASAN` checks will also be disabled).
+~~A: You have 2 options:~~
+- ~~\[RECOMMENDED\] Follow `ASAN` runtime flags settings above.~~
+- ~~\[NOT RECOMMENDED\] Disable `ASAN` and run with LSAN instead (other `ASAN` checks will also be disabled).~~
+
+- A: This shall not happen now.

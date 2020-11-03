@@ -288,6 +288,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 
     ]]
 
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/add-sanitizer-options.cmake)
+
     message(STATUS "CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
     message(STATUS "CXX_FLAGS_DEBUG: [${CMAKE_CXX_FLAGS_DEBUG}]")
     message(STATUS "CXX_FLAGS_RELEASE: [${CMAKE_CXX_FLAGS_RELEASE}]")
@@ -665,6 +667,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 
 
     ]]
+
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/add-sanitizer-options.cmake)
 
     message(STATUS "CXX_FLAGS: [${CMAKE_CXX_FLAGS}]")
     message(STATUS "CXX_FLAGS_DEBUG: [${CMAKE_CXX_FLAGS_DEBUG}]")

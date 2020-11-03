@@ -15,7 +15,11 @@ auto main(int argc, char *argv[]) -> int {
     std::cout << std::boolalpha;
   }
 
+  // TODO Delete the following lines
   std::cout << "Hello, World!" << std::endl;
-  std::cout << argc << ',' << argv[0] << std::endl;  // NOLINT
+  std::cout << argc << ',' << argv[0] << std::endl;
+
+  new int{};
+
   return 0;
 }
