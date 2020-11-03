@@ -3,8 +3,33 @@
 
 cmake_minimum_required(VERSION 3.7)
 
+if (NOT __DEBUG_DEF_NAME__)
+    set(__DEBUG_DEF_NAME__ _DEBUG_BUILD)
+endif ()
+message(STATUS "\t[DEBUG DEFINITION] - [${__DEBUG_DEF_NAME__}]")
+message(STATUS "")
+
+#[[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]
+
 # Using ccache if possible
-message(CHECK_START "Finding [CCACHE] ...")
+message(CHECK_START "[CCACHE] ...")
 
 unset(__CCACHE__ CACHE)
 find_program(__CCACHE__ ccache)
@@ -17,7 +42,7 @@ if (__CCACHE__)
             OUTPUT_VARIABLE __CCACHE_INFO__)
     string(REGEX MATCH "[^\r\n]+"
             __CCACHE_INFO__ ${__CCACHE_INFO__})
-    message(CHECK_PASS "OK! ${__CCACHE_INFO__}")
+    message(CHECK_PASS "OK: ${__CCACHE_INFO__}")
 
 else ()
     message(CHECK_FAIL "NOT FOUND!")
@@ -151,7 +176,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
         message(STATUS "CMAKE IN DEBUG MODE")
         message(STATUS "")
 
-        add_compile_definitions(DEBUG__)
+        add_compile_definitions(${__DEBUG_DEF_NAME__})
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -O0 -g3 \
 \
@@ -482,7 +507,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
         message(STATUS "CMAKE IN DEBUG MODE")
         message(STATUS "")
 
-        add_compile_definitions(DEBUG__)
+        add_compile_definitions(${__DEBUG_DEF_NAME__})
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} \
 -O0 -g3 \
 \

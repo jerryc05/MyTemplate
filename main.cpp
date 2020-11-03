@@ -1,10 +1,11 @@
 #include <iostream>
+#include "Misc.h"
 
 auto main(int argc, char *argv[]) -> int {
   // init starter
   {
     // Do not sync with C-style stdio
-#ifndef DEBUG__
+#ifndef _DEBUG_BUILD
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 #endif

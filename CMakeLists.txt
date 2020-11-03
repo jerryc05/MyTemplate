@@ -19,6 +19,8 @@ set(__DBG_SANITIZE_ADDR__               ON)
 set(__DBG_SANITIZE_UB__                 ON)
 
 
+#set(__DEBUG_DEF_NAME__                  _DEBUG_BUILD)
+
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/!main.cmake)
 

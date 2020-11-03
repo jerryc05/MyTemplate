@@ -10,14 +10,20 @@
 #include <tuple>
 #include <vector>
 
-#define ccast const_cast
-#define rcast reinerpret_cast
-#define scast static_cast
+#define _ccast const_cast
+#define _rcast reinerpret_cast
+#define _scast static_cast
 
 using F32 = float;
 using I16 = std::int16_t;
 using U32 = std::uint32_t;
 using Usize = std::size_t;
+
+#if (__GNUC__ >= 6) || (__clang_major__ >= 6)
+#define _nodiscard [[nodiscard]]
+#else
+#define _nodiscard
+#endif
 
 template<typename T, Usize S>
 using Arr = std::array<T, S>;
