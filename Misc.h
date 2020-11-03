@@ -20,9 +20,11 @@ using U32 = std::uint32_t;
 using Usize = std::size_t;
 
 #if (__GNUC__ >= 6) || (__clang_major__ >= 6)
-#define _nodiscard [[nodiscard]]
+#define _nodiscard    [[nodiscard]]
+#define _maybe_unused [[maybe_unused]]
 #else
 #define _nodiscard
+#define _maybe_unused
 #endif
 
 template<typename T, Usize S>
