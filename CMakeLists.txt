@@ -9,7 +9,6 @@ message("")
 add_executable(${PROJECT_NAME} main.cpp)
 
 
-# ===== ALL TARGET CREATIONS GO ABOVE THIS LINE =====
 # ===== BEGIN OF CMAKE ARGS TEMPLATE =====
 
 #set(__USE_ANALYZER__                    ON)

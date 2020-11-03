@@ -34,17 +34,13 @@ Use at your **OWN** risk.
 
 1. Copy *everything* from `CMakeLists.txt` file between the line:
 
-   `# ===== ALL TARGET CREATIONS GO ABOVE THIS LINE =====`
+   `# ===== BEGIN OF CMAKE ARGS TEMPLATE =====`
 
    and the line:
 
    `# ===== END OF CMAKE ARGS TEMPLATE =====`
 
-   to your `CMakelists.txt` accordingly (inclusively).
-
-    - Make sure all target creation commands (e.g. `add_executable()`) are **BEFORE** the line:
-
-   `# ===== ALL TARGET CREATIONS GO ABOVE THIS LINE =====`
+   to your `CMakelists.txt`.
 
 2. Copy *everything* in this `cmake-args` folder (including the folder itself) to your project root accordingly.
 
