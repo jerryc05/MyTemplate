@@ -15,7 +15,10 @@ alias show-256-colors='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::
 # valgrind
 alias vg="valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes"
 
-# icdiff with exit code
-[ ! -z "$(which icdiff)" ] && function xcdiff {
-  out__=$(icdiff $1 $2) && echo $out__ && [ -z $out__ ]
+# git-delta w/ exit code
+# install git-delta via one of these:
+#   brew install git-delta
+#   cargo install --git https://github.com/dandavison/delta.git
+[ ! -z "$(which delta)" ] && function xdelta {
+  out__=$(delta -ns $1 $2) && echo $out__ && [ -z $out__ ]
 }
