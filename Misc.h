@@ -39,6 +39,7 @@ using Usize = std::size_t;
 #define _restrict
 #endif
 
+
 template<typename T, Usize S>
 using Arr = std::array<T, S>;
 template<typename T>
@@ -53,9 +54,9 @@ template<typename... Ts>
 using Tuple = std::tuple<Ts...>;
 template<typename T>
 using Vec = std::vector<T>;
-
 template<typename T, typename Cmp=std::less<T>>
 using Pq = std::priority_queue<T, Vec<T>, Cmp>;
+
 
 auto inline skip_current_line(InputStream &is,
                               InputStream::int_type delim = '\n') -> void {
