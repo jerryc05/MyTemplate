@@ -33,6 +33,12 @@ using Usize = std::size_t;
 #define _maybe_unused
 #endif
 
+#if __GNUC__ || __clang_major__ || _MSC_VER
+#define _restrict __restrict
+#else
+#define _restrict
+#endif
+
 template<typename T, Usize S>
 using Arr = std::array<T, S>;
 template<typename T>
