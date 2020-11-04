@@ -6,9 +6,6 @@ project(MyTemplate)
 message("")
 
 
-add_executable(${PROJECT_NAME} main.cpp)
-
-
 # ===== BEGIN OF CMAKE ARGS TEMPLATE =====
 
 #set(__USE_ANALYZER__                    ON)
@@ -35,3 +32,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/!main.cmake)
 #set(CMAKE_EXECUTABLE_SUFFIX ".exe")
 
 # ===== END OF CMAKE ARGS TEMPLATE =====
+# ===== ADD YOUR TARGETS BELOW THIS LINE =====
+
+
+
+add_executable(${PROJECT_NAME} main.cpp)

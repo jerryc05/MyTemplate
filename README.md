@@ -32,19 +32,25 @@ Use at your **OWN** risk.
     - If you have already cloned before, update it using `git pull --depth=1`
     - To clone, run: `git clone --depth=1 --single-branch --branch cpp https://github.com/jerryc05/MyTemplate`
 
-1. Copy *everything* from `CMakeLists.txt` file between the line:
+0. Copy *everything* in this `cmake-args` folder (including the folder itself) to your project root accordingly.
+
+0. Copy *everything* from `CMakeLists.txt` file between the line:
 
    `# ===== BEGIN OF CMAKE ARGS TEMPLATE =====`
 
    and the line:
 
-   `# ===== END OF CMAKE ARGS TEMPLATE =====`
+   `# ===== ADD YOUR TARGETS BELOW THIS LINE =====`
 
-   to your `CMakelists.txt`.
+   to your `CMakeLists.txt`.
 
-2. Copy *everything* in this `cmake-args` folder (including the folder itself) to your project root accordingly.
+0. As suggested by the comment, make sure all `add_executable()` calls are placed below this line:
 
-3. *Optional:* You might also want to copy (and use) `.gitignore`, `main.cpp` and `Misc.h`.
+   `# ===== ADD YOUR TARGETS BELOW THIS LINE =====`
+
+    or your `CMakeLists.txt` will not work properly.
+
+0. *Optional:* You might also want to copy (and use) `.gitignore`, `main.cpp` and `Misc.h`.
 
 ## Recommended tools
 

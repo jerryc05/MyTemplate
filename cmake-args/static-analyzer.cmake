@@ -29,6 +29,9 @@ if (__USE_ANALYZER__)
         endif ()
 
         if (__CLANG_TIDY__)
+            # must be executed before add_executable()
+            include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/check-targets.cmake)
+
             set(__CLANG_TIDY_ARGS__
                     --allow-enabling-analyzer-alpha-checkers
                     --checks=*,-android-*,-altera-*,-clang-analyzer-alpha.fuchsia.*,-clang-analyzer-alpha.llvm.*,-clang-analyzer-alpha.nondeterminism.PointerIteration,-clang-analyzer-alpha.webkit.*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-init-variables,-darwin-*,-fuchsia-*,-google-runtime-references,-llvm-*,-llvmlibc-*,-objc-*,-zircon-*
@@ -40,6 +43,8 @@ if (__USE_ANALYZER__)
                     --extra-arg=-Xclang
                     --extra-arg=aggressive-binary-operation-simplification=true,c++-shared_ptr-inlining=true,unroll-loops=true,widen-loops=true
                     )
+
+            # only effective before add_executable()
             set(CMAKE_CXX_CLANG_TIDY ${__CLANG_TIDY__} ${__CLANG_TIDY_ARGS__})
 
         else ()
