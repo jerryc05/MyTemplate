@@ -98,6 +98,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -Wduplicated-cond \
 -Weffc++ \
 -Werror=return-type \
+-Werror=unreachable-code-break \
 -Wextra-semi \
 -Wfloat-equal \
 -Wformat=2 \
@@ -375,6 +376,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -Wdynamic-exception-spec \
 -Weffc++ \
 -Wembedded-directive \
+-Werror=return-type \
+-Werror=unreachable-code-break \
 -Wexit-time-destructors \
 -Wexpansion-to-defined \
 -Wexplicit-ownership-type \
