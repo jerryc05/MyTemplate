@@ -3,7 +3,7 @@
  *                         All rights reserved.
  */
 
-extern "C" const char *__asan_default_options() {
+extern "C" const char *__asan_default_options() {  // NOLINT
   return ":allow_addr2line=1"
          ":check_initialization_order=1"
          ":check_printf=1"
@@ -39,7 +39,7 @@ extern "C" const char *__asan_default_options() {
   // [DEL] "verbosity=1" prints too much text
 }
 
-extern "C" const char *__ubsan_default_options() {
+extern "C" const char *__ubsan_default_options() {  // NOLINT
   return ":allow_addr2line=1"
          ":decorate_proc_maps=1"
          ":fast_unwind_on_check=1"
