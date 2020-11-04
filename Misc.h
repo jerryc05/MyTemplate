@@ -13,8 +13,11 @@
 #include <iostream>
 #include <map>
 #include <memory>
-#include <optional>
-#include <experimental/optional>
+#if __cplusplus >= 201703
+/**/#include <optional>
+#else
+/**/#include <experimental/optional>
+#endif
 #include <queue>
 #include <tuple>
 #include <unordered_map>
