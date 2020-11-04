@@ -26,6 +26,7 @@
 #include <vector>
 
 #define _ccast    const_cast
+#define _dcast    dynamic_cast
 #define _rcast    reinterpret_cast
 #define _scast    static_cast
 #define _sassert  static_assert
