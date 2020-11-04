@@ -22,14 +22,10 @@
 #include <variant>
 #include <vector>
 
-#define _ccast const_cast
-#define _rcast reinterpret_cast
-#define _scast static_cast
-
-using F32 = float;
-using I16 = std::int16_t;
-using U32 = std::uint32_t;
-using Usize = std::size_t;
+#define _ccast    const_cast
+#define _rcast    reinterpret_cast
+#define _scast    static_cast
+#define _sassert  static_assert
 
 #if (__GNUC__ >= 6) || (__clang_major__ >= 6)
 /**/#define _maybe_unused [[maybe_unused]]
@@ -54,6 +50,18 @@ using Usize = std::size_t;
 /**/#define _restrict
 /**/#define _inline_always inline
 #endif
+
+
+using F32 = float;
+using I8 = std::int8_t;
+using I16 = std::int16_t;
+using I32 = std::int32_t;
+using I64 = std::int64_t;
+using U8 = std::uint8_t;
+using U16 = std::uint16_t;
+using U32 = std::uint32_t;
+using U64 = std::uint64_t;
+using Usize = std::size_t;
 
 
 template<typename T, Usize S>
