@@ -32,21 +32,27 @@ using U32 = std::uint32_t;
 using Usize = std::size_t;
 
 #if (__GNUC__ >= 6) || (__clang_major__ >= 6)
-#define _maybe_unused [[maybe_unused]]
-#define _nodiscard    [[nodiscard]]
-#define _noexcept     noexcept
-#define _noreturn     [[noreturn]]
+/**/#define _maybe_unused [[maybe_unused]]
+/**/#define _nodiscard    [[nodiscard]]
+/**/#define _noexcept     noexcept
+/**/#define _noreturn     [[noreturn]]
 #else
-#define _maybe_unused
-#define _nodiscard
-#define _noexcept
-#define _noreturn
+/**/#define _maybe_unused
+/**/#define _nodiscard
+/**/#define _noexcept
+/**/#define _noreturn
 #endif
 
 #if __GNUC__ || __clang_major__ || _MSC_VER
-#define _restrict __restrict
+/**/#define _restrict __restrict
+/**/#if __GNUC__ || __clang_major__
+/**//**/#define _inline_always __attribute__((always_inline))
+/**/#else
+/**//**/#define _inline_always __forceinline
+/**/#endif
 #else
-#define _restrict
+/**/#define _restrict
+/**/#define _inline_always inline
 #endif
 
 
@@ -62,7 +68,6 @@ template<
         typename Alloc = std::allocator<std::pair<const Key, Val> >
 >
 using HashMap = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
-using InputStream = std::istream;
 template<typename T>
 using Optional = std::optional<T>;
 template<typename T1, typename T2>
@@ -88,8 +93,9 @@ using Variant = std::variant<Ts...>;
 template<typename T, typename Alloc = std::allocator<T>>
 using Vec = std::vector<T, Alloc>;
 
-
-auto inline skip_current_line(InputStream &is,
-                              InputStream::int_type delim = '\n') {
+template<typename Char>
+_inline_always auto skip_current_line(
+        std::basic_istream<Char> &is,
+        typename std::basic_istream<Char>::int_type delim = '\n') {
   is.ignore(std::numeric_limits<std::streamsize>::max(), delim);
 }
