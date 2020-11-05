@@ -1,56 +1,88 @@
+env:
+  asset_path: './target/release/my-template'
+  asset_name: 'my-template'
+  asset_content_type: 'application/octet-stream'
+
 name: Rust Release
 
 on:
-  release:
-    types: created
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  build-ubuntu:
-    name: Build on Ubuntu
+  release-build-ubuntu:
+    name: Release Build on Ubuntu
     runs-on: ubuntu-latest
 
     steps:
 
       - name: Checkout
         uses: actions/checkout@v2
-  
+
       - name: Switch Rust to Nightly
         run: rustup default nightly
-  
+
       - name: Check Rust Version
         run: rustup show
-  
+
       - name: Build
         run: cargo br -v
-  
-      - name: Run tests
-        run: cargo test -v
-  
-      - name: Upload to Artifact
-        uses: actions/upload-artifact@latest
-        with:
-          name: my-template-linux
-          path: ./target/release/my-template
 
-  build-macos:
-    name: Build on Mac OS
+      - name: Run Tests
+        run: cargo test -v
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: true
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ asset_path }}
+          asset_name: ${{ asset_name }}
+          asset_content_type: ${{ asset_content_type }}
+
+  release-build-macos:
+    name: Release Build on Mac OS
     runs-on: macos-late
 
     steps:
 
       - uses: actions/checkout@v2
-  
+
       - name: Switch Rust to Nightly
         run: rustup default nightly
-  
+
       - name: Check Rust Version
         run: rustup show
-  
+
       - name: Build
         run: cargo br -v
 
-      - name: Upload to Artifact
-        uses: actions/upload-artifact@latest
+      - name: Run Tests
+        run: cargo test -v
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         with:
-          name: my-template-mac
-          path: ./target/release/my-template
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: true
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ asset_path }}
+          asset_name: ${{ asset_name }}
+          asset_content_type: ${{ asset_content_type }}
