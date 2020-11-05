@@ -6,7 +6,7 @@
 #include <iostream>
 #include "Misc.h"
 
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
   // init starter
   {
     // Do not sync with C-style stdio
