@@ -97,6 +97,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -Wduplicated-branches \
 -Wduplicated-cond \
 -Weffc++ \
+-Werror=pessimizing-move \
 -Werror=return-type \
 -Werror=unreachable-code-break \
 -Wextra-semi \
@@ -376,6 +377,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -Wdynamic-exception-spec \
 -Weffc++ \
 -Wembedded-directive \
+-Werror=pessimizing-move \
 -Werror=return-type \
 -Werror=unreachable-code-break \
 -Wexit-time-destructors \
