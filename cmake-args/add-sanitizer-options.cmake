@@ -5,7 +5,7 @@ if (__INCLUDE_SANITIZER_OPTIONS__)
 
     if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/sanitizer-options.cpp)
 
-        set(__SANITIZER_OPT_LIB_NAME__ san_opts)
+        set(__SANITIZER_OPT_LIB_NAME__ __sanopts_ignore_this__)
 
         # must be executed before add_executable()
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/check-targets.cmake)
