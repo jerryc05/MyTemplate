@@ -9,9 +9,16 @@ rr = "run --release"
 
 [build]
 rustflags = [
-    "-Clink-arg=-s",
+    "-Clink-args='-s'",
+    "-Cllvm-args=''",
     "-Ctarget-cpu=native",
 ]
+    # For debug
+    #"-Ccontrol-flow-guard=1"
+    #"-Cinline-threshold=1000"
+    #"-Zsanitizer=?"
+    #"-Zsanitizer-memory-track-origins=1"
+    #"-Zsaturating-float-casts=1"
 
 
 [profile.release]
