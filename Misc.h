@@ -46,13 +46,15 @@
 #if __GNUC__ || __clang_major__ || _MSC_VER
 /**/#define _restrict __restrict
 /**/#if __GNUC__ || __clang_major__
-/**//**/#define _inline_always __attribute__((always_inline))
+/**//**/#define _inline_always  __attribute__((always_inline))
+/**//**/#define _inline_never   __attribute__((noinline))
 /**/#else
-/**//**/#define _inline_always __forceinline
+/**//**/#define _inline_always  __declspec(noinline)
 /**/#endif
 #else
 /**/#define _restrict
-/**/#define _inline_always inline
+/**/#define _inline_always inline_restrict
+/**/#define _inline_never
 #endif
 
 
