@@ -31,6 +31,10 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/!main.cmake)
 # Compatibility with Windows systems
 #set(CMAKE_EXECUTABLE_SUFFIX ".exe")
 
+# Google Benchmark
+#find_package(benchmark REQUIRED)
+#link_libraries(benchmark::benchmark)
+
 # ===== END OF CMAKE ARGS TEMPLATE =====
 # ===== ADD YOUR TARGETS BELOW THIS LINE =====
 
