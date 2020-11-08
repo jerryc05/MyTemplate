@@ -631,6 +631,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -mllvm --polly-vectorizer=polly \
 ")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
+-Wno-unused-command-line-argument \
 -s \
 ")
 
