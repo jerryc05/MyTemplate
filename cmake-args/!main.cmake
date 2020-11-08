@@ -251,6 +251,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -ftree-lrs -ftree-parallelize-loops=${__N_CORES__} -ftree-vectorize \
 -funroll-loops \
 -fvariable-expansion-in-unroller \
+")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
 -s \
 ")
 
@@ -599,6 +601,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -funroll-loops \
 -fvirtual-function-elimination \
 -fwhole-program-vtables \
+-mllvm --color \
 -mllvm --inline-threshold=1000 \
 -mllvm --polly \
 -mllvm --polly-2nd-level-tiling \
@@ -606,7 +609,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -mllvm --polly-ast-use-context \
 -mllvm --polly-check-parallel \
 -mllvm --polly-check-vectorizable \
--mllvm --polly-delicm-compute-known  \
+-mllvm --polly-delicm-compute-known \
 -mllvm --polly-delicm-partial-writes \
 -mllvm --polly-delinearize \
 -mllvm --polly-detect-full-functions \
@@ -626,6 +629,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -mllvm --polly-run-inliner \
 -mllvm --polly-tiling \
 -mllvm --polly-vectorizer=polly \
+")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
 -s \
 ")
 
