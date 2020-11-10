@@ -108,6 +108,7 @@ template<
         typename Alloc = std::allocator<std::pair<const Key, Val> >
 >
 using HashMap MAYBE_UNUSED = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
+sassert(std::is_same<HashMap<int,char>, std::unordered_map<int,char>>::value);
 template<typename T1, typename T2>
 using Pair MAYBE_UNUSED = std::pair<T1, T2>;
 template<
@@ -116,6 +117,7 @@ template<
         typename Cmp=std::less<typename Cont::value_type>
 >
 using Pq MAYBE_UNUSED = std::priority_queue<T, Cont, Cmp>;
+sassert(std::is_same<Pq<int>, std::priority_queue<int>>::value);
 template<
         typename T=char,
         typename Alloc=std::allocator<T>
@@ -129,12 +131,14 @@ template<
         typename Alloc = std::allocator<std::pair<const Key, Val> >
 >
 using TreeMap MAYBE_UNUSED = std::map<Key, Val, Cmp, Alloc>;
+sassert(std::is_same<TreeMap<int,char>, std::map<int,char>>::value);
 template<typename... Ts>
 using Tuple MAYBE_UNUSED = std::tuple<Ts...>;
 template<typename... Ts>
 using Variant MAYBE_UNUSED = std::variant<Ts...>;
 template<typename T, typename Alloc = std::allocator<T>>
 using Vec MAYBE_UNUSED = std::vector<T, Alloc>;
+sassert(std::is_same<Vec<int>, std::vector<int>>::value);
 
 template<typename Char>
 MAYBE_UNUSED INLINE_ALWAYS void skipCurrentLine(
