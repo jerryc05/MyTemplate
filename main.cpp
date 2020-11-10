@@ -22,7 +22,9 @@ auto main(int argc, char *argv[]) -> int {
 
   // TODO Delete the following lines
   std::cout << "Hello, World!" << std::endl;
-  std::cout << argc << ',' << argv[0] << std::endl;
+  for (int i = 0; i < argc; ++i) {
+    std::cout << "argv[" << i << "]: " << argv[i] << std::endl;
+  }
 
   return 0;
 }
