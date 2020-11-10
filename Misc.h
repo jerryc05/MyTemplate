@@ -201,7 +201,8 @@ void pmrExample() {
   MonoBufRes res(std::data(buf), std::size(buf));
 
   using PmrStr = String<char, PmrAlloc<char>>;
-  Vec<PmrStr, PmrAlloc<PmrStr>> v(4, &res);
+  Vec<PmrStr, PmrAlloc<PmrStr>> v(4, &res);  // Do this!
+  Vec<PmrStr, PmrAlloc<PmrStr>> v2({"This will be heap-allocated!"}, &res);  // Don't do this!
 
   v.emplace_back("This will be stack-allocated!");  // Do this!
   v.push_back("This will be heap-allocated!");  // Don't do this!
