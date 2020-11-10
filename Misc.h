@@ -46,11 +46,10 @@
 
 // Workarounds
 #if (__GNUC__ * 10 + __GNUC_MINOR__ >= 49) || (__clang_major__ * 10 + __clang_minor__ >= 33)
-#if (__GNUC__ >= 7) || (__clang_major__ >= 5)
 
+#if (__GNUC__ >= 7) || (__clang_major__ >= 5)
 #include <optional>
 #include <string_view>
-
 #else
 #include <experimental/optional>
 #include <experimental/string_view>
@@ -148,9 +147,7 @@ MAYBE_UNUSED INLINE_ALWAYS void skipCurrentLine(
 #if (__GNUC__ >= 6) || (__clang_major__ * 10 + __clang_minor__ >= 35)
 
 #if (__GNUC__ >= 9) || (__clang_major__ >= 9)
-
 #include <memory_resource>
-
 #else
 #include <experimental/memory_resource>
 #endif
