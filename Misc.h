@@ -203,8 +203,11 @@ void pmrExample() {
   using PmrStr = String<char, PmrAlloc<char>>;
   Vec<PmrStr, PmrAlloc<PmrStr>> v(4, &res);
 
-  v.emplace_back("really really really long");
-  v.push_back("really really really long");  // Don't do this!
+  v.emplace_back("This will be stack-allocated!");  // Do this!
+  v.push_back("This will be heap-allocated!");  // Don't do this!
+
+  PmrStr s1("This will be stack-allocated!", &res);  // Do this!
+  PmrStr s2("This will be heap-allocated!");  // Don't do this!
 }
 
 #endif
