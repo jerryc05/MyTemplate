@@ -123,6 +123,7 @@ using HashMap MAYBE_UNUSED = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
 sassert(std::is_same<HashMap<int,char>, std::unordered_map<int,char>>::value);
 template<typename T1, typename T2>
 using Pair MAYBE_UNUSED = std::pair<T1, T2>;
+using PcwsConstr = std::piecewise_construct_t;
 template<
         typename T,
         typename Cont=std::vector<T>,
