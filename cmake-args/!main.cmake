@@ -239,6 +239,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -flto \
 -fmodulo-sched -fmodulo-sched-allow-regmoves \
 -fno-exceptions \
+-fno-rtti \
 -fsched-pressure \
 -fsched-spec-load -fsched-spec-load-dangerous \
 -fsched-stalled-insns=0 -fsched-stalled-insns-dep \
@@ -594,6 +595,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -fmerge-all-constants \
 -fno-cxx-exceptions \
 -fno-exceptions \
+-fno-rtti \
 -foptimize-sibling-calls \
 -fslp-vectorize -ftree-slp-vectorize \
 -fstrict-enums \
