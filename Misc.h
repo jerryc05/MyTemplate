@@ -66,16 +66,16 @@ sassert(std::is_same<Str<>, std::string_view>::value);
 #if __GNUC__ || __clang_major__ || _MSC_VER
 
 #if __GNUC__ || __clang_major__
-#define INLINE_ALWAYS  __attribute__((always_inline))
-#define INLINE_NEVER   __attribute__((noinline))
+#define F_INLINE  __attribute__((always_inline))
+#define NOINLINE   __attribute__((noinline))
 #else
-#define INLINE_ALWAYS  __declspec(noinline)
+#define F_INLINE  __declspec(noinline)
 #endif
 #define RESTRICT __restrict
 
 #else
-#define INLINE_ALWAYS inline_restrict
-#define INLINE_NEVER
+#define F_INLINE inline
+#define NOINLINE
 #define RESTRICT
 #endif
 
@@ -141,7 +141,7 @@ using Vec MAYBE_UNUSED = std::vector<T, Alloc>;
 sassert(std::is_same<Vec<int>, std::vector<int>>::value);
 
 template<typename Char>
-MAYBE_UNUSED INLINE_ALWAYS void skipCurrentLine(
+MAYBE_UNUSED F_INLINE void skipCurrentLine(
         std::basic_istream<Char> &is,
         typename std::basic_istream<Char>::int_type delim = '\n') {
   is.ignore(std::numeric_limits<std::streamsize>::max(), delim);
