@@ -160,6 +160,12 @@ MAYBE_UNUSED F_INLINE void skipCurrentLine(
   is.ignore(std::numeric_limits<std::streamsize>::max(), delim);
 }
 
+template<typename T>
+MAYBE_UNUSED F_INLINE Arr<Byte, sizeof(T)> allocUninit() {
+  Arr<Byte, sizeof(T)> arr;
+  return arr;
+}
+
 // Memory Resource
 #if (__GNUC__ >= 6) || (__clang_major__ * 10 + __clang_minor__ >= 35)
 
