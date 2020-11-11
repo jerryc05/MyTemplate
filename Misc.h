@@ -66,17 +66,24 @@ sassert(std::is_same<Str<>, std::string_view>::value);
 #if __GNUC__ || __clang_major__ || _MSC_VER
 
 #if __GNUC__ || __clang_major__
-#define F_INLINE  __attribute__((always_inline))
-#define NOINLINE   __attribute__((noinline))
+#define CONST_ATTRIB  __attribute__((const))
+#define F_INLINE      __attribute__((always_inline))
+#define NOINLINE      __attribute__((noinline))
+#define PURE_ATTRIB   __attribute__((pure))
 #else
-#define F_INLINE  __declspec(noinline)
+#define CONST_ATTRIB
+#define F_INLINE      __forceinline
+#define NOINLINE      __declspec(noinline)
+#define PURE_ATTRIB
 #endif
-#define RESTRICT __restrict
 
+#define RESTRICT      __restrict
 #else
-#define F_INLINE inline
+#define CONST_ATTRIB
+#define F_INLINE      inline
 #define NOINLINE
 #define RESTRICT
+#define PURE_ATTRIB
 #endif
 
 
