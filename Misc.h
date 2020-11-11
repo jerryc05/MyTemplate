@@ -54,6 +54,11 @@
 #include <experimental/optional>
 #include <experimental/string_view>
 #endif
+#if (__GNUC__ >= 5) || (__clang_major__ * 10 + __clang_minor__ >= 34)
+#include <functional>
+template <typename T>
+using Fn = std::function<T>;
+#endif
 
 template<typename T>
 using Optional MAYBE_UNUSED = std::optional<T>;
