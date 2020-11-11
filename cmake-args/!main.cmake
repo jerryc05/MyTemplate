@@ -229,8 +229,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
 -Ofast -march=native \
 \
+-fdata-sections \
 -fdelete-dead-exceptions \
 -ffinite-loops \
+-ffunction-sections \
 -fgcse-las -fgcse-sm \
 -fipa-pta -fira-loop-pressure \
 -fisolate-erroneous-paths-attribute \
@@ -589,6 +591,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} \
 -Ofast -march=native \
 \
+-fdata-sections \
+-ffunction-sections \
 -finline-functions \
 -finline-hint-functions \
 -flto=full \
