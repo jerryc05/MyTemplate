@@ -6,7 +6,7 @@
 cmake_minimum_required(VERSION 3.7)
 
 if (NOT __DEBUG_DEF_NAME__)
-    set(__DEBUG_DEF_NAME__ _DEBUG_BUILD)
+    set(__DEBUG_DEF_NAME__ DEBUG_MODE)
 endif ()
 message(STATUS "\t[DEBUG DEFINITION] - [${__DEBUG_DEF_NAME__}]")
 message(STATUS "")
