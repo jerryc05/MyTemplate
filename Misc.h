@@ -41,7 +41,6 @@
 #include <tuple>
 #include <unordered_map>
 #include <utility>
-#include <variant>
 #include <vector>
 
 // Workarounds
@@ -50,6 +49,9 @@
 #if (__GNUC__ >= 7) || (__clang_major__ >= 5)
 #include <optional>
 #include <string_view>
+#include <variant>
+template<typename... Ts>
+using Variant MAYBE_UNUSED = std::variant<Ts...>;
 #else
 #include <experimental/optional>
 #include <experimental/string_view>
@@ -147,8 +149,6 @@ using TreeMap MAYBE_UNUSED = std::map<Key, Val, Cmp, Alloc>;
 sassert(std::is_same<TreeMap<int,char>, std::map<int,char>>::value);
 template<typename... Ts>
 using Tuple MAYBE_UNUSED = std::tuple<Ts...>;
-template<typename... Ts>
-using Variant MAYBE_UNUSED = std::variant<Ts...>;
 template<typename T, typename Alloc = std::allocator<T>>
 using Vec MAYBE_UNUSED = std::vector<T, Alloc>;
 sassert(std::is_same<Vec<int>, std::vector<int>>::value);
