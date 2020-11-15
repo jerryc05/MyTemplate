@@ -20,5 +20,5 @@ alias vg="valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes"
 #   1) brew install git-delta
 #   2) cargo install --git https://github.com/dandavison/delta.git
 [ ! -z "$(which delta)" ] && function xdelta {
-  out__=$(delta -ns $*) && echo $out__ && [ -z $out__ ]
+  out__=$(delta --width $(tput cols) -ns $*) && echo $out__ && [ -z $out__ ]
 }
