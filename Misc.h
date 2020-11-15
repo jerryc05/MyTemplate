@@ -5,6 +5,10 @@
 
 #pragma once
 
+#ifndef DEBUG_MODE
+#define NDEBUG
+#endif
+
 // Annotations
 #if (__GNUC__ >= 6) || (__clang_major__ >= 6)
 #define MAYBE_UNUSED [[maybe_unused]]
