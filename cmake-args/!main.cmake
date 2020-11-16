@@ -100,7 +100,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -Werror=pessimizing-move \
 -Werror=redundant-move \
 -Werror=return-type \
--Werror=unreachable-code-break \
 -Wextra-semi \
 -Wfloat-equal \
 -Wformat=2 \
