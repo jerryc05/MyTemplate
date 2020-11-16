@@ -133,7 +133,8 @@ using HashMap MAYBE_UNUSED = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
 sassert(std::is_same<HashMap<int, char>, std::unordered_map<int, char>>::value);
 template<typename T1, typename T2>
 using Pair MAYBE_UNUSED = std::pair<T1, T2>;
-using PcwsConstr = std::piecewise_construct_t;
+using PcwsCstrct = std::piecewise_construct_t;
+constexpr PcwsCstrct pcwsCstrct MAYBE_UNUSED = std::piecewise_construct;
 template<
         typename T,
         typename Cont=std::vector<T>,
@@ -190,9 +191,11 @@ sassert(std::is_same<Vec<int>, std::vector<int>>::value);
 
 template<typename Char>
 MAYBE_UNUSED F_INLINE void
-skipCurrentLine(std::basic_istream<Char> &is,
-                typename std::basic_istream<Char>::int_type delim = '\n') {
-  is.ignore(std::numeric_limits<std::streamsize>::max(), delim);
+skipCurrentLine(
+        std::basic_istream<Char> &is,
+        typename std::basic_istream<Char>::int_type delim = '\n',
+        std::streamsize maxLen = std::numeric_limits<std::streamsize>::max()) {
+  is.ignore(maxLen, delim);
 }
 
 template<typename T>
@@ -210,9 +213,9 @@ initInPlace(void *addr, Args... args) {
 
 void lateInitExample() {
   using T = Vec<int>;
-  auto rawVecUninitialized{allocUninit<T>()};
+  auto rawVecUninit = allocUninit<T>();
   // do anything here
-  auto vecInitialized{*initInPlace<T>(&rawVecUninitialized)};
+  auto vecInitialized = *initInPlace<T>(&rawVecUninit);
   sassert(std::is_same<decltype(vecInitialized), T>::value);
 }
 
