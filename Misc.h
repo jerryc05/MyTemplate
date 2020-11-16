@@ -5,21 +5,24 @@
 
 #pragma once
 
-#ifndef DEBUG_MODE
-#define NDEBUG
+#if !defined(DEBUG_MODE) && !defined(NDEBUG)
+#   define NDEBUG
+#endif
+#ifdef NDEBUG
+#   undef DEBUG_MODE
 #endif
 
 // Annotations
 #if (__GNUC__ >= 6) || (__clang_major__ >= 6)
-#define MAYBE_UNUSED [[maybe_unused]]
-#define NODISCARD    [[nodiscard]]
-#define NOEXCEPT     noexcept
-#define NORETURN     [[noreturn]]
+#   define MAYBE_UNUSED [[maybe_unused]]
+#   define NODISCARD    [[nodiscard]]
+#   define NOEXCEPT     noexcept
+#   define NORETURN     [[noreturn]]
 #else
-#define MAYBE_UNUSED
-#define NODISCARD
-#define NOEXCEPT
-#define NORETURN
+#   define MAYBE_UNUSED
+#   define NODISCARD
+#   define NOEXCEPT
+#   define NORETURN
 #endif
 
 // Asserts
@@ -50,21 +53,22 @@
 // Workarounds
 #if (__GNUC__ * 10 + __GNUC_MINOR__ >= 49) || (__clang_major__ * 10 + __clang_minor__ >= 33)
 
-#if (__GNUC__ >= 7) || (__clang_major__ >= 5)
-#include <optional>
-#include <string_view>
-#include <variant>
+#   if (__GNUC__ >= 7) || (__clang_major__ >= 5)
+#       include <optional>
+#       include <string_view>
+#       include <variant>
 template<typename... Ts>
 using Variant MAYBE_UNUSED = std::variant<Ts...>;
-#else
-#include <experimental/optional>
-#include <experimental/string_view>
-#endif
-#if (__GNUC__ >= 5) || (__clang_major__ * 10 + __clang_minor__ >= 34)
-#include <functional>
-template <typename T>
+#   else
+#       include <experimental/optional>
+#       include <experimental/string_view>
+#   endif
+
+#   if (__GNUC__ >= 5) || (__clang_major__ * 10 + __clang_minor__ >= 34)
+#       include <functional>
+template<typename T>
 using Fn = std::function<T>;
-#endif
+#   endif
 
 template<typename T>
 using Optional MAYBE_UNUSED = std::optional<T>;
@@ -76,25 +80,25 @@ sassert(std::is_same<Str<>, std::string_view>::value);
 // Keywords
 #if __GNUC__ || __clang_major__ || _MSC_VER
 
-#if __GNUC__ || __clang_major__
-#define CONST_ATTRIB  __attribute__((const))
-#define F_INLINE      __attribute__((always_inline))
-#define NOINLINE      __attribute__((noinline))
-#define PURE_ATTRIB   __attribute__((pure))
-#else
-#define CONST_ATTRIB
-#define F_INLINE      __forceinline
-#define NOINLINE      __declspec(noinline)
-#define PURE_ATTRIB
-#endif
+#   if __GNUC__ || __clang_major__
+#       define CONST_ATTRIB __attribute__((const))
+#       define F_INLINE     __attribute__((always_inline))
+#       define NOINLINE     __attribute__((noinline))
+#       define PURE_ATTRIB  __attribute__((pure))
+#   else
+#       define CONST_ATTRIB
+#       define F_INLINE     __forceinline
+#       define NOINLINE     __declspec(noinline)
+#       define PURE_ATTRIB
+#   endif
 
-#define RESTRICT      __restrict
+#   define RESTRICT         __restrict
 #else
-#define CONST_ATTRIB
-#define F_INLINE      inline
-#define NOINLINE
-#define RESTRICT
-#define PURE_ATTRIB
+#   define CONST_ATTRIB
+#   define F_INLINE         inline
+#   define NOINLINE
+#   define RESTRICT
+#   define PURE_ATTRIB
 #endif
 
 
@@ -126,7 +130,7 @@ template<
         typename Alloc = std::allocator<std::pair<const Key, Val> >
 >
 using HashMap MAYBE_UNUSED = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
-sassert(std::is_same<HashMap<int,char>, std::unordered_map<int,char>>::value);
+sassert(std::is_same<HashMap<int, char>, std::unordered_map<int, char>>::value);
 template<typename T1, typename T2>
 using Pair MAYBE_UNUSED = std::pair<T1, T2>;
 using PcwsConstr = std::piecewise_construct_t;
@@ -150,31 +154,77 @@ template<
         typename Alloc = std::allocator<std::pair<const Key, Val> >
 >
 using TreeMap MAYBE_UNUSED = std::map<Key, Val, Cmp, Alloc>;
-sassert(std::is_same<TreeMap<int,char>, std::map<int,char>>::value);
+sassert(std::is_same<TreeMap<int, char>, std::map<int, char>>::value);
 template<typename... Ts>
 using Tuple MAYBE_UNUSED = std::tuple<Ts...>;
 template<typename T, typename Alloc = std::allocator<T>>
 using Vec MAYBE_UNUSED = std::vector<T, Alloc>;
 sassert(std::is_same<Vec<int>, std::vector<int>>::value);
 
+
+
+#ifndef NDEBUG
+#   define ASSERT_3(cond, msg, os) \
+      do {  if (!(cond)) { \
+              (os) << __FILE__ << ':' << __LINE__ << '\t' \
+                   << "Assertion `" #cond "` failed: " << (msg) << std::endl; \
+              exit(1); } \
+      } while (false)
+#else
+#   define ASSERT_3(cond, msg, os) do {} while (false)
+#endif
+
+#define ASSERT_2(cond, msg)                   ASSERT_3(cond, msg, std::cerr)
+#define ASSERT_1(cond)                        ASSERT_2(cond, "")
+
+#define ASSERT_N(_, cond, msg, os, func, ...) func
+
+#define ASSERT(...)                           ASSERT_N(,##__VA_ARGS__,\
+                                                ASSERT_3(__VA_ARGS__),\
+                                                ASSERT_2(__VA_ARGS__),\
+                                                ASSERT_1(__VA_ARGS__),\
+                                                ASSERT_0(__VA_ARGS__)\
+                                              )
+
+
+
 template<typename Char>
-MAYBE_UNUSED F_INLINE void skipCurrentLine(
-        std::basic_istream<Char> &is,
-        typename std::basic_istream<Char>::int_type delim = '\n') {
+MAYBE_UNUSED F_INLINE void
+skipCurrentLine(std::basic_istream<Char> &is,
+                typename std::basic_istream<Char>::int_type delim = '\n') {
   is.ignore(std::numeric_limits<std::streamsize>::max(), delim);
 }
 
 template<typename T>
-MAYBE_UNUSED F_INLINE Arr<Byte, sizeof(T)> allocUninit() {
+MAYBE_UNUSED F_INLINE Arr<Byte, sizeof(T)>
+allocUninit() {
   Arr<Byte, sizeof(T)> arr;
   return arr;
 }
+
+template<typename T, typename... Args>
+MAYBE_UNUSED F_INLINE T *
+initInPlace(void *addr, Args... args) {
+  return new(addr) T(args ...);
+}
+
+void lateInitExample() {
+  using T = Vec<int>;
+  auto rawVecUninitialized{allocUninit<T>()};
+  // do anything here
+  auto vecInitialized{*initInPlace<T>(&rawVecUninitialized)};
+  sassert(std::is_same<decltype(vecInitialized), T>::value);
+}
+
+
 
 // Memory Resource
 #if (__GNUC__ >= 6) || (__clang_major__ * 10 + __clang_minor__ >= 35)
 
 #if (__GNUC__ >= 9) || (__clang_major__ >= 9)
+
 #include <memory_resource>
+
 #else
 #include <experimental/memory_resource>
 #endif
@@ -183,7 +233,7 @@ using MonoBufRes = std::pmr::monotonic_buffer_resource;
 template<typename T>
 using PmrAlloc = std::pmr::polymorphic_allocator<T>;
 
-class MyNewDelRes : public std::pmr::memory_resource {
+class MyNewDelResExample : public std::pmr::memory_resource {
 private:
   void *do_allocate(Usize size, Usize alignment) override;
 
@@ -193,13 +243,13 @@ private:
 };
 
 void *
-MyNewDelRes::do_allocate(Usize size, Usize alignment) {
+MyNewDelResExample::do_allocate(Usize size, Usize alignment) {
   std::cout << "Al  locating " << size << '\n';
   return std::pmr::new_delete_resource()->allocate(size, alignment);
 }
 
 void
-MyNewDelRes::do_deallocate(void *ptr, Usize size, Usize alignment) {
+MyNewDelResExample::do_deallocate(void *ptr, Usize size, Usize alignment) {
   std::cout << "Deallocating " << size << ": [";
 
   for (Usize i = 0; i < size; ++i) {
@@ -211,14 +261,14 @@ MyNewDelRes::do_deallocate(void *ptr, Usize size, Usize alignment) {
 }
 
 NODISCARD bool
-MyNewDelRes::do_is_equal(const std::pmr::memory_resource &other) const NOEXCEPT {
+MyNewDelResExample::do_is_equal(const std::pmr::memory_resource &other) const NOEXCEPT {
   return std::pmr::new_delete_resource()->is_equal(other);
 }
 
 
 template<Usize capacity>
-void pmrExample() {
-  MyNewDelRes mem;
+void pmrContainerExample() {
+  MyNewDelResExample mem;
   std::pmr::set_default_resource(&mem);
 
   Byte       buf[capacity];
