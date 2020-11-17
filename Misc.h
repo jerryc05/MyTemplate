@@ -207,15 +207,16 @@ allocUninit() {
 
 template<typename T, typename... Args>
 MAYBE_UNUSED F_INLINE T *
-initInPlace(void *addr, Args... args) {
+initInPlace(void *addr, Args &&... args) {
   return new(addr) T(args ...);
 }
 
 void lateInitExample() {
   using T = Vec<int>;
-  auto rawVecUninit = allocUninit<T>();
+  auto rawVecUninit   = allocUninit<T>();
   // do anything here
-  auto vecInitialized = *initInPlace<T>(&rawVecUninit);
+  auto vecInitialized = *initInPlace<T>(
+          &rawVecUninit, std::initializer_list<T::value_type>{1, 2, 3});
   sassert(std::is_same<decltype(vecInitialized), T>::value);
 }
 
@@ -225,9 +226,7 @@ void lateInitExample() {
 #if (__GNUC__ >= 6) || (__clang_major__ * 10 + __clang_minor__ >= 35)
 
 #if (__GNUC__ >= 9) || (__clang_major__ >= 9)
-
 #include <memory_resource>
-
 #else
 #include <experimental/memory_resource>
 #endif
@@ -255,8 +254,9 @@ void
 MyNewDelResExample::do_deallocate(void *ptr, Usize size, Usize alignment) {
   std::cout << "Deallocating " << size << ": [";
 
-  for (Usize i = 0; i < size; ++i) {
-    std::cout << scast<char *>(ptr)[i];
+  auto       charPtr = rcast<char *>(ptr);
+  for (Usize i       = 0; i < size; ++i) {
+    std::cout << charPtr[i];
   }
   std::cout << "]\n";
 
