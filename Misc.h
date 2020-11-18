@@ -220,7 +220,7 @@ lateInitExample() {
           &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
   sassert(std::is_same<decltype(useThisAsT), T>::value);
 
-  // do use reference if you want destruct `T` manually
+  // do use reference if you want to destruct `T` manually
   auto &useThisAsTRef = *initInPlace<T>(
           &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
   sassert(std::is_same<decltype(useThisAsTRef), T&>::value);
