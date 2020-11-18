@@ -305,4 +305,4 @@ Q: `ASAN`/`LSAN` does not catch memory leak on MacOS.
 - ~~\[RECOMMENDED\] Follow `ASAN` runtime flags settings above.~~
 - ~~\[NOT RECOMMENDED\] Disable `ASAN` and run with LSAN instead (other `ASAN` checks will also be disabled).~~
 
-- A: This shall not happen now.
+A: This shall not happen now.
