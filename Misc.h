@@ -70,6 +70,7 @@
 #include <cstdint>
 #include <deque>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -235,6 +236,37 @@ lateInitExample() {
 
 
 
+template<Usize MAX_SIZE = 128>
+inline void
+debugBytes(void *RESTRICT ptr, Usize size) {
+  auto charPtr = rcast<char *>(ptr);
+  const auto sizeToPrint = std::min(size, MAX_SIZE);
+  const auto printCharMargin = [sizeToPrint]() {
+    std::cout << '|'
+              << std::setfill('-') << std::setw(scast<I32>(2 * sizeToPrint)) << ""
+              << "|\n";
+    std::cout.copyfmt(std::ios(nullptr));
+  };
+
+  printCharMargin();
+
+  for (U8 j = 0; j < 2; ++j) {
+    std::cout << '|';
+    for (Usize i = 0; i < sizeToPrint; ++i) {
+      if (j == 0) {
+        std::cout << std::setw(2) << charPtr[i];
+      } else {
+        std::cout << std::setw(2) << std::hex << scast<U16>(charPtr[i]) << std::dec;
+      }
+    }
+    std::cout << "|\n" << std::setfill('0');
+  }
+
+  printCharMargin();
+}
+
+
+
 // Memory Resource
 #if (__GNUC__ >= 9) || (__clang_major__ >= 9)
 #   include <memory_resource>
@@ -254,19 +286,14 @@ private:
 
 void *
 MyNewDelResExample::do_allocate(Usize size, Usize alignment) {
-  std::cout << "Al  locating " << size << '\n';
+  std::cout << "Al--locating " << size << '\n';
   return std::pmr::new_delete_resource()->allocate(size, alignment);
 }
 
 void
 MyNewDelResExample::do_deallocate(void *ptr, Usize size, Usize alignment) {
-  std::cout << "Deallocating " << size << ": [";
-
-  auto       charPtr = rcast<char *>(ptr);
-  for (Usize i       = 0; i < size; ++i) {
-    std::cout << charPtr[i];
-  }
-  std::cout << "]\n";
+  std::cout << "Deallocating " << size << ":\n";
+  debugBytes<>(ptr, size);
 
   return std::pmr::new_delete_resource()->deallocate(ptr, size, alignment);
 }
@@ -277,13 +304,13 @@ MyNewDelResExample::do_is_equal(const std::pmr::memory_resource &other) const NO
 }
 
 
-template<Usize capacity>
+template<Usize CAPACITY>
 MAYBE_UNUSED void
 pmrContainerExample() {
   MyNewDelResExample mem;
   std::pmr::set_default_resource(&mem);
 
-  Byte       buf[capacity];
+  Byte       buf[CAPACITY];
   MonoBufRes res(std::data(buf), std::size(buf));
 
   using PmrStr = String<char, PmrAlloc<char>>;
