@@ -235,15 +235,16 @@ lateInitExample() {
 }
 
 
-
-template<Usize MAX_SIZE = 128>
+template<Usize MAX_SIZE = 128, typename CharT = char>
 inline void
 debugBytes(void *RESTRICT ptr, Usize size) {
-  auto charPtr = rcast<char *>(ptr);
-  const auto sizeToPrint = std::min(size, MAX_SIZE);
+  auto       charTPtr    = rcast<CharT *>(ptr);
+
+  const auto hexWidth        = 2 * sizeof(CharT);
+  const auto sizeToPrint     = std::min(size, MAX_SIZE);
   const auto printCharMargin = [sizeToPrint]() {
     std::cout << '|'
-              << std::setfill('-') << std::setw(scast<I32>(2 * sizeToPrint)) << ""
+              << std::setfill('-') << std::setw(scast<I32>((hexWidth+1) * sizeToPrint)) << ""
               << "|\n";
     std::cout.copyfmt(std::ios(nullptr));
   };
@@ -254,10 +255,11 @@ debugBytes(void *RESTRICT ptr, Usize size) {
     std::cout << '|';
     for (Usize i = 0; i < sizeToPrint; ++i) {
       if (j == 0) {
-        std::cout << std::setw(2) << charPtr[i];
+        std::cout << std::setw(hexWidth) << charTPtr[i];
       } else {
-        std::cout << std::setw(2) << std::hex << scast<U16>(charPtr[i]) << std::dec;
+        std::cout << std::setw(hexWidth) << std::hex << +charTPtr[i] << std::dec;
       }
+      std::cout << ' ';
     }
     std::cout << "|\n" << std::setfill('0');
   }
