@@ -12,6 +12,8 @@
 #   undef DEBUG_MODE
 #endif
 
+
+
 // Annotations
 #if (__GNUC__ >= 6) || (__clang_major__ >= 6)
 #   define MAYBE_UNUSED [[maybe_unused]]
@@ -25,14 +27,41 @@
 #   define NORETURN
 #endif
 
-// Asserts
-#define sassert  static_assert
 
-// Casts
+
+
+// Asserts & Casts
 #define ccast    const_cast
 #define dcast    dynamic_cast
 #define rcast    reinterpret_cast
 #define scast    static_cast
+#define sassert  static_assert
+
+#ifndef NDEBUG
+#   define ASSERT_3(cond, msg, os) \
+      do {  if (!(cond)) { \
+              (os) << __FILE__ << ':' << __LINE__ << '\t' \
+                   << "Assertion `" #cond "` failed: " << (msg) << std::endl; \
+              exit(1); } \
+      } while (false)
+#else
+#   define ASSERT_3(cond, msg, os) do {} while (false)
+#endif
+
+#define ASSERT_2(cond, msg)                   ASSERT_3(cond, msg, std::cerr)
+#define ASSERT_1(cond)                        ASSERT_2(cond, "")
+
+#define ASSERT_N(_, cond, msg, os, func, ...) func
+
+#define ASSERT(...)                           ASSERT_N(,##__VA_ARGS__,\
+                                                ASSERT_3(__VA_ARGS__),\
+                                                ASSERT_2(__VA_ARGS__),\
+                                                ASSERT_1(__VA_ARGS__),\
+                                                ASSERT_0(__VA_ARGS__)\
+                                              )
+
+
+
 
 // Includes
 #include <array>
@@ -51,35 +80,28 @@
 #include <vector>
 
 // Workarounds
-#if (__GNUC__ * 10 + __GNUC_MINOR__ >= 49) || (__clang_major__ * 10 + __clang_minor__ >= 33)
-
-#   if (__GNUC__ >= 7) || (__clang_major__ >= 5)
-#       include <optional>
-#       include <string_view>
-#       include <variant>
-template<typename... Ts>
-using Variant MAYBE_UNUSED = std::variant<Ts...>;
-#   else
-#       include <experimental/optional>
-#       include <experimental/string_view>
-#   endif
-
-#   if (__GNUC__ >= 5) || (__clang_major__ * 10 + __clang_minor__ >= 34)
-#       include <functional>
-template<typename T>
-using Fn = std::function<T>;
-#   endif
-
+#if (__GNUC__ >= 7) || (__clang_major__ * 10 + __clang_minor__ >= 39)
+#   include <optional>
+#   include <string_view>
+#   include <variant>
 template<typename T>
 using Optional MAYBE_UNUSED = std::optional<T>;
 template<typename T=char>
 using Str MAYBE_UNUSED = std::basic_string_view<T, std::char_traits<T>>;
 sassert(std::is_same<Str<>, std::string_view>::value);
+template<typename... Ts>
+using Variant MAYBE_UNUSED = std::variant<Ts...>;
+
+#   if (__GNUC__ * 10 + __GNUC_MINOR__ > 47) || (__clang_major__ * 10 + __clang_minor__ >= 34)
+#       include <functional>
+template<typename T>
+using Fn = std::function<T>;
+#   endif
+
 #endif
 
 // Keywords
 #if __GNUC__ || __clang_major__ || _MSC_VER
-
 #   if __GNUC__ || __clang_major__
 #       define CONST_ATTRIB __attribute__((const))
 #       define F_INLINE     __attribute__((always_inline))
@@ -91,8 +113,8 @@ sassert(std::is_same<Str<>, std::string_view>::value);
 #       define NOINLINE     __declspec(noinline)
 #       define PURE_ATTRIB
 #   endif
-
 #   define RESTRICT         __restrict
+
 #else
 #   define CONST_ATTRIB
 #   define F_INLINE         inline
@@ -133,8 +155,8 @@ using HashMap MAYBE_UNUSED = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
 sassert(std::is_same<HashMap<int, char>, std::unordered_map<int, char>>::value);
 template<typename T1, typename T2>
 using Pair MAYBE_UNUSED = std::pair<T1, T2>;
-using PcwsCstrct = std::piecewise_construct_t;
-constexpr PcwsCstrct pcwsCstrct MAYBE_UNUSED = std::piecewise_construct;
+using PcwsCstrt = std::piecewise_construct_t;
+constexpr const static PcwsCstrt &pcwsCstrt MAYBE_UNUSED = std::piecewise_construct;
 template<
         typename T,
         typename Cont=std::vector<T>,
@@ -164,31 +186,6 @@ sassert(std::is_same<Vec<int>, std::vector<int>>::value);
 
 
 
-#ifndef NDEBUG
-#   define ASSERT_3(cond, msg, os) \
-      do {  if (!(cond)) { \
-              (os) << __FILE__ << ':' << __LINE__ << '\t' \
-                   << "Assertion `" #cond "` failed: " << (msg) << std::endl; \
-              exit(1); } \
-      } while (false)
-#else
-#   define ASSERT_3(cond, msg, os) do {} while (false)
-#endif
-
-#define ASSERT_2(cond, msg)                   ASSERT_3(cond, msg, std::cerr)
-#define ASSERT_1(cond)                        ASSERT_2(cond, "")
-
-#define ASSERT_N(_, cond, msg, os, func, ...) func
-
-#define ASSERT(...)                           ASSERT_N(,##__VA_ARGS__,\
-                                                ASSERT_3(__VA_ARGS__),\
-                                                ASSERT_2(__VA_ARGS__),\
-                                                ASSERT_1(__VA_ARGS__),\
-                                                ASSERT_0(__VA_ARGS__)\
-                                              )
-
-
-
 template<typename Char>
 MAYBE_UNUSED F_INLINE void
 skipCurrentLine(
@@ -207,33 +204,44 @@ allocUninit() {
 
 template<typename T, typename... Args>
 MAYBE_UNUSED F_INLINE T *
-initInPlace(void *addr, Args &&... args) {
+initInPlace(void * RESTRICT addr, Args &&... args) {
   return new(addr) T(args ...);
 }
 
-void lateInitExample() {
+MAYBE_UNUSED void
+lateInitExample() {
   using T = Vec<int>;
-  auto rawVecUninit   = allocUninit<T>();
+  auto rawBytesOfT = allocUninit<T>();
+
   // do anything here
-  auto vecInitialized = *initInPlace<T>(
-          &rawVecUninit, std::initializer_list<T::value_type>{1, 2, 3});
-  sassert(std::is_same<decltype(vecInitialized), T>::value);
+
+  // do NOT use reference if you want the compiler to destruct `T`
+  auto useThisAsT = *initInPlace<T>(
+          &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
+  sassert(std::is_same<decltype(useThisAsT), T>::value);
+
+  // do use reference if you want destruct `T` manually
+  auto &useThisAsTRef = *initInPlace<T>(
+          &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
+  sassert(std::is_same<decltype(useThisAsTRef), T&>::value);
+
+  // do anything here
+
+  // you must manually destruct `T` reference
+  useThisAsTRef.~T();
+
+  // `useThisAsT` automatically destructed here
 }
 
 
 
 // Memory Resource
-#if (__GNUC__ >= 6) || (__clang_major__ * 10 + __clang_minor__ >= 35)
-
 #if (__GNUC__ >= 9) || (__clang_major__ >= 9)
-#include <memory_resource>
-#else
-#include <experimental/memory_resource>
-#endif
-
+#   include <memory_resource>
 using MonoBufRes = std::pmr::monotonic_buffer_resource;
 template<typename T>
 using PmrAlloc = std::pmr::polymorphic_allocator<T>;
+
 
 class MyNewDelResExample : public std::pmr::memory_resource {
 private:
@@ -270,7 +278,8 @@ MyNewDelResExample::do_is_equal(const std::pmr::memory_resource &other) const NO
 
 
 template<Usize capacity>
-void pmrContainerExample() {
+MAYBE_UNUSED void
+pmrContainerExample() {
   MyNewDelResExample mem;
   std::pmr::set_default_resource(&mem);
 
@@ -289,4 +298,3 @@ void pmrContainerExample() {
 }
 
 #endif
-
