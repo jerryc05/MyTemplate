@@ -57,18 +57,19 @@
                                                 ASSERT_3(__VA_ARGS__),\
                                                 ASSERT_2(__VA_ARGS__),\
                                                 ASSERT_1(__VA_ARGS__),\
-                                                ASSERT_0(__VA_ARGS__)\
-                                              )
-
+                                                ASSERT_0(__VA_ARGS__))
 
 
 
 // Includes
 #include <array>
 #include <cassert>
+#include <csignal>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <deque>
+#include <execinfo.h>
 #include <functional>
 #include <iomanip>
 #include <iostream>
@@ -76,6 +77,7 @@
 #include <memory>
 #include <queue>
 #include <tuple>
+#include <unistd.h>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -205,7 +207,7 @@ allocUninit() {
 
 template<typename T, typename... Args>
 MAYBE_UNUSED F_INLINE T *
-initInPlace(void * RESTRICT addr, Args &&... args) {
+initInPlace(void *RESTRICT addr, Args &&... args) {
   return new(addr) T(args ...);
 }
 
@@ -249,22 +251,47 @@ debugBytes(void *RESTRICT ptr, Usize size) {
     std::cout.copyfmt(std::ios(nullptr));
   };
 
+  std::cout<<"\033[1;94m";
   printCharMargin();
 
   for (U8 j = 0; j < 2; ++j) {
-    std::cout << '|';
+    std::cout << "\033[1;94m|\033[0m";
     for (Usize i = 0; i < sizeToPrint; ++i) {
       if (j == 0) {
         std::cout << std::setw(hexWidth) << charTPtr[i];
       } else {
-        std::cout << std::setw(hexWidth) << std::hex << +charTPtr[i] << std::dec;
+        std::cout << "\033[0;9" << (i & 1 ? '5' : '6') << 'm'
+                  << std::setw(hexWidth) << std::hex << +charTPtr[i] << std::dec;
       }
       std::cout << ' ';
     }
-    std::cout << "|\n" << std::setfill('0');
+    std::cout << "\033[1;94m|\033[0m\n" << std::setfill('0');
   }
 
+  std::cout << "\033[1;94m";
   printCharMargin();
+  std::cerr << "\033[0m";
+}
+
+
+
+template<Usize NUM_TRACES = 16>
+void
+mySigHandler(int sig) {
+  std::cerr << "\033[1;91m===== "
+            << "Error: Signal [" << strsignal(sig) << " (" << sig << ")]"
+            << " =====\033[0;31m\n";
+
+#ifdef DEBUG_MODE
+  Arr<void *, NUM_TRACES> btArr;
+  auto                    traceSize = backtrace(btArr.data(), btArr.size());
+
+  // print out all the frames to stderr
+  backtrace_symbols_fd(btArr.data(), traceSize, STDERR_FILENO);
+#endif
+
+  std::cerr << "\033[0m";
+  std::exit(128 + sig);
 }
 
 

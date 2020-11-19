@@ -189,6 +189,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -fstack-protector-all \
 -ftrapv \
 ")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
+-rdynamic \
+")
 
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/asan.cmake)
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/lsan-standalone.cmake)
@@ -532,6 +535,9 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -fstack-clash-protection \
 -fstack-protector-all \
 -ftrapv \
+")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
+-rdynamic \
 ")
 
         include(${CMAKE_CURRENT_SOURCE_DIR}/cmake-args/asan.cmake)

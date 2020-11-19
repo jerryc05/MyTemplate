@@ -9,10 +9,19 @@
 auto main(int argc, char *argv[]) -> int {
   // init starter
   {
+    // handle signals
+    std::signal(SIGABRT, mySigHandler<>);
+    std::signal(SIGFPE, mySigHandler<>);
+    std::signal(SIGILL, mySigHandler<>);
+    std::signal(SIGINT, mySigHandler<>);
+    std::signal(SIGSEGV, mySigHandler<>);
+    std::signal(SIGTERM, mySigHandler<>);
+
     // Do not sync with C-style stdio
 #ifndef DEBUG_MODE
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
 #endif
 
     // Read `bool` as `true` and `false`
