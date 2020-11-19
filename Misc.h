@@ -276,8 +276,8 @@ debugBytes(void *RESTRICT ptr, Usize size) {
 
 template<Usize NUM_TRACES = 16>
 void
-mySigHandler(int sig) {
-  std::cerr << "\033[1;91m===== "
+stackTraceSigHandler(int sig) {
+  std::cerr << "\n\033[1;91m===== "
             << "Error: Signal [" << strsignal(sig) << " (" << sig << ")]"
             << " =====\033[0;31m\n";
 

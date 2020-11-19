@@ -10,12 +10,12 @@ auto main(int argc, char *argv[]) -> int {
   // init starter
   {
     // handle signals
-    std::signal(SIGABRT, mySigHandler<>);
-    std::signal(SIGFPE, mySigHandler<>);
-    std::signal(SIGILL, mySigHandler<>);
-    std::signal(SIGINT, mySigHandler<>);
-    std::signal(SIGSEGV, mySigHandler<>);
-    std::signal(SIGTERM, mySigHandler<>);
+    std::signal(SIGABRT, stackTraceSigHandler<>);
+    std::signal(SIGFPE, stackTraceSigHandler<>);
+    std::signal(SIGILL, stackTraceSigHandler<>);
+    std::signal(SIGINT, stackTraceSigHandler<>);
+    std::signal(SIGSEGV, stackTraceSigHandler<>);
+    std::signal(SIGTERM, stackTraceSigHandler<>);
 
     // Do not sync with C-style stdio
 #ifndef DEBUG_MODE
@@ -34,6 +34,10 @@ auto main(int argc, char *argv[]) -> int {
   for (int i = 0; i < argc; ++i) {
     std::cout << "argv[" << i << "]: " << argv[i] << std::endl;
   }
+
+  /* This will "prevent" memory leak, but will also prevent calling destructors.
+     Make sure to wrap all other codes in a curly bracket before calling `exit()`.  */
+  // std::exit(0);
 
   return 0;
 }
