@@ -246,7 +246,7 @@ debugBytes(void *RESTRICT ptr, Usize size) {
   const auto sizeToPrint     = std::min(size, MAX_SIZE);
   const auto printCharMargin = [sizeToPrint]() {
     std::cout << '|'
-              << std::setfill('-') << std::setw(scast<I32>((hexWidth+1) * sizeToPrint)) << ""
+              << std::setfill('-') << std::setw(scast<I32>(hexWidth * sizeToPrint)) << ""
               << "|\n";
     std::cout.copyfmt(std::ios(nullptr));
   };
@@ -263,7 +263,6 @@ debugBytes(void *RESTRICT ptr, Usize size) {
         std::cout << "\033[0;9" << (i & 1 ? '5' : '6') << 'm'
                   << std::setw(hexWidth) << std::hex << +charTPtr[i] << std::dec;
       }
-      std::cout << ' ';
     }
     std::cout << "\033[1;94m|\033[0m\n" << std::setfill('0');
   }
