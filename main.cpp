@@ -35,7 +35,7 @@ auto main(int argc, char *argv[]) -> int {
     std::cout << "argv[" << i << "]: " << argv[i] << std::endl;
   }
 
-  /* This will "prevent" memory leak, but will also prevent calling destructors.
+  /* This might "bypass" memory leak checks, but will also prevent calling destructors.
      Make sure to wrap all other codes in a curly bracket before calling `exit()`.  */
   // std::exit(0);
 
