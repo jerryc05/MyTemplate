@@ -31,7 +31,7 @@ auto main(int argc, char *argv[]) -> int {
 
   // TODO Delete the following lines
   std::cout << "Hello, World!" << std::endl;
-  for (int i = 0; i < argc; ++i) {
+  for (decltype(argc) i = 0; i < argc; ++i) {
     std::cout << "argv[" << i << "]: " << argv[i] << std::endl;
   }
 
