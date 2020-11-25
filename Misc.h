@@ -30,12 +30,13 @@
 
 
 
-// Asserts & Casts
-#define ccast    const_cast
-#define dcast    dynamic_cast
-#define rcast    reinterpret_cast
-#define scast    static_cast
-#define sassert  static_assert
+// Asserts & Casts & Const auto
+#define cauto     const auto
+#define ccast     const_cast
+#define dcast     dynamic_cast
+#define rcast     reinterpret_cast
+#define scast     static_cast
+#define sassert   static_assert
 
 #ifndef NDEBUG
 #   define ASSERT_3(cond, msg, os) \
