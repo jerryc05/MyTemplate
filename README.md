@@ -29,7 +29,7 @@ Use at your **OWN** risk.
 ## First things first
 
 - *Pro tip*: Clone this repo to your computer first will make your life much easier:
-    - If you have already cloned before, update it using `git pull --depth=1`
+    - If you have already cloned before, update it using `sh ./update.sh`
     - To clone, run: `git clone --depth=1 --single-branch --branch cpp https://github.com/jerryc05/MyTemplate`
 
 0. Copy *everything* in this `cmake-args` folder (including the folder itself) to your project root accordingly.
