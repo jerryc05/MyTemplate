@@ -63,8 +63,10 @@
 
 
 // Includes
+#include <algorithm>
 #include <array>
 #include <cassert>
+#include <cmath>
 #include <csignal>
 #include <cstddef>
 #include <cstdint>
@@ -74,6 +76,7 @@
 #include <functional>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <map>
 #include <memory>
 #include <queue>
