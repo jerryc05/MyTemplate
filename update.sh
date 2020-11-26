@@ -1,0 +1,1 @@
+git fetch --depth=1 && git reset --hard "@{u}"
