@@ -1,10 +1,9 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-TMP_FILE=$(mktemp)
 NPROC=$(nproc)
 for i in $(seq 1 30); do
-  while jobs -r >"$TMP_FILE"; (( $(wc -l <"$TMP_FILE") > NPROC )); do
-    sleep .2
+  while (( $(jobs -r | wc -l) > NPROC )); do
+    sleep .25
   done
 
   (
@@ -13,3 +12,6 @@ for i in $(seq 1 30); do
     # and much more ...
   ) &
 done
+
+wait
+echo "===== DONE ====="
