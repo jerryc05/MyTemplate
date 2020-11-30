@@ -1,33 +1,41 @@
 # Load Antigen
-if [ -f /usr/share/zsh-antigen/antigen.zsh ]; then
-  source /usr/share/zsh-antigen/antigen.zsh
-if [ -f /usr/local/share/antigen/antigen.zsh ]; then
-  source /usr/local/share/antigen/antigen.zsh
-elif [ -f $HOME/antigen.zsh ]; then
-  source $HOME/antigen.zsh
+if [ -f "/usr/share/zsh-antigen/antigen.zsh" ]; then
+  source "/usr/share/zsh-antigen/antigen.zsh"
+elif [ -f "/usr/local/share/antigen/antigen.zsh" ]; then
+  source "/usr/local/share/antigen/antigen.zsh"
+elif [ -f "$HOME/antigen.zsh" ]; then
+  source "$HOME/antigen.zsh"
 else
-  if [ -f $HOME/.antigen/.antigen_zsh_path ]; then
-    __antigen_zsh_path=$(cat $HOME/.antigen/.antigen_zsh_path)
+  __ok=0
+  antigen_zsh_cache_path="$HOME/.antigen/.antigen_zsh_path"
+  if [ -f "$antigen_zsh_cache_path" ]; then
+    __antigen_zsh_path=$(cat "$antigen_zsh_cache_path")
 
     # Path from cache is valid
-    if [ -f $__antigen_zsh_path ]; then
-      source $__antigen_zsh_path
-    else
-      __antigen_zsh_path=$(find /usr -name antigen.zsh 2>/dev/null)
-
-      # Update cache of path
-      if [ ! -z "$__antigen_zsh_path" ]; then
-        mkdir -p $HOME/.antigen
-        echo $__antigen_zsh_path > $HOME/.antigen/.antigen_zsh_path
-        source $__antigen_zsh_path
-
-      # We lost this file
-      else
-        echo -e '\e[5m\e[1;31mWARNING:\e[0m \e[1;33mantigen.zsh\e[0m not found!'
-        return
-      fi
+    if [ -f "$__antigen_zsh_path" ]; then
+      source "$__antigen_zsh_path"
+      __ok=1
     fi
   fi
+
+  if [ $__ok -eq 0 ]; then
+    echo "Finding `antigen.zsh` ..."
+    __antigen_zsh_path=$(find /usr -name antigen.zsh 2> /dev/null)
+
+    # Update cache of path
+    if [ -f "$__antigen_zsh_path" ]; then
+      mkdir -p "$HOME/.antigen"
+      echo $__antigen_zsh_path > "$antigen_zsh_cache_path"
+      source "$__antigen_zsh_path"
+
+    # We lost this file
+    else
+      echo -e '\e[5m\e[1;31mERROR:\e[0m \e[1;33mantigen.zsh\e[0m not found!'
+      return
+    fi
+  fi
+
+  unset __ok
   unset __antigen_zsh_path
 fi
 
