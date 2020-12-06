@@ -14,7 +14,7 @@ Show report:
 ```sh
 perf report [--no-children] [-G]
 #            ^^^^^^^^^^^^^   ^^
-#            |               |= Show caller-based call graph (instaed of callee-based)
+#            |               |= Show caller-based call graph (instead of callee-based)
 #            |= Add this flag to remove call chain (display self-time instead of accumulate-time)
 ```
 
