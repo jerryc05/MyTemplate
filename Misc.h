@@ -38,7 +38,7 @@
 #define SCT   static_cast
 #define SAT   static_assert
 
-#ifndef NDEBUG
+#ifdef DEBUG_MODE
 #   define ASSERT_3(cond, msg, os) \
       do {  if (!(cond)) { \
               (os) << __FILE__ << ':' << __LINE__ << '\t' \
@@ -79,10 +79,13 @@
 #include <limits>
 #include <map>
 #include <memory>
+#include <numeric>
 #include <queue>
+#include <set>
 #include <tuple>
 #include <unistd.h>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -148,7 +151,6 @@ using Usize MAYBE_UNUSED = std::size_t;
 
 template<typename T, Usize S>
 using Arr MAYBE_UNUSED = std::array<T, S>;
-using CStr = char[];
 template<typename T>
 using Deque MAYBE_UNUSED = std::deque<T>;
 template<
@@ -160,6 +162,14 @@ template<
 >
 using HashMap MAYBE_UNUSED = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
 SAT(std::is_same<HashMap<int, char>, std::unordered_map<int, char>>::value);
+template<
+        typename Val,
+        typename Hash = std::hash<Val>,
+        typename KeyEq = std::equal_to<Val>,
+        typename Alloc = std::allocator<Val>
+>
+using HashSet MAYBE_UNUSED = std::unordered_set<Val, Hash, KeyEq, Alloc>;
+SAT(std::is_same<HashSet<int>, std::unordered_set<int> >::value);
 template<typename T1, typename T2>
 using Pair MAYBE_UNUSED = std::pair<T1, T2>;
 using PcwsCstrt = std::piecewise_construct_t;
@@ -185,6 +195,13 @@ template<
 >
 using TreeMap MAYBE_UNUSED = std::map<Key, Val, Cmp, Alloc>;
 SAT(std::is_same<TreeMap<int, char>, std::map<int, char>>::value);
+template<
+        typename Val,
+        typename Cmp = std::less<Val>,
+        typename Alloc = std::allocator<Val>
+>
+using TreeSet MAYBE_UNUSED = std::set<Val, Cmp, Alloc>;
+SAT(std::is_same<TreeSet<int>, std::set<int> >::value);
 template<typename... Ts>
 using Tuple MAYBE_UNUSED = std::tuple<Ts...>;
 template<typename T, typename Alloc = std::allocator<T>>
@@ -220,7 +237,7 @@ lateInitExample() {
   using T = Vec<int>;
   auto rawBytesOfT = allocUninit<T>();
 
-  // do anything here
+  // do something here
 
   // do NOT use reference if you want the compiler to destruct `T`
   auto useThisAsT = *initInPlace<T>(
@@ -363,51 +380,110 @@ namespace jerryc05 {
 
   template<typename T>
   class Span {
-    T     *mPtr;
-    Usize mLen;
+    T           *mPtr;
+    const Usize mLen;
 
   public:
-    Span(T *ptr, Usize len) NOEXCEPT: mPtr{ptr}, mLen{len} {}
+    constexpr
+    Span(T *ptr, const Usize len) NOEXCEPT: mPtr{ptr}, mLen{len} {}
 
     template<typename U>
-    F_INLINE const T &operator[](U i) const NOEXCEPT {
+    NODISCARD F_INLINE constexpr
+    const T &operator[](U i) const NOEXCEPT {
+      ASSERT(i < mLen,
+             String<>("\033[1;91mIndex [") + std::to_string(i) + "]"
+                     + " out of bound [" + std::to_string(mLen) + "]!\033[0;31m");
       return mPtr[i];
     }
 
     template<typename U>
-    inline T &
-    operator[](U i) NOEXCEPT {
+    NODISCARD inline constexpr
+    T &operator[](U i) NOEXCEPT {
       return CCT<T &>(CCT<const decltype(*this)>(*this)[i]);
     }
 
-    NODISCARD F_INLINE
+    NODISCARD F_INLINE constexpr
     Usize len() const NOEXCEPT {
       return mLen;
     }
 
-    NODISCARD F_INLINE
+    NODISCARD F_INLINE constexpr
     Usize size() const NOEXCEPT {
       return len();
     }
 
-    F_INLINE
+    NODISCARD F_INLINE constexpr
+    bool isEmpty() const NOEXCEPT {
+      return len() == 0;
+    }
+
+    NODISCARD F_INLINE constexpr
+    bool empty() const NOEXCEPT {
+      return isEmpty();
+    }
+
+    NODISCARD F_INLINE constexpr
     const T *cbegin() const NOEXCEPT {
       return mPtr;
     }
 
-    F_INLINE
-    const T *cend() const NOEXCEPT {
-      return mPtr + mLen;
-    }
-
-    inline
+    NODISCARD inline constexpr
     T *begin() NOEXCEPT {
       return CCT<T *>(this->cbegin());
     }
 
-    inline
+    NODISCARD F_INLINE constexpr
+    const T *cend() const NOEXCEPT {
+      return cbegin() + len();
+    }
+
+    NODISCARD inline constexpr
     T *end() NOEXCEPT {
       return CCT<T *>(this->cend());
+    }
+
+    template<typename IterT>
+    class RIter {
+      IterT * mRPtr;
+
+      constexpr explicit
+      RIter(IterT *rPtr) NOEXCEPT: mRPtr{rPtr} {}
+
+      friend class Span;
+
+    public:
+      RIter &operator++() {
+        --mRPtr;
+        return *this;
+      }
+
+      IterT &operator*() {
+        return *mRPtr;
+      }
+
+      IterT* operator->(){
+        return mRPtr;
+      }
+    };
+
+    NODISCARD F_INLINE constexpr
+    RIter<const T> crbegin() const NOEXCEPT {
+      return RIter<const T>{cend() - 1};
+    }
+
+    NODISCARD inline constexpr
+    RIter<T> rbegin() NOEXCEPT {
+      return RIter<T>{end() - 1};
+    }
+
+    NODISCARD F_INLINE constexpr
+    RIter<const T> crend() const NOEXCEPT {
+      return RIter<const T>{cbegin() - 1};
+    }
+
+    NODISCARD inline constexpr
+    RIter<T> rend() NOEXCEPT {
+      return RIter<T>{begin() - 1};
     }
   };
 
