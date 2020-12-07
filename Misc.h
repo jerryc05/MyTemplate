@@ -31,19 +31,19 @@
 
 
 // Asserts & Casts & Const auto
-#define cauto     const auto
-#define ccast     const_cast
-#define dcast     dynamic_cast
-#define rcast     reinterpret_cast
-#define scast     static_cast
-#define sassert   static_assert
+#define CAT   const auto
+#define CCT   const_cast
+#define DCT   dynamic_cast
+#define RCT   reinterpret_cast
+#define SCT   static_cast
+#define SAT   static_assert
 
 #ifndef NDEBUG
 #   define ASSERT_3(cond, msg, os) \
       do {  if (!(cond)) { \
               (os) << __FILE__ << ':' << __LINE__ << '\t' \
                    << "Assertion `" #cond "` failed: " << (msg) << std::endl; \
-              exit(1); } \
+              abort(); } \
       } while (false)
 #else
 #   define ASSERT_3(cond, msg, os) do {} while (false)
@@ -95,7 +95,7 @@ template<typename T>
 using Optional MAYBE_UNUSED = std::optional<T>;
 template<typename T=char>
 using Str MAYBE_UNUSED = std::basic_string_view<T, std::char_traits<T>>;
-sassert(std::is_same<Str<>, std::string_view>::value);
+SAT(std::is_same<Str<>, std::string_view>::value);
 template<typename... Ts>
 using Variant MAYBE_UNUSED = std::variant<Ts...>;
 
@@ -159,7 +159,7 @@ template<
         typename Alloc = std::allocator<std::pair<const Key, Val> >
 >
 using HashMap MAYBE_UNUSED = std::unordered_map<Key, Val, Hash, KeyEq, Alloc>;
-sassert(std::is_same<HashMap<int, char>, std::unordered_map<int, char>>::value);
+SAT(std::is_same<HashMap<int, char>, std::unordered_map<int, char>>::value);
 template<typename T1, typename T2>
 using Pair MAYBE_UNUSED = std::pair<T1, T2>;
 using PcwsCstrt = std::piecewise_construct_t;
@@ -170,13 +170,13 @@ template<
         typename Cmp=std::less<typename Cont::value_type>
 >
 using Pq MAYBE_UNUSED = std::priority_queue<T, Cont, Cmp>;
-sassert(std::is_same<Pq<int>, std::priority_queue<int>>::value);
+SAT(std::is_same<Pq<int>, std::priority_queue<int>>::value);
 template<
         typename T=char,
         typename Alloc=std::allocator<T>
 >
 using String MAYBE_UNUSED = std::basic_string<T, std::char_traits<T>, Alloc>;
-sassert(std::is_same<String<>, std::string>::value);
+SAT(std::is_same<String<>, std::string>::value);
 template<
         typename Key,
         typename Val,
@@ -184,12 +184,12 @@ template<
         typename Alloc = std::allocator<std::pair<const Key, Val> >
 >
 using TreeMap MAYBE_UNUSED = std::map<Key, Val, Cmp, Alloc>;
-sassert(std::is_same<TreeMap<int, char>, std::map<int, char>>::value);
+SAT(std::is_same<TreeMap<int, char>, std::map<int, char>>::value);
 template<typename... Ts>
 using Tuple MAYBE_UNUSED = std::tuple<Ts...>;
 template<typename T, typename Alloc = std::allocator<T>>
 using Vec MAYBE_UNUSED = std::vector<T, Alloc>;
-sassert(std::is_same<Vec<int>, std::vector<int>>::value);
+SAT(std::is_same<Vec<int>, std::vector<int>>::value);
 
 
 
@@ -225,16 +225,16 @@ lateInitExample() {
   // do NOT use reference if you want the compiler to destruct `T`
   auto useThisAsT = *initInPlace<T>(
           &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
-  sassert(std::is_same<decltype(useThisAsT), T>::value);
+  SAT(std::is_same<decltype(useThisAsT), T>::value);
 
   // do use reference if you want to destruct `T` manually
   auto &useThisAsTRef = *initInPlace<T>(
           &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
-  sassert(std::is_same<decltype(useThisAsTRef), T&>::value);
+  SAT(std::is_same<decltype(useThisAsTRef), T&>::value);
 
   // do anything here
 
-  // you must manually destruct `T` reference
+  // you must manually destruct `T` reference to prevent memory leak
   useThisAsTRef.~T();
 
   // `useThisAsT` automatically destructed here
@@ -244,13 +244,13 @@ lateInitExample() {
 template<Usize MAX_SIZE = 128, typename CharT = char>
 inline void
 debugBytes(void *RESTRICT ptr, Usize size) {
-  auto       charTPtr    = rcast<CharT *>(ptr);
+  auto       charTPtr    = RCT<CharT *>(ptr);
 
   const auto hexWidth        = 2 * sizeof(CharT);
   const auto sizeToPrint     = std::min(size, MAX_SIZE);
   const auto printCharMargin = [sizeToPrint]() {
     std::cout << '|'
-              << std::setfill('-') << std::setw(scast<I32>(hexWidth * sizeToPrint)) << ""
+              << std::setfill('-') << std::setw(SCT<I32>(hexWidth * sizeToPrint)) << ""
               << "|\n";
     std::cout.copyfmt(std::ios(nullptr));
   };
@@ -357,3 +357,58 @@ pmrContainerExample() {
 }
 
 #endif
+
+
+namespace jerryc05 {
+
+  template<typename T>
+  class Span {
+    T     *mPtr;
+    Usize mLen;
+
+  public:
+    Span(T *ptr, Usize len) NOEXCEPT: mPtr{ptr}, mLen{len} {}
+
+    template<typename U>
+    F_INLINE const T &operator[](U i) const NOEXCEPT {
+      return mPtr[i];
+    }
+
+    template<typename U>
+    inline T &
+    operator[](U i) NOEXCEPT {
+      return CCT<T &>(CCT<const decltype(*this)>(*this)[i]);
+    }
+
+    NODISCARD F_INLINE
+    Usize len() const NOEXCEPT {
+      return mLen;
+    }
+
+    NODISCARD F_INLINE
+    Usize size() const NOEXCEPT {
+      return len();
+    }
+
+    F_INLINE
+    const T *cbegin() const NOEXCEPT {
+      return mPtr;
+    }
+
+    F_INLINE
+    const T *cend() const NOEXCEPT {
+      return mPtr + mLen;
+    }
+
+    inline
+    T *begin() NOEXCEPT {
+      return CCT<T *>(this->cbegin());
+    }
+
+    inline
+    T *end() NOEXCEPT {
+      return CCT<T *>(this->cend());
+    }
+  };
+
+}  // namespace jerryc05
