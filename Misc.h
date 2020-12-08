@@ -384,11 +384,15 @@ namespace jerryc05 {
     const Usize mLen;
 
   public:
-    constexpr
-    Span(T *ptr, const Usize len) NOEXCEPT: mPtr{ptr}, mLen{len} {}
+    MAYBE_UNUSED constexpr
+    Span(T *ptr, decltype(mLen) len) NOEXCEPT: mPtr{ptr}, mLen{len} {}
+
+    template<Usize N>
+    MAYBE_UNUSED constexpr explicit
+    Span(T (&arr)[N]) NOEXCEPT: mPtr{arr}, mLen{N} {}
 
     template<typename U>
-    NODISCARD F_INLINE constexpr
+    NODISCARD constexpr F_INLINE
     const T &operator[](U i) const NOEXCEPT {
       ASSERT(i < mLen,
              String<>("\033[1;91mIndex [") + std::to_string(i) + "]"
@@ -397,54 +401,54 @@ namespace jerryc05 {
     }
 
     template<typename U>
-    NODISCARD inline constexpr
+    NODISCARD constexpr inline
     T &operator[](U i) NOEXCEPT {
       return CCT<T &>(CCT<const decltype(*this)>(*this)[i]);
     }
 
-    NODISCARD F_INLINE constexpr
+    MAYBE_UNUSED NODISCARD constexpr F_INLINE
     Usize len() const NOEXCEPT {
       return mLen;
     }
 
-    NODISCARD F_INLINE constexpr
+    MAYBE_UNUSED NODISCARD constexpr F_INLINE
     Usize size() const NOEXCEPT {
       return len();
     }
 
-    NODISCARD F_INLINE constexpr
+    MAYBE_UNUSED NODISCARD constexpr F_INLINE
     bool isEmpty() const NOEXCEPT {
       return len() == 0;
     }
 
-    NODISCARD F_INLINE constexpr
+    MAYBE_UNUSED NODISCARD constexpr F_INLINE
     bool empty() const NOEXCEPT {
       return isEmpty();
     }
 
-    NODISCARD F_INLINE constexpr
+    NODISCARD constexpr F_INLINE
     const T *cbegin() const NOEXCEPT {
       return mPtr;
     }
 
-    NODISCARD inline constexpr
+    NODISCARD constexpr inline
     T *begin() NOEXCEPT {
       return CCT<T *>(this->cbegin());
     }
 
-    NODISCARD F_INLINE constexpr
+    NODISCARD constexpr F_INLINE
     const T *cend() const NOEXCEPT {
       return cbegin() + len();
     }
 
-    NODISCARD inline constexpr
+    NODISCARD constexpr inline
     T *end() NOEXCEPT {
       return CCT<T *>(this->cend());
     }
 
     template<typename IterT>
     class RIter {
-      IterT * mRPtr;
+      IterT *mRPtr;
 
       constexpr explicit
       RIter(IterT *rPtr) NOEXCEPT: mRPtr{rPtr} {}
@@ -457,34 +461,42 @@ namespace jerryc05 {
         return *this;
       }
 
+      NODISCARD
       IterT &operator*() {
         return *mRPtr;
       }
 
-      IterT* operator->(){
+      NODISCARD
+      IterT *operator->() {
         return mRPtr;
       }
     };
 
-    NODISCARD F_INLINE constexpr
+    MAYBE_UNUSED NODISCARD constexpr F_INLINE
     RIter<const T> crbegin() const NOEXCEPT {
       return RIter<const T>{cend() - 1};
     }
 
-    NODISCARD inline constexpr
+    MAYBE_UNUSED NODISCARD constexpr inline
     RIter<T> rbegin() NOEXCEPT {
       return RIter<T>{end() - 1};
     }
 
-    NODISCARD F_INLINE constexpr
+    MAYBE_UNUSED NODISCARD  constexpr F_INLINE
     RIter<const T> crend() const NOEXCEPT {
       return RIter<const T>{cbegin() - 1};
     }
 
-    NODISCARD inline constexpr
+    MAYBE_UNUSED NODISCARD constexpr inline
     RIter<T> rend() NOEXCEPT {
       return RIter<T>{begin() - 1};
     }
   };
+
+  template<typename T>
+  Span(T, Usize) -> Span<T>;
+
+  template<typename T, Usize N>
+  Span(T (&)[N]) -> Span<T>;
 
 }  // namespace jerryc05
