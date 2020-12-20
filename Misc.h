@@ -134,18 +134,20 @@ using Fn = std::function<T>;
 #endif
 
 
-using Byte MAYBE_UNUSED = std::byte;
-using F32 MAYBE_UNUSED = float;
-using F64 MAYBE_UNUSED = double;
-using I8 MAYBE_UNUSED = std::int8_t;
-using I16 MAYBE_UNUSED = std::int16_t;
-using I32 MAYBE_UNUSED = std::int32_t;
-using I64 MAYBE_UNUSED = std::int64_t;
+using Byte  MAYBE_UNUSED = std::byte;
+using F32   MAYBE_UNUSED = float;
+using F64   MAYBE_UNUSED = double;
+using I8    MAYBE_UNUSED = std::int8_t;
+using I16   MAYBE_UNUSED = std::int16_t;
+using I32   MAYBE_UNUSED = std::int32_t;
+using I64   MAYBE_UNUSED = std::int64_t;
+using IMax  MAYBE_UNUSED = std::intmax_t;
 using Isize MAYBE_UNUSED = std::ptrdiff_t;
-using U8 MAYBE_UNUSED = std::uint8_t;
-using U16 MAYBE_UNUSED = std::uint16_t;
-using U32 MAYBE_UNUSED = std::uint32_t;
-using U64 MAYBE_UNUSED = std::uint64_t;
+using U8    MAYBE_UNUSED = std::uint8_t;
+using U16   MAYBE_UNUSED = std::uint16_t;
+using U32   MAYBE_UNUSED = std::uint32_t;
+using U64   MAYBE_UNUSED = std::uint64_t;
+using UMax  MAYBE_UNUSED = std::uintmax_t;
 using Usize MAYBE_UNUSED = std::size_t;
 
 
