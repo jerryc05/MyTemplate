@@ -91,9 +91,11 @@
 
 // Workarounds
 #if (__GNUC__ >= 7) || (__clang_major__ * 10 + __clang_minor__ >= 39)
+
 #   include <optional>
 #   include <string_view>
 #   include <variant>
+
 template<typename T>
 using Optional MAYBE_UNUSED = std::optional<T>;
 template<typename T=char>
@@ -103,7 +105,9 @@ template<typename... Ts>
 using Variant MAYBE_UNUSED = std::variant<Ts...>;
 
 #   if (__GNUC__ * 10 + __GNUC_MINOR__ > 47) || (__clang_major__ * 10 + __clang_minor__ >= 34)
+
 #       include <functional>
+
 template<typename T>
 using Fn = std::function<T>;
 #   endif
@@ -134,19 +138,23 @@ using Fn = std::function<T>;
 #endif
 
 
-using Byte MAYBE_UNUSED = std::byte;
-using F32 MAYBE_UNUSED = float;
-using F64 MAYBE_UNUSED = double;
-using I8 MAYBE_UNUSED = std::int8_t;
-using I16 MAYBE_UNUSED = std::int16_t;
-using I32 MAYBE_UNUSED = std::int32_t;
-using I64 MAYBE_UNUSED = std::int64_t;
+// f:off
+using Byte  MAYBE_UNUSED = std::byte;
+using F32   MAYBE_UNUSED = float;
+using F64   MAYBE_UNUSED = double;
+using I8    MAYBE_UNUSED = std::int8_t;
+using I16   MAYBE_UNUSED = std::int16_t;
+using I32   MAYBE_UNUSED = std::int32_t;
+using I64   MAYBE_UNUSED = std::int64_t;
+using IMax  MAYBE_UNUSED = std::intmax_t;
 using Isize MAYBE_UNUSED = std::ptrdiff_t;
-using U8 MAYBE_UNUSED = std::uint8_t;
-using U16 MAYBE_UNUSED = std::uint16_t;
-using U32 MAYBE_UNUSED = std::uint32_t;
-using U64 MAYBE_UNUSED = std::uint64_t;
+using U8    MAYBE_UNUSED = std::uint8_t;
+using U16   MAYBE_UNUSED = std::uint16_t;
+using U32   MAYBE_UNUSED = std::uint32_t;
+using U64   MAYBE_UNUSED = std::uint64_t;
+using UMax  MAYBE_UNUSED = std::uintmax_t;
 using Usize MAYBE_UNUSED = std::size_t;
+// f:on
 
 
 template<typename T, Usize S>
@@ -209,7 +217,6 @@ using Vec MAYBE_UNUSED = std::vector<T, Alloc>;
 SAT(std::is_same<Vec<int>, std::vector<int>>::value);
 
 
-
 template<typename Char>
 MAYBE_UNUSED F_INLINE void
 skipCurrentLine(
@@ -247,7 +254,7 @@ lateInitExample() {
   // do use reference if you want to destruct `T` manually
   auto &useThisAsTRef = *initInPlace<T>(
           &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
-  SAT(std::is_same<decltype(useThisAsTRef), T&>::value);
+  SAT(std::is_same<decltype(useThisAsTRef), T &>::value);
 
   // do anything here
 
@@ -261,7 +268,7 @@ lateInitExample() {
 template<Usize MAX_SIZE = 128, typename CharT = char>
 inline void
 debugBytes(void *RESTRICT ptr, Usize size) {
-  auto       charTPtr    = RCT<CharT *>(ptr);
+  auto charTPtr = RCT<CharT *>(ptr);
 
   const auto hexWidth        = 2 * sizeof(CharT);
   const auto sizeToPrint     = std::min(size, MAX_SIZE);
@@ -272,7 +279,7 @@ debugBytes(void *RESTRICT ptr, Usize size) {
     std::cout.copyfmt(std::ios(nullptr));
   };
 
-  std::cout<<"\033[1;94m";
+  std::cout << "\033[1;94m";
   printCharMargin();
 
   for (U8 j = 0; j < 2; ++j) {
@@ -292,7 +299,6 @@ debugBytes(void *RESTRICT ptr, Usize size) {
   printCharMargin();
   std::cerr << "\033[0m";
 }
-
 
 
 template<Usize NUM_TRACES = 16>
@@ -318,7 +324,9 @@ stackTraceSigHandler(int sig) {
 
 // Memory Resource
 #if (__GNUC__ >= 9) || (__clang_major__ >= 9)
+
 #   include <memory_resource>
+
 using MonoBufRes = std::pmr::monotonic_buffer_resource;
 template<typename T>
 using PmrAlloc = std::pmr::polymorphic_allocator<T>;
@@ -376,127 +384,153 @@ pmrContainerExample() {
 #endif
 
 
-namespace jerryc05 {
+namespace Jerryc05 {
 
-  template<typename T>
+#define SpanImpl \
+public: \
+template<typename U> \
+NODISCARD constexpr F_INLINE \
+const T &operator[](U i) const NOEXCEPT {\
+  ASSERT(i < N,\
+         String<>("\033[1;91mIndex [") + std::to_string(i) + "]"\
+                 + " out of bound [" + std::to_string(N) + "]!\033[0;31m");\
+  return mPtr[i];\
+}\
+\
+template<typename U>\
+NODISCARD constexpr inline \
+T &operator[](U i) NOEXCEPT {\
+  return CCT<T &>(CCT<const decltype(*this)>(*this)[i]);\
+}\
+\
+MAYBE_UNUSED NODISCARD constexpr F_INLINE \
+Usize len() const NOEXCEPT {\
+  return N;\
+}\
+\
+MAYBE_UNUSED NODISCARD constexpr F_INLINE \
+Usize size() const NOEXCEPT {\
+  return len();\
+}\
+\
+MAYBE_UNUSED NODISCARD constexpr F_INLINE \
+bool isEmpty() const NOEXCEPT {\
+  return len() == 0;\
+}\
+\
+MAYBE_UNUSED NODISCARD constexpr F_INLINE \
+bool empty() const NOEXCEPT {\
+  return isEmpty();\
+}\
+\
+NODISCARD constexpr F_INLINE \
+const T *cbegin() const NOEXCEPT {\
+  return mPtr;\
+}\
+\
+NODISCARD constexpr inline \
+T *begin() NOEXCEPT {\
+  return CCT<T *>(this->cbegin());\
+}\
+\
+NODISCARD constexpr F_INLINE \
+const T *cend() const NOEXCEPT {\
+  return cbegin() + len();\
+}\
+\
+NODISCARD constexpr inline \
+T *end() NOEXCEPT {\
+  return CCT<T *>(this->cend());\
+}\
+\
+template<typename IterT>\
+class RIter {\
+  IterT *mRPtr;\
+\
+  constexpr explicit\
+  RIter(IterT *rPtr) NOEXCEPT: mRPtr{rPtr} {}\
+\
+  friend class Span;\
+\
+public:\
+  RIter &operator++() {\
+    --mRPtr;\
+    return *this;\
+  }\
+\
+  NODISCARD\
+  IterT &operator*() {\
+    return *mRPtr;\
+  }\
+\
+  NODISCARD\
+  IterT *operator->() {\
+    return mRPtr;\
+  }\
+};\
+\
+MAYBE_UNUSED NODISCARD constexpr F_INLINE \
+RIter<const T> crbegin() const NOEXCEPT {\
+  return RIter<const T>{cend() - 1};\
+}\
+\
+MAYBE_UNUSED NODISCARD constexpr inline \
+RIter<T> rbegin() NOEXCEPT {\
+  return RIter<T>{end() - 1};\
+}\
+\
+MAYBE_UNUSED NODISCARD constexpr F_INLINE \
+RIter<const T> crend() const NOEXCEPT {\
+  return RIter<const T>{cbegin() - 1};\
+}\
+\
+MAYBE_UNUSED NODISCARD constexpr inline \
+RIter<T> rend() NOEXCEPT {\
+  return RIter<T>{begin() - 1};\
+}
+
+
+  template<typename T, Usize N>
   class Span {
-    T           *mPtr;
-    const Usize mLen;
+    T *mPtr;
+
+    Span() NOEXCEPT = default;
 
   public:
     MAYBE_UNUSED constexpr
-    Span(T *ptr, decltype(mLen) len) NOEXCEPT: mPtr{ptr}, mLen{len} {}
+    explicit Span(T (&arr)[N]) NOEXCEPT: mPtr{arr} {}
 
-    template<Usize N>
-    MAYBE_UNUSED constexpr explicit
-    Span(T (&arr)[N]) NOEXCEPT: mPtr{arr}, mLen{N} {}
+    template<Usize SIZE, typename U>
+    friend constexpr
+    Span<U, SIZE> fromPtr(U *ptr) NOEXCEPT;
 
-    template<typename U>
-    NODISCARD constexpr F_INLINE
-    const T &operator[](U i) const NOEXCEPT {
-      ASSERT(i < mLen,
-             String<>("\033[1;91mIndex [") + std::to_string(i) + "]"
-                     + " out of bound [" + std::to_string(mLen) + "]!\033[0;31m");
-      return mPtr[i];
-    }
-
-    template<typename U>
-    NODISCARD constexpr inline
-    T &operator[](U i) NOEXCEPT {
-      return CCT<T &>(CCT<const decltype(*this)>(*this)[i]);
-    }
-
-    MAYBE_UNUSED NODISCARD constexpr F_INLINE
-    Usize len() const NOEXCEPT {
-      return mLen;
-    }
-
-    MAYBE_UNUSED NODISCARD constexpr F_INLINE
-    Usize size() const NOEXCEPT {
-      return len();
-    }
-
-    MAYBE_UNUSED NODISCARD constexpr F_INLINE
-    bool isEmpty() const NOEXCEPT {
-      return len() == 0;
-    }
-
-    MAYBE_UNUSED NODISCARD constexpr F_INLINE
-    bool empty() const NOEXCEPT {
-      return isEmpty();
-    }
-
-    NODISCARD constexpr F_INLINE
-    const T *cbegin() const NOEXCEPT {
-      return mPtr;
-    }
-
-    NODISCARD constexpr inline
-    T *begin() NOEXCEPT {
-      return CCT<T *>(this->cbegin());
-    }
-
-    NODISCARD constexpr F_INLINE
-    const T *cend() const NOEXCEPT {
-      return cbegin() + len();
-    }
-
-    NODISCARD constexpr inline
-    T *end() NOEXCEPT {
-      return CCT<T *>(this->cend());
-    }
-
-    template<typename IterT>
-    class RIter {
-      IterT *mRPtr;
-
-      constexpr explicit
-      RIter(IterT *rPtr) NOEXCEPT: mRPtr{rPtr} {}
-
-      friend class Span;
-
-    public:
-      RIter &operator++() {
-        --mRPtr;
-        return *this;
-      }
-
-      NODISCARD
-      IterT &operator*() {
-        return *mRPtr;
-      }
-
-      NODISCARD
-      IterT *operator->() {
-        return mRPtr;
-      }
-    };
-
-    MAYBE_UNUSED NODISCARD constexpr F_INLINE
-    RIter<const T> crbegin() const NOEXCEPT {
-      return RIter<const T>{cend() - 1};
-    }
-
-    MAYBE_UNUSED NODISCARD constexpr inline
-    RIter<T> rbegin() NOEXCEPT {
-      return RIter<T>{end() - 1};
-    }
-
-    MAYBE_UNUSED NODISCARD  constexpr F_INLINE
-    RIter<const T> crend() const NOEXCEPT {
-      return RIter<const T>{cbegin() - 1};
-    }
-
-    MAYBE_UNUSED NODISCARD constexpr inline
-    RIter<T> rend() NOEXCEPT {
-      return RIter<T>{begin() - 1};
-    }
+  SpanImpl
   };
 
   template<typename T>
-  Span(T, Usize) -> Span<T>;
+  class Span<T, 0> {
+    T           *mPtr;
+    const Usize N;
+
+  public:
+    MAYBE_UNUSED constexpr
+    Span(T *ptr, decltype(N) len) NOEXCEPT: mPtr{ptr}, N{len} {}
+
+  SpanImpl
+  };
+
+  template<Usize SIZE, typename T>
+  NODISCARD constexpr
+  Span<T, SIZE> fromPtr(T *ptr) NOEXCEPT {
+    Span<T, SIZE> span;
+    span.mPtr = ptr;
+    return span;
+  }
+
+  template<typename T>
+  Span(T, Usize) -> Span<T, 0>;
 
   template<typename T, Usize N>
-  Span(T (&)[N]) -> Span<T>;
+  Span(T (&)[N]) -> Span<T, N>;
 
-}  // namespace jerryc05
+}  // namespace Jerryc05
