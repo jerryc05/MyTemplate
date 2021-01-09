@@ -136,9 +136,7 @@ Use at your **OWN** risk.
         - Copy-paste the contents from [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
-  if [ -f $HOME/.sh-antigen ]; then
-    source $HOME/.sh-antigen
-  fi
+  [ -f $HOME/.sh-antigen ] && source $HOME/.sh-antigen
   ```
 - **[RECOMMENDED]** Change terminal's font to one that supports **Emoji** (or at least **Unicode**) characters.
     - Some recommended font-families:
