@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Load Antigen
 if [ -f "~/antigen.zsh" ]; then
   source "~/antigen.zsh"
@@ -53,7 +55,7 @@ antigen bundle safe-paste
 antigen bundle z
 antigen bundle command-not-found
 antigen bundle unixorn/autoupdate-antigen.zshplugin
-antigen bundle supercrabtree/k && which numfmt >/dev/null || which brew >/dev/null && brew install coreutils
+antigen bundle supercrabtree/k && which numfmt >/dev/null || { which brew >/dev/null && brew install coreutils }
 antigen bundle pip
 antigen bundle zsh-256color
 
