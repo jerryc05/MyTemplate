@@ -1,12 +1,12 @@
 # Load Antigen
 if [ -f "/usr/share/zsh-antigen/antigen.zsh" ]; then
-  source "/usr/share/zsh-antigen/antigen.zsh"
+  . "/usr/share/zsh-antigen/antigen.zsh"
 elif [ -f "/usr/local/share/antigen/antigen.zsh" ]; then
-  source "/usr/local/share/antigen/antigen.zsh"
+  . "/usr/local/share/antigen/antigen.zsh"
 elif [ -f "/usr/share/zsh/share/antigen.zsh" ]; then
-  source "/usr/share/zsh/share/antigen.zsh"
+  . "/usr/share/zsh/share/antigen.zsh"
 elif [ -f "$HOME/antigen.zsh" ]; then
-  source "$HOME/antigen.zsh"
+  . "$HOME/antigen.zsh"
 else
   __ok=0
   antigen_zsh_cache_path="$HOME/.antigen/.antigen_zsh_path"
@@ -15,20 +15,20 @@ else
 
     # Path from cache is valid
     if [ -f "$__antigen_zsh_path" ]; then
-      source "$__antigen_zsh_path"
+      . "$__antigen_zsh_path"
       __ok=1
     fi
   fi
 
   if [ $__ok -eq 0 ]; then
-    echo "Finding `antigen.zsh` ..."
+    echo "Finding \`antigen.zsh\` ..."
     __antigen_zsh_path=$(find /usr -name antigen.zsh 2> /dev/null)
 
     # Update cache of path
     if [ -f "$__antigen_zsh_path" ]; then
       mkdir -p "$HOME/.antigen"
       echo $__antigen_zsh_path > "$antigen_zsh_cache_path"
-      source "$__antigen_zsh_path"
+      . "$__antigen_zsh_path"
 
     # We lost this file
     else
@@ -51,7 +51,7 @@ antigen bundle safe-paste
 antigen bundle z
 antigen bundle command-not-found
 antigen bundle unixorn/autoupdate-antigen.zshplugin
-antigen bundle supercrabtree/k && which numfmt >/dev/null || { which brew >/dev/null && brew install coreutils }
+antigen bundle supercrabtree/k && which numfmt >/dev/null || which brew >/dev/null && brew install coreutils
 antigen bundle pip
 antigen bundle zsh-256color
 
