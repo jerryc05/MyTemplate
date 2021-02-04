@@ -46,9 +46,7 @@ Use at your **OWN** risk.
 
 ##### Plugin manager: [`antigen`](https://github.com/zsh-users/antigen)
 
-- Installation:
-    - Linux(`apt`): `apt install zsh-antigen`
-    - MacOS(`brew`): `brew install antigen`
+- Installation: `curl -L git.io/antigen-nightly > ~/antigen.zsh`
 
 <details><summary>Plugins detail (you can safely ignore these)</summary><p>
 
