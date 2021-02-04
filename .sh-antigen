@@ -1,12 +1,12 @@
 # Load Antigen
 if [ -f "/usr/share/zsh-antigen/antigen.zsh" ]; then
-  . "/usr/share/zsh-antigen/antigen.zsh"
+  source "/usr/share/zsh-antigen/antigen.zsh"
 elif [ -f "/usr/local/share/antigen/antigen.zsh" ]; then
-  . "/usr/local/share/antigen/antigen.zsh"
+  source "/usr/local/share/antigen/antigen.zsh"
 elif [ -f "/usr/share/zsh/share/antigen.zsh" ]; then
-  . "/usr/share/zsh/share/antigen.zsh"
+  source "/usr/share/zsh/share/antigen.zsh"
 elif [ -f "$HOME/antigen.zsh" ]; then
-  . "$HOME/antigen.zsh"
+  source "$HOME/antigen.zsh"
 else
   __ok=0
   antigen_zsh_cache_path="$HOME/.antigen/.antigen_zsh_path"
@@ -15,7 +15,7 @@ else
 
     # Path from cache is valid
     if [ -f "$__antigen_zsh_path" ]; then
-      . "$__antigen_zsh_path"
+      source "$__antigen_zsh_path"
       __ok=1
     fi
   fi
@@ -28,7 +28,7 @@ else
     if [ -f "$__antigen_zsh_path" ]; then
       mkdir -p "$HOME/.antigen"
       echo $__antigen_zsh_path > "$antigen_zsh_cache_path"
-      . "$__antigen_zsh_path"
+      source "$__antigen_zsh_path"
 
     # We lost this file
     else
