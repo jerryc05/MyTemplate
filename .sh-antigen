@@ -1,5 +1,7 @@
 # Load Antigen
-if [ -f "/usr/share/zsh-antigen/antigen.zsh" ]; then
+if [ -f "~/antigen.zsh" ]; then
+  source "~/antigen.zsh"
+elif [ -f "/usr/share/zsh-antigen/antigen.zsh" ]; then
   source "/usr/share/zsh-antigen/antigen.zsh"
 elif [ -f "/usr/local/share/antigen/antigen.zsh" ]; then
   source "/usr/local/share/antigen/antigen.zsh"
