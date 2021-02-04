@@ -159,6 +159,7 @@ Use at your **OWN** risk.
         -e 's/# *laravel_version/laravel_version/g' \
         -e 's/# *java_version/java_version/g' \
         -e 's/# *package/package/g' \
+        -e 's/# *vpn_ip/vpn_ip/g' \
         -e 's/# *load/load/g' \
         -e 's/# *disk_usage/disk_usage/g' \
         -e 's/# *ram/ram/g' \
@@ -178,6 +179,7 @@ Use at your **OWN** risk.
         -e 's/# *laravel_version/laravel_version/g' \
         -e 's/# *java_version/java_version/g' \
         -e 's/# *package/package/g' \
+        -e 's/# *vpn_ip/vpn_ip/g' \
         -e 's/# *load/load/g' \
         -e 's/# *disk_usage/disk_usage/g' \
         -e 's/# *ram/ram/g' \
