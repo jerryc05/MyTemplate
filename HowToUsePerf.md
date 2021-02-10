@@ -1,7 +1,7 @@
 Everything as release, except +`-g3` and -`-s`.
 
 ```sh
-perf record --call-graph dwarf -F 99 -b ./${program} [${args}...] >/dev/null
+perf record --call-graph dwarf -F 498 -b ./${program} [${args}...] >/dev/null
 #                        ^^^^^    ^^ ^^                           ^^^^^^^^^^^
 #                        |        |  |                            |= This is optional, but useful
 #                        |        |  |= Enable taken branch stack sampling, may require
