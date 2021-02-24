@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
 NPROC=$(nproc)
-for i in $(seq 1 30); do
-  while (( $(jobs -r | wc -l) > NPROC )); do
-    sleep .25
-  done
+for i in $(seq 1 30); do  
+  (( (__++ % NPROC) == 0)) && wait
 
   (
     echo "$i: Do sth in parallel here, for example"
