@@ -251,15 +251,6 @@ MAYBE_UNUSED void
 lateInitExample() {
   using T = Vec<int>;
   auto rawBytesOfT = allocUninit<T>();
-
-  // do something here
-
-  // do NOT use reference if you want the compiler to destruct `T`
-  auto useThisAsT = *initInPlace<T>(
-          &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
-  SAT(std::is_same<decltype(useThisAsT), T>::value);
-
-  // do use reference if you want to destruct `T` manually
   auto &useThisAsTRef = *initInPlace<T>(
           &rawBytesOfT, std::initializer_list<T::value_type>{1, 2, 3});
   SAT(std::is_same<decltype(useThisAsTRef), T &>::value);
@@ -268,8 +259,6 @@ lateInitExample() {
 
   // you must manually destruct `T` reference to prevent memory leak
   useThisAsTRef.~T();
-
-  // `useThisAsT` automatically destructed here
 }
 
 
