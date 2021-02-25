@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-NPROC=$(nproc)
-for i in $(seq 1 30); do  
-  while [ "$(jobs -r | wc -l)" -ge 3 ];do wait -n;done
+NPROC=$(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN)
+for i in $(seq 1 30); do
+  while (($(jobs -r | wc -l)>=$NPROC)); do wait -n; done
 
   {
     echo "$i: Do sth in parallel here, for example"
