@@ -14,7 +14,7 @@ if __name__ == '__main__':
         n = random.random() * 2
         p('start sleeping ', n, ' sec')
         time.sleep(n)
-        p('end   sleeping ', n, ' sec')
+        p('end')
 
     def schedule(pool: Pool, p: 'Print'):
         rets: List[AsyncResult[object]] = []
