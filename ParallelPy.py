@@ -1,29 +1,50 @@
 #!/usr/bin/env python3
 
+import math
 import multiprocessing as mp
 from multiprocessing.pool import AsyncResult, Pool
 import os
 import shutil
 import sys
-from typing import List, TextIO
+import time
+from typing import Any, List, TextIO
 
 if __name__ == '__main__':
 
     def run(p: 'Print'):
-        import random, time
+        import random
         n = random.random() * 2
         p('start sleeping ', n, ' sec')
         time.sleep(n)
         p('end')
+        return (n > 1, str('testTrue' if n > 1 else 'testFalse'))
 
     def schedule(pool: Pool, p: 'Print'):
-        rets: List[AsyncResult[object]] = []
+        rets: List[AsyncResult[Any]] = []
         for _ in range(18):
             rets.append(pool.apply_async(run, (p, )))
         _pool.close()
         _pool.join()
-        # for ret in rets:
-        #     ...
+
+        if not rets: return
+        print(p.MAGENTA, p.BRIGHT, sep='', end='')
+        p(' SUMMARY ', align='c', fill_ch='=')
+
+        i = 1
+        fail: List[str] = []
+        digit = str(math.ceil(math.log10(len(rets)+1)))
+        for x in rets:
+            if x.get()[0]:
+                p(p.GREEN, ('%' + digit + 'd') % i, '. ', p.BRIGHT,
+                  x.get()[1], p.CLR_ALL, p.GREEN, ' ... OK!')
+                i += 1
+            else:
+                fail.append(x.get()[1])
+        i = 1
+        for x in fail:
+            p(p.RED, ('%' + digit + 'd') % i, '. ', p.BRIGHT, x, p.CLR_ALL,
+              p.RED, ' ... failed!')
+            i += 1
 
     class Print:
         BRIGHT, DIM, NORMAL, CLR_ALL = '01', '02', '22', '00'
@@ -80,3 +101,4 @@ if __name__ == '__main__':
     _pool.join()
     print(p.MAGENTA, p.BRIGHT, sep='', end='')
     p(' DONE! ', align='c', fill_ch='=')
+    time.sleep(10)
