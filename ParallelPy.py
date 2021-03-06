@@ -25,26 +25,7 @@ if __name__ == '__main__':
             rets.append(pool.apply_async(run, (p, )))
         _pool.close()
         _pool.join()
-
-        if not rets: return
-        print(p.MAGENTA, p.BRIGHT, sep='', end='')
-        p(' SUMMARY ', align='c', fill_ch='=')
-
-        i = 1
-        fail: List[str] = []
-        digit = str(math.ceil(math.log10(len(rets)+1)))
-        for x in rets:
-            if x.get()[0]:
-                p(p.GREEN, ('%' + digit + 'd') % i, '. ', p.BRIGHT,
-                  x.get()[1], p.CLR_ALL, p.GREEN, ' ... OK!')
-                i += 1
-            else:
-                fail.append(x.get()[1])
-        i = 1
-        for x in fail:
-            p(p.RED, ('%' + digit + 'd') % i, '. ', p.BRIGHT, x, p.CLR_ALL,
-              p.RED, ' ... failed!')
-            i += 1
+        return rets
 
     class Print:
         BRIGHT, DIM, NORMAL, CLR_ALL = '01', '02', '22', '00'
@@ -90,15 +71,41 @@ if __name__ == '__main__':
 
     _N_PARALLEL = os.cpu_count() or 4
     _TERM_SIZE = shutil.get_terminal_size()
-    p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CYAN,
-      'Terminal size: ', p.BRIGHT, _TERM_SIZE.columns, ' x ', _TERM_SIZE.lines)
+    p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CLR_ALL,
+      p.CYAN, 'Terminal window size: ', p.BRIGHT, _TERM_SIZE.columns, ' x ',
+      _TERM_SIZE.lines)
 
     _pool = mp.Pool(_N_PARALLEL)
     print(p.MAGENTA, p.BRIGHT, sep='', end='')
     p(' START! ', align='c', fill_ch='=')
-    schedule(_pool, p)
+    rets = schedule(_pool, p)
     _pool.close()
     _pool.join()
+
+    if rets:
+        print(p.MAGENTA, p.BRIGHT, sep='', end='')
+        p(' SUMMARY ', align='c', fill_ch='=')
+        i = 1
+        fail: List[str] = []
+        digit = str(math.ceil(math.log10(len(rets) + 1)))
+        for x in rets:
+            if x.get()[0]:
+                p(p.GREEN, ('%' + digit + 'd') % i, '. ', p.BRIGHT,
+                x.get()[1], p.CLR_ALL, p.GREEN, ' ... OK!')
+                i += 1
+            else:
+                fail.append(x.get()[1])
+        i = 1
+        for x in fail:
+            p(p.RED, ('%' + digit + 'd') % i, '. ', p.BRIGHT, x, p.CLR_ALL, p.RED,
+            ' ... failed!')
+            i += 1
+
     print(p.MAGENTA, p.BRIGHT, sep='', end='')
     p(' DONE! ', align='c', fill_ch='=')
-    time.sleep(10)
+    try:
+        import psutil
+        if not psutil.Process(os.getppid()).name().endswith('sh'):
+            input('You can now terminate this program by Ctrl+C ...')
+    except:
+        ...
