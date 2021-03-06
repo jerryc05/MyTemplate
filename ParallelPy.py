@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 import multiprocessing as mp
-from multiprocessing.pool import Pool
+from multiprocessing.pool import AsyncResult, Pool
 import os
 import shutil
 import sys
-from typing import TextIO
+from typing import List, TextIO
 
 if __name__ == '__main__':
 
@@ -17,8 +17,13 @@ if __name__ == '__main__':
         p('end   sleeping ', n, ' sec')
 
     def schedule(pool: Pool, p: 'Print'):
-        for _ in range(20):
-            pool.apply_async(run, (p, ))
+        rets: List[AsyncResult[object]] = []
+        for _ in range(18):
+            rets.append(pool.apply_async(run, (p, )))
+        _pool.close()
+        _pool.join()
+        # for ret in rets:
+        #     ...
 
     class Print:
         BRIGHT, DIM, NORMAL, CLR_ALL = '01', '02', '22', '00'
