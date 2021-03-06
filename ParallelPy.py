@@ -27,6 +27,58 @@ if __name__ == '__main__':
         _pool.join()
         return rets
 
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
     class Print:
         BRIGHT, DIM, NORMAL, CLR_ALL = '01', '02', '22', '00'
         BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, CLR_COLOR = 30, 31, 32, 33, 34, 35, 36, 37, 39
@@ -91,14 +143,14 @@ if __name__ == '__main__':
         for x in rets:
             if x.get()[0]:
                 p(p.GREEN, ('%' + digit + 'd') % i, '. ', p.BRIGHT,
-                x.get()[1], p.CLR_ALL, p.GREEN, ' ... OK!')
+                  x.get()[1], p.CLR_ALL, p.GREEN, ' ... OK!')
                 i += 1
             else:
                 fail.append(x.get()[1])
         i = 1
         for x in fail:
-            p(p.RED, ('%' + digit + 'd') % i, '. ', p.BRIGHT, x, p.CLR_ALL, p.RED,
-            ' ... failed!')
+            p(p.RED, ('%' + digit + 'd') % i, '. ', p.BRIGHT, x, p.CLR_ALL,
+              p.RED, ' ... failed!')
             i += 1
 
     print(p.MAGENTA, p.BRIGHT, sep='', end='')
