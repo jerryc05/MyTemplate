@@ -63,28 +63,15 @@ if __name__ == '__main__':
     p = Print()
 
     _N_PARALLEL = os.cpu_count() or 4
-    p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL)
-
     _TERM_SIZE = shutil.get_terminal_size()
-    p(p.CYAN, 'Terminal size: ', p.BRIGHT, _TERM_SIZE.columns, ' col x ',
-      _TERM_SIZE.lines, ' ln')
+    p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CYAN,
+      'Terminal size: ', p.BRIGHT, _TERM_SIZE.columns, ' x ', _TERM_SIZE.lines)
 
-    p(123, align='r')
-    p(p.CYAN, 123, align='r')
-    p(p.CYAN, p.BRIGHT, 123, align='r')
-    p(p.CYAN, p.BRIGHT, 123, align='c')
-    p(p.CYAN,
-      'Terminal size: ',
-      p.BRIGHT,
-      _TERM_SIZE.columns,
-      ' col x ',
-      _TERM_SIZE.lines,
-      ' ln',
-      align='c')
-    exit()
     _pool = mp.Pool(_N_PARALLEL)
-    p(p.MAGENTA, p.BRIGHT, '===== START! =====')
+    print(p.MAGENTA, p.BRIGHT, sep='', end='')
+    p(' START! ', align='c', fill_ch='=')
     schedule(_pool, p)
     _pool.close()
     _pool.join()
-    p(p.MAGENTA, p.BRIGHT, '===== DONE! =====')
+    print(p.MAGENTA, p.BRIGHT, sep='', end='')
+    p(' DONE! ', align='c', fill_ch='=')
