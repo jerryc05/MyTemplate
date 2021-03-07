@@ -23,8 +23,8 @@ if __name__ == '__main__':
         rets: List[AsyncResult[Any]] = []
         for _ in range(18):
             rets.append(pool.apply_async(run, (p, )))
-        _pool.close()
-        _pool.join()
+        pool.close()
+        pool.join()
         return rets
 
 #
@@ -127,12 +127,10 @@ if __name__ == '__main__':
       p.CYAN, 'Terminal window size: ', p.BRIGHT, _TERM_SIZE.columns, ' x ',
       _TERM_SIZE.lines)
 
-    _pool = mp.Pool(_N_PARALLEL)
-    print(p.MAGENTA, p.BRIGHT, sep='', end='')
-    p(' START! ', align='c', fill_ch='=')
-    rets = schedule(_pool, p)
-    _pool.close()
-    _pool.join()
+    with mp.Pool(_N_PARALLEL) as pool:
+        print(p.MAGENTA, p.BRIGHT, sep='', end='')
+        p(' START! ', align='c', fill_ch='=')
+        rets = schedule(pool, p)
 
     if rets:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
