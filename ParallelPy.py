@@ -10,24 +10,34 @@ import time
 from typing import Any, List, TextIO
 
 
-def run(p: 'Print'):
+def run():
     import random
-    n = random.random() * 2
+    n = random.random()
     p('start sleeping ', n, ' sec')
     time.sleep(n)
-    p('end')
-    return (n > 1, str('testTrue' if n > 1 else 'testFalse'))
+    p('end EXEC=', EXEC)
+    return (n > .5, str('testTrue' if n > .5 else 'testFalse'))
 
 
-def schedule(pool: Pool, p: 'Print'):
+def schedule(pool: Pool):
     rets: List[AsyncResult[Any]] = []
     for _ in range(18):
-        rets.append(pool.apply_async(run, (p, )))
+        rets.append(pool.apply_async(run, []))
     pool.close()
     pool.join()
     return rets
 
 
+def preprocess():
+    global EXEC
+    EXEC = 'echo'
+
+
+#
+#
+#
+#
+#
 #
 #
 #
@@ -133,10 +143,11 @@ if __name__ == '__main__':
       _TERM_SIZE[0] if _TERM_SIZE != _DEF_TERM_SIZE else '?', ' x ',
       _TERM_SIZE[1])
 
+    preprocess()
     with mp.Pool(_N_PARALLEL) as pool:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
         p(' START! ', align='c', fill_ch='=')
-        rets = schedule(pool, p)
+        rets = schedule(pool)
 
     if rets:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
@@ -171,7 +182,7 @@ if __name__ == '__main__':
         except:
             ...
     try:
-        if not pname.endswith('sh') or pname.startswith('python'):
+        if not pname.endswith('sh') and not pname.startswith('python'):
             input(pname +
                   ': You can now terminate this program by [ENTER] ...')
     except:
