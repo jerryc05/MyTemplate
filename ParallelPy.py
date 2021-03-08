@@ -30,7 +30,7 @@ def schedule(pool: Pool):
 
 def preprocess():
     global EXEC
-    EXEC = 'echo'
+    EXEC = '****-_-****'
 
 
 #
@@ -136,12 +136,12 @@ if __name__ == '__main__':
     p = Print()
 
     _N_PARALLEL = os.cpu_count() or 4
-    _DEF_TERM_SIZE = (30, '?')
+    _DEF_TERM_SIZE = (30, -1)
     _TERM_SIZE = shutil.get_terminal_size(_DEF_TERM_SIZE)
     p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CLR_ALL,
       p.CYAN, 'Terminal window size: ', p.BRIGHT,
       _TERM_SIZE[0] if _TERM_SIZE != _DEF_TERM_SIZE else '?', ' x ',
-      _TERM_SIZE[1])
+      _TERM_SIZE[1] if _TERM_SIZE != _DEF_TERM_SIZE else '?')
 
     preprocess()
     with mp.Pool(_N_PARALLEL) as pool:
