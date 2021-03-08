@@ -28,7 +28,7 @@ def schedule(pool: Pool):
     return rets
 
 
-def preprocess():
+def setup():
     global EXEC
     EXEC = '****-_-****'
 
@@ -143,7 +143,7 @@ if __name__ == '__main__':
       _TERM_SIZE[0] if _TERM_SIZE != _DEF_TERM_SIZE else '?', ' x ',
       _TERM_SIZE[1] if _TERM_SIZE != _DEF_TERM_SIZE else '?')
 
-    preprocess()
+    setup()
     with mp.Pool(_N_PARALLEL) as pool:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
         p(' START! ', align='c', fill_ch='=')
