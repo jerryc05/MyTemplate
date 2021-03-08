@@ -20,6 +20,15 @@ alias vg="valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes"
 #   1) brew install git-delta
 #   2) cargo install --git https://github.com/dandavison/delta.git
 #   For more info, visit: https://github.com/dandavison/delta#installation
-command -v delta && function xdelta {
+command -v delta >/dev/null && function xdelta {
   out__=$(delta --width $(tput cols) -ns $*) && echo $out__ && [ -z $out__ ]
+}
+
+# More helpful tar/untar
+command -v tar >/dev/null && function xtar {
+  echo "tar acvkf $* \n"
+        tar acvkf $*
+} && function xuntar {
+  echo "tar  xvkf $* \n"
+        tar  xvkf $*
 }
