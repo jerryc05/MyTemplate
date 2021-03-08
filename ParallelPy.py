@@ -114,7 +114,7 @@ class Print:
                   flush=flush)
         else:
             orient = '^' if align == 'c' else '>'
-            cols, _ = shutil.get_terminal_size()
+            cols, _ = shutil.get_terminal_size(_DEF_TERM_SIZE)
             s = sep.join(list(map(str, values)))
             f: str = '{:' + fill_ch + orient + str(cols +
                                                    5 * s.count('\x1b[')) + '}'
@@ -126,9 +126,11 @@ if __name__ == '__main__':
     p = Print()
 
     _N_PARALLEL = os.cpu_count() or 4
-    _TERM_SIZE = shutil.get_terminal_size()
+    _DEF_TERM_SIZE = (30, '?')
+    _TERM_SIZE = shutil.get_terminal_size(_DEF_TERM_SIZE)
     p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CLR_ALL,
-      p.CYAN, 'Terminal window size: ', p.BRIGHT, _TERM_SIZE[0], ' x ',
+      p.CYAN, 'Terminal window size: ', p.BRIGHT,
+      _TERM_SIZE[0] if _TERM_SIZE != _DEF_TERM_SIZE else '?', ' x ',
       _TERM_SIZE[1])
 
     with mp.Pool(_N_PARALLEL) as pool:
@@ -160,7 +162,7 @@ if __name__ == '__main__':
 
     try:
         import psutil
-        pname = psutil.Process(os.getppid()).name()
+        pname: str = psutil.Process(os.getppid()).name()
     except:
         try:
             import subprocess as sp
