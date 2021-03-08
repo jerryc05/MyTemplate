@@ -6,47 +6,48 @@ Use at your **OWN** risk.
 
 ## Table of Contents
 
-1. [Terminal](#terminal)
-    - [Handy aliases/vars/cmds/...](#handy-aliases/vars/cmds/)
+0. [Terminal](#terminal)
+    - [Commonly used scripts](#commonly-used-scripts)
     - [Still Bash? No! Try Zsh! (Unix-like)](#still-bash-no-try-zsh-unix-like)
         - [Set as default shell](#set-as-default-shell)
         - [Configure plugins](#configure-plugins)
         - [Configure themes](#configure-themes)
         - [Wrap up](#wrap-up)
         - [Summary](#summary)
+0. Todo ...
 
 ## Terminal
 
-### Handy aliases/vars/cmds/...
+### Commonly used scripts
 
-- Check out [`.sh-aliases`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-aliases) and [`.sh-env-vars`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-env.vars) in the repo.
-- Copy anything at your will.
+- Aliases: [`.sh-aliases`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-aliases)
+- Environment Variables: [`.sh-env-vars`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-env.vars)
 
 ### Still Bash? No! Try Zsh! (Unix-like)
 
 #### Set as default shell
 
-1. What shell am I using? Run `echo $0`
-2. If you are already running `zsh`, skip this section.
-3. Install `zsh` by yourself.
-    - Linux(`apt`): `apt install zsh`
-    - MacOS(`brew`): `brew install zsh`
-4. Set `zsh` as default:
-    - If you are on MacOS, run this first: `echo $(which zsh) | sudo tee -a /etc/shells`
+0. What shell am I using? Run `echo $0`
+0. If you are already running `zsh`, skip this section.
+0. Install `zsh` by yourself.
+    - Linux (`apt`): `apt install zsh`
+    - MacOS (`brew`): `brew install zsh`
+0. Set `zsh` as default:
+    - If you are using MacOS, run this first: `echo $(which zsh) | sudo tee -a /etc/shells`
     - Run `chsh -s $(which zsh)`
-5. **[RECOMMENDED]** Copy all env variables statements (e.g. `$PATH`) from `~/.bash_profile` (or other profile like `~/.profile`).
-6. **[RECOMMENDED]** Paste them to `~/.zshenv` (create the file if you don’t have it).
-7. **[RECOMMENDED]** Copy your alias, functions, key bindings and more from `~/.bash_profile` (or other profile like `~/.profile`).
-8. **[RECOMMENDED]** Paste them to `~/.zshrc` (create the file if you don’t have it), or link them to `~/.zshrc` accordingly if you don't want to.
-9. Restart your terminal.
-10. You will be prompted with `zsh`'s first-use wizard.
-    - Prompt `0` if the wizard asks whether to create files like `.zshrc`
+0. **[OPTIONAL]** Now, you might want to copy (or link) your previous settings to `zsh`.
+    0. `~/.zshenv` contains environment variables.
+    0. `~/.zshrc` contains aliases, functions, and key bindings.
+    0. Ask for help if you are confused.
+0. Restart your terminal.
+0. You will be prompted with `zsh`'s first-use wizard.
+    - Enter `0` if it asks whether to create files like `.zshrc`
 
 #### Configure plugins
 
 ##### Plugin manager: [`antigen`](https://github.com/zsh-users/antigen)
 
-- Installation: `curl -L git.io/antigen-nightly > ~/antigen.zsh`
+- Installation: `curl git.io/antigen-nightly --output ~/antigen.zsh`
 
 <details><summary>Plugins detail (you can safely ignore these)</summary><p>
 
@@ -128,15 +129,14 @@ Use at your **OWN** risk.
 
 #### Summary
 
-- Your `~/.sh-antigen` file shall look very similar to [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
+- Your `~/.sh-antigen` file should be very similar to [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
     - If you don't have `~/.sh-antigen` file:
-        - Create it by running: `nano ~/.sh-antigen`
-        - Copy-paste the contents from [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
+        - Download it using `curl https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.sh-antigen --output ~/.sh-antigen`
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
-  [ -f $HOME/.sh-antigen ] && source $HOME/.sh-antigen
+  [ -f $HOME/.sh-antigen ] && . $HOME/.sh-antigen
   ```
-- **[RECOMMENDED]** Change terminal's font to one that supports **Emoji** (or at least **Unicode**) characters.
+- **[OPTIONAL]** Change terminal's font to one that supports **Emoji** (or at least **Unicode**) characters.
     - Some recommended font-families:
         - [Cascadia Code](https://github.com/microsoft/cascadia-code) (my top choice)
         - [Fira Code](https://github.com/tonsky/FiraCode) (quite good)
@@ -166,7 +166,7 @@ Use at your **OWN** risk.
         -e 's/# *battery/battery/g' \
         -e 's/# *wifi  /wifi  /g' \
         ~/.p10k.zsh && \
-        source ~/.p10k.zsh
+        . ~/.p10k.zsh
         ```
         - MacOS:
         ```sh
@@ -186,7 +186,7 @@ Use at your **OWN** risk.
         -e 's/# *battery/battery/g' \
         -e 's/# *wifi  /wifi  /g' \
         -i '' ~/.p10k.zsh && \
-        source ~/.p10k.zsh
+        . ~/.p10k.zsh
         ```
     - You can tweak `~/.p10k.zsh` yourself as well if you are interested.
-        - Don't forget to run `source ~/.p10k.zsh` afterwards to apply changes.
+        - Don't forget to run `. ~/.p10k.zsh` afterwards to apply changes.

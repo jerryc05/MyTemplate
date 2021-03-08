@@ -2,7 +2,7 @@
 [ "$(uname -s)" = "Linux" ] && alias ls='ls --color=auto'
 [ "$(uname -s)" = "Linux" ] && alias dir='dir --color=auto'
 [ "$(uname -s)" = "Linux" ] && alias vdir='vdir --color=auto'
-alias grep='grep --color=auto'
+alias  grep=' grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
@@ -16,9 +16,10 @@ alias show-256-colors='for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::
 alias vg="valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes"
 
 # git-delta w/ exit code
-# install git-delta via one of these:
+# install git-delta using one of these:
 #   1) brew install git-delta
 #   2) cargo install --git https://github.com/dandavison/delta.git
-[ ! -z "$(which delta)" ] && function xdelta {
+#   For more info, visit: https://github.com/dandavison/delta#installation
+command -v delta && function xdelta {
   out__=$(delta --width $(tput cols) -ns $*) && echo $out__ && [ -z $out__ ]
 }
