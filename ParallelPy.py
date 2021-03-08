@@ -23,12 +23,11 @@ def schedule(pool: Pool) -> Tuple[List[str], List[str]]:
     rets: List[AsyncResult[Any]] = []
     for _ in range(18):
         rets.append(pool.apply_async(run, []))
-    pool.close()
-    pool.join()
     succ: List[str] = []
     fail: List[str] = []
     for x in rets:
         (succ if x.get()[0] else fail).append(x.get()[1])
+    pool.terminate()
     return succ, fail
 
 
@@ -37,6 +36,7 @@ def setup() -> None:
     EXEC = '***'
 
 
+#
 #
 #
 #
