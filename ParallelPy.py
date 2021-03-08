@@ -7,10 +7,10 @@ import os
 import shutil
 import sys
 import time
-from typing import Any, List, TextIO
+from typing import Any, List, TextIO, Tuple
 
 
-def run():
+def run() -> Tuple[bool, str]:
     import random
     n = random.random()
     p('start sleeping ', n, ' sec')
@@ -19,24 +19,24 @@ def run():
     return (n > .5, str('testTrue' if n > .5 else 'testFalse'))
 
 
-def schedule(pool: Pool):
+def schedule(pool: Pool) -> Tuple[List[str], List[str]]:
     rets: List[AsyncResult[Any]] = []
     for _ in range(18):
         rets.append(pool.apply_async(run, []))
     pool.close()
     pool.join()
-    return rets
+    succ: List[str] = []
+    fail: List[str] = []
+    for x in rets:
+        (succ if x.get()[0] else fail).append(x.get()[1])
+    return succ, fail
 
 
-def setup():
+def setup() -> None:
     global EXEC
-    EXEC = '****-_-****'
+    EXEC = '***'
 
 
-#
-#
-#
-#
 #
 #
 #
@@ -147,26 +147,19 @@ if __name__ == '__main__':
     with mp.Pool(_N_PARALLEL) as pool:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
         p(' START! ', align='c', fill_ch='=')
-        rets = schedule(pool)
+        (succ, fail) = schedule(pool)
 
-    if rets:
+    if succ or fail:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
         p(' SUMMARY ', align='c', fill_ch='=')
+        digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + 1)))
+        for i, x in enumerate(succ):
+            p(p.GREEN, ('%' + digit + 'd') % (i + 1), '. ', p.BRIGHT, x,
+              p.CLR_ALL, p.GREEN, ' ... OK!')
         i = 1
-        fail: List[str] = []
-        digit = str(math.ceil(math.log10(len(rets) + 1)))
-        for x in rets:
-            if x.get()[0]:
-                p(p.GREEN, ('%' + digit + 'd') % i, '. ', p.BRIGHT,
-                  x.get()[1], p.CLR_ALL, p.GREEN, ' ... OK!')
-                i += 1
-            else:
-                fail.append(x.get()[1])
-        i = 1
-        for x in fail:
-            p(p.RED, ('%' + digit + 'd') % i, '. ', p.BRIGHT, x, p.CLR_ALL,
-              p.RED, ' ... failed!')
-            i += 1
+        for i, x in enumerate(fail):
+            p(p.RED, ('%' + digit + 'd') % (i + 1), '. ', p.BRIGHT, x,
+              p.CLR_ALL, p.RED, ' ... failed!')
 
     print(p.MAGENTA, p.BRIGHT, sep='', end='')
     p(' DONE! ', align='c', fill_ch='=')
