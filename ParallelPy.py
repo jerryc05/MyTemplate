@@ -128,8 +128,8 @@ if __name__ == '__main__':
     _N_PARALLEL = os.cpu_count() or 4
     _TERM_SIZE = shutil.get_terminal_size()
     p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CLR_ALL,
-      p.CYAN, 'Terminal window size: ', p.BRIGHT, _TERM_SIZE.columns, ' x ',
-      _TERM_SIZE.lines)
+      p.CYAN, 'Terminal window size: ', p.BRIGHT, _TERM_SIZE[0], ' x ',
+      _TERM_SIZE[1])
 
     with mp.Pool(_N_PARALLEL) as pool:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
@@ -157,9 +157,20 @@ if __name__ == '__main__':
 
     print(p.MAGENTA, p.BRIGHT, sep='', end='')
     p(' DONE! ', align='c', fill_ch='=')
+
     try:
         import psutil
-        if not psutil.Process(os.getppid()).name().endswith('sh'):
-            input('You can now terminate this program by Ctrl+C ...')
+        pname = psutil.Process(os.getppid()).name()
+    except:
+        try:
+            import subprocess as sp
+            pname = sp.run('ps -p %d -o comm=' % os.getppid(),
+                           stderr=sp.DEVNULL).stdout
+        except:
+            ...
+    try:
+        if not pname.endswith('sh') or pname.startswith('python'):
+            input(pname +
+                  ': You can now terminate this program by [ENTER] ...')
     except:
         ...
