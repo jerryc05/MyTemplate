@@ -2,6 +2,7 @@
 
 import math
 import multiprocessing as mp
+from multiprocessing.synchronize import Lock as LockType
 from multiprocessing.pool import AsyncResult, Pool
 import os
 import shutil
@@ -10,7 +11,7 @@ import time
 from typing import Any, List, TextIO, Tuple
 
 
-def run() -> Tuple[bool, str]:
+def run(lock: LockType) -> Tuple[bool, str]:
     import random
     n = random.random()
     p('start sleeping ', n, ' sec')
@@ -22,7 +23,7 @@ def run() -> Tuple[bool, str]:
 def schedule(pool: Pool) -> Tuple[List[str], List[str]]:
     rets: List[AsyncResult[Any]] = []
     for _ in range(18):
-        rets.append(pool.apply_async(run, []))
+        rets.append(pool.apply_async(run, (lock,)))
     succ: List[str] = []
     fail: List[str] = []
     for x in rets:
@@ -133,7 +134,7 @@ class Print:
 
 
 if __name__ == '__main__':
-    p = Print()
+    p, lock = Print(), mp.Manager().Lock()
 
     _N_PARALLEL = os.cpu_count() or 4
     _DEF_TERM_SIZE = (30, -1)
@@ -159,7 +160,7 @@ if __name__ == '__main__':
         i = 1
         for i, x in enumerate(fail):
             p(p.RED, ('%' + digit + 'd') % (i + 1), '. ', p.BRIGHT, x,
-              p.CLR_ALL, p.RED, ' ... failed!')
+              p.CLR_ALL, p.RED, ' ... ERR!')
 
     print(p.MAGENTA, p.BRIGHT, sep='', end='')
     p(' DONE! ', align='c', fill_ch='=')
