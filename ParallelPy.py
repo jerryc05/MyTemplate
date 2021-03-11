@@ -1,34 +1,39 @@
 #!/usr/bin/env python3
 
+import glob
 import math
 import multiprocessing as mp
-from multiprocessing.synchronize import Lock as LockType
 from multiprocessing.pool import AsyncResult, Pool
 import os
 import shutil
 import sys
 import time
-from typing import Any, List, TextIO, Tuple
+from typing import Any, Dict, List, TextIO, Tuple
 
 
-def run(lock: LockType) -> Tuple[bool, str]:
+def run(g: Dict[str, object]) -> Tuple[bool, str]:
+    for k, v in g.items():
+        if k not in globals(): globals()[k] = v
     import random
     n = random.random()
-    p('start sleeping ', n, ' sec')
+    with lock:
+        p('start sleeping ', n, ' sec')
     time.sleep(n)
-    p('end EXEC=', EXEC)
+    with lock:
+        p('end sleeping ', n, ' sec', align='r')
     return (n > .5, str('testTrue' if n > .5 else 'testFalse'))
 
 
 def schedule(pool: Pool) -> Tuple[List[str], List[str]]:
+    g:Dict[str, object] = {k:v for (k,v) in globals().items() if \
+        all(x not in str(type(v)) for x in ('module','multiprocessing.pool.Pool'))}
     rets: List[AsyncResult[Any]] = []
     for _ in range(18):
-        rets.append(pool.apply_async(run, (lock,)))
+        rets.append(pool.apply_async(run, (g, )))
     succ: List[str] = []
     fail: List[str] = []
     for x in rets:
         (succ if x.get()[0] else fail).append(x.get()[1])
-    pool.terminate()
     return succ, fail
 
 
@@ -131,6 +136,16 @@ class Print:
                                                    5 * s.count('\x1b[')) + '}'
             s = f.format(s)
             print(s, self.CLR_ALL, sep=sep, end=end, file=file, flush=flush)
+
+
+def find_file(name: str, parent: bool = True) -> str:
+    if os.path.isfile(name):
+        return os.path.abspath(name)
+    g_res = glob.glob('../**/%s' % name, recursive=True) if parent else None
+    if not g_res:
+        raise Exception('%s%sCannot find file [%s]!%s' %
+                        (p.RED, p.BRIGHT, name, p.CLR_ALL))
+    return os.path.abspath(g_res[0])
 
 
 if __name__ == '__main__':
