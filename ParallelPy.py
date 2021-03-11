@@ -115,6 +115,7 @@ class Print:
                  flush: bool = True,
                  align: str = 'l',
                  fill_ch: str = ' '):
+        align = align.lower()
         if align != 'c' and align != 'r':
             print(*values,
                   self.CLR_ALL,
@@ -126,8 +127,8 @@ class Print:
             orient = '^' if align == 'c' else '>'
             cols, _ = shutil.get_terminal_size(_DEF_TERM_SIZE)
             s = sep.join(list(map(str, values)))
-            f: str = '{:' + fill_ch + orient + str(cols +
-                                                   5 * s.count('\x1b[')) + '}'
+            f: str = '{:' + fill_ch + orient + \
+                    str(cols + 5 * s.count('\x1b[')) + '}'
             s = f.format(s)
             print(s, self.CLR_ALL, sep=sep, end=end, file=file, flush=flush)
 
