@@ -5,19 +5,21 @@ import math
 import multiprocessing as mp
 from multiprocessing.pool import AsyncResult, Pool
 import os
+import re
 import shutil
 import sys
 import time
 from typing import Any, Dict, List, TextIO, Tuple
 
 
-def run(g: Dict[str, object]) -> Tuple[bool, str]:
-    for k, v in g.items():
-        if k not in globals(): globals()[k] = v
+def run(G_VARS: Dict[str, object]) -> Tuple[bool, str]:
+    for _k, _v in G_VARS.items():
+        if _k not in globals(): globals()[_k] = _v
     import random
     n = random.random()
     with lock:
-        p('start sleeping ', n, ' sec')
+        p('start sleeping ', n, ' sec, GLOBAL_VAR%d' % (n * 6), '=',
+          globals()['GLOBAL_VAR%d' % (n * 6)])
     time.sleep(n)
     with lock:
         p('end sleeping ', n, ' sec', align='r')
@@ -25,11 +27,10 @@ def run(g: Dict[str, object]) -> Tuple[bool, str]:
 
 
 def schedule(pool: Pool) -> Tuple[List[str], List[str]]:
-    g:Dict[str, object] = {k:v for (k,v) in globals().items() if \
-        all(x not in str(type(v)) for x in ('module','multiprocessing.pool.Pool'))}
+    global G_VARS
     rets: List[AsyncResult[Any]] = []
     for _ in range(18):
-        rets.append(pool.apply_async(run, (g, )))
+        rets.append(pool.apply_async(run, (G_VARS, )))
     succ: List[str] = []
     fail: List[str] = []
     for x in rets:
@@ -38,10 +39,29 @@ def schedule(pool: Pool) -> Tuple[List[str], List[str]]:
 
 
 def setup() -> None:
-    global EXEC
-    EXEC = '***'
+    GLOBAL_VAR0 = "v0"
+    GLOBAL_VAR1 = "v1"
+    GLOBAL_VAR2 = "v2"
+    GLOBAL_VAR3 = "v3"
+    GLOBAL_VAR4 = "v4"
+    GLOBAL_VAR5 = "v5"
+    add_to_g_vals(locals())
 
 
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #
 #
 #
@@ -125,7 +145,7 @@ class Print:
                   flush=flush)
         else:
             orient = '^' if align == 'c' else '>'
-            cols, _ = shutil.get_terminal_size(_DEF_TERM_SIZE)
+            cols, _ = shutil.get_terminal_size(DEF_TERM_SIZE)
             s = sep.join(list(map(str, values)))
             f: str = '{:' + fill_ch + orient + \
                     str(cols + 5 * s.count('\x1b[')) + '}'
@@ -143,17 +163,28 @@ def find_file(name: str, parent: bool = True) -> str:
     return os.path.abspath(g_res[0])
 
 
+def add_to_g_vals(d: Dict[str, object]) -> None:
+    global G_VARS
+    for _k, _v in d.items():
+        if not _k.startswith('_') and \
+            not any(re.match(x, str(type(_v))[8:-2]) for x in \
+                ('^module$', '^typing(\..+)?$')):
+            G_VARS[_k] = _v
+
+
 if __name__ == '__main__':
     p, lock = Print(), mp.Manager().Lock()
+    G_VARS: Dict[str, object] = {}
 
     _N_PARALLEL = os.cpu_count() or 4
-    _DEF_TERM_SIZE = (30, -1)
-    _TERM_SIZE = shutil.get_terminal_size(_DEF_TERM_SIZE)
+    DEF_TERM_SIZE = (30, -1)
+    _TERM_SIZE = shutil.get_terminal_size(DEF_TERM_SIZE)
     p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CLR_ALL,
-      p.CYAN, 'Terminal window size: ', p.BRIGHT,
-      _TERM_SIZE[0] if _TERM_SIZE != _DEF_TERM_SIZE else '?', ' x ',
-      _TERM_SIZE[1] if _TERM_SIZE != _DEF_TERM_SIZE else '?')
+        p.CYAN, 'Terminal window size: ', p.BRIGHT,
+        _TERM_SIZE[0] if _TERM_SIZE != DEF_TERM_SIZE else '?', ' x ',
+        _TERM_SIZE[1] if _TERM_SIZE != DEF_TERM_SIZE else '?')
 
+    add_to_g_vals(locals())
     setup()
     with mp.Pool(_N_PARALLEL) as pool:
         print(p.MAGENTA, p.BRIGHT, sep='', end='')
