@@ -50,7 +50,7 @@ def setup() -> None:
     GLOBAL_VAR3 = "v3"
     GLOBAL_VAR4 = "v4"
     GLOBAL_VAR5 = "v5"
-    add_to_g_vals(locals())
+    add_to_g_vars(locals())
 
 
 #
@@ -163,7 +163,7 @@ def find_file(name: str, parent: bool = True) -> str:
     return os.path.abspath(g_res[0])
 
 
-def add_to_g_vals(d: Dict[str, object]) -> None:
+def add_to_g_vars(d: Dict[str, object]) -> None:
     global G_VARS
     for _k, _v in d.items():
         if not _k.startswith('_') and \
@@ -184,7 +184,7 @@ if __name__ == '__main__':
       _TERM_SIZE[0] if _TERM_SIZE != DEF_TERM_SIZE else '?', ' x ',
       _TERM_SIZE[1] if _TERM_SIZE != DEF_TERM_SIZE else '?')
 
-    add_to_g_vals(locals())
+    add_to_g_vars(locals())
     setup()
     tasks = schedule()
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
