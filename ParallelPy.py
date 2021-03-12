@@ -168,7 +168,8 @@ def add_to_g_vars(d: Dict[str, object]) -> None:
     for _k, _v in d.items():
         if not _k.startswith('_') and \
             not any(re.match(x, str(type(_v))[8:-2]) for x in \
-                ('^module$', '^typing(\..+)?$')):
+                ('^function$', '^module$', '^type$', \
+                    r'^typing(\..+)?$')):
             G_VARS[_k] = _v
 
 
