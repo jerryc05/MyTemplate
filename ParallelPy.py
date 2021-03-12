@@ -3,13 +3,14 @@
 import glob
 import math
 import multiprocessing as mp
-from multiprocessing.pool import AsyncResult, Pool
+from multiprocessing.pool import AsyncResult
 import os
 import re
 import shutil
+import subprocess as sp
 import sys
 import time
-from typing import Any, Dict, List, TextIO, Tuple
+from typing import Callable, Dict, List, TextIO, Tuple
 
 
 def run(G_VARS: Dict[str, object]) -> Tuple[bool, str]:
@@ -23,19 +24,23 @@ def run(G_VARS: Dict[str, object]) -> Tuple[bool, str]:
     time.sleep(n)
     with lock:
         p('end sleeping ', n, ' sec', align='r')
+    proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
+    while ...:
+        line: bytes = proc.stdout.readline()
+        poll_res = proc.poll()
+        if not line and poll_res is not None:
+            break
+        if line:
+            proc.kill()
     return (n > .5, str('testTrue' if n > .5 else 'testFalse'))
 
 
-def schedule(pool: Pool) -> Tuple[List[str], List[str]]:
+def schedule() -> List[Tuple[Callable[..., object], Tuple[object, ...]]]:
     global G_VARS
-    rets: List[AsyncResult[Any]] = []
+    tasks: List[Tuple[Callable[..., object], Tuple[object, ...]]] = []
     for _ in range(18):
-        rets.append(pool.apply_async(run, (G_VARS, )))
-    succ: List[str] = []
-    fail: List[str] = []
-    for x in rets:
-        (succ if x.get()[0] else fail).append(x.get()[1])
-    return succ, fail
+        tasks.append((run, (G_VARS, )))
+    return tasks
 
 
 def setup() -> None:
@@ -48,11 +53,6 @@ def setup() -> None:
     add_to_g_vals(locals())
 
 
-#
-#
-#
-#
-#
 #
 #
 #
@@ -174,25 +174,33 @@ def add_to_g_vals(d: Dict[str, object]) -> None:
 
 if __name__ == '__main__':
     p, lock = Print(), mp.Manager().Lock()
-    G_VARS: Dict[str, object] = {}
+    G_VARS = {}  # type: Dict[str, object]
 
     _N_PARALLEL = os.cpu_count() or 4
     DEF_TERM_SIZE = (30, -1)
     _TERM_SIZE = shutil.get_terminal_size(DEF_TERM_SIZE)
     p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CLR_ALL,
-        p.CYAN, 'Terminal window size: ', p.BRIGHT,
-        _TERM_SIZE[0] if _TERM_SIZE != DEF_TERM_SIZE else '?', ' x ',
-        _TERM_SIZE[1] if _TERM_SIZE != DEF_TERM_SIZE else '?')
+      p.CYAN, 'Terminal window size: ', p.BRIGHT,
+      _TERM_SIZE[0] if _TERM_SIZE != DEF_TERM_SIZE else '?', ' x ',
+      _TERM_SIZE[1] if _TERM_SIZE != DEF_TERM_SIZE else '?')
 
     add_to_g_vals(locals())
     setup()
-    with mp.Pool(_N_PARALLEL) as pool:
-        print(p.MAGENTA, p.BRIGHT, sep='', end='')
+    tasks = schedule()
+    with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
+        print(end='%s%s' % (p.MAGENTA, p.BRIGHT))
         p(' START! ', align='c', fill_ch='=')
-        (succ, fail) = schedule(pool)
+        rets = []  # type: List[AsyncResult[Tuple[bool, str]]]
+        for fn, args in tasks:
+            rets.append(pool.apply_async(fn, args))
+
+        succ: List[str] = []
+        fail: List[str] = []
+        for x in rets:
+            (succ if x.get()[0] else fail).append(x.get()[1])
 
     if succ or fail:
-        print(p.MAGENTA, p.BRIGHT, sep='', end='')
+        print(end='%s%s' % (p.MAGENTA, p.BRIGHT))
         p(' SUMMARY ', align='c', fill_ch='=')
         digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + 1)))
         for i, x in enumerate(succ):
@@ -203,7 +211,7 @@ if __name__ == '__main__':
             p(p.RED, ('%' + digit + 'd') % (i + 1), '. ', p.BRIGHT, x,
               p.CLR_ALL, p.RED, ' ... ERR!')
 
-    print(p.MAGENTA, p.BRIGHT, sep='', end='')
+    print(end='%s%s' % (p.MAGENTA, p.BRIGHT))
     p(' DONE! ', align='c', fill_ch='=')
 
     try:
