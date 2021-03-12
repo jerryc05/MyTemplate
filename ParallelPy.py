@@ -19,11 +19,11 @@ def run(G_VARS: Dict[str, object]) -> Tuple[bool, str]:
     import random
     n = random.random()
     with lock:
-        p('start sleeping ', n, ' sec, GLOBAL_VAR%d' % (n * 6), '=',
-          globals()['GLOBAL_VAR%d' % (n * 6)])
+        p(f'start sleeping {n} sec, GLOBAL_VAR{int(n * 6)}={globals()[f"GLOBAL_VAR{int(n*6)}"]}'
+          )
     time.sleep(n)
     with lock:
-        p('end sleeping ', n, ' sec', align='r')
+        p(f'end sleeping {n} sec', align='r')
     proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
     while ...:
         line: bytes = proc.stdout.readline()
@@ -147,19 +147,18 @@ class Print:
             orient = '^' if align == 'c' else '>'
             cols, _ = shutil.get_terminal_size(DEF_TERM_SIZE)
             s = sep.join(list(map(str, values)))
-            f: str = '{:' + fill_ch + orient + \
-                    str(cols + 5 * s.count('\x1b[')) + '}'
-            s = f.format(s)
+            sz = cols + 5 * s.count("\x1b[")
+            s = f'{s:{fill_ch[0]}{orient}{sz}}'
             print(s, self.CLR_ALL, sep=sep, end=end, file=file, flush=flush)
 
 
 def find_file(name: str, parent: bool = True) -> str:
     if os.path.isfile(name):
         return os.path.abspath(name)
-    g_res = glob.glob('../**/%s' % name, recursive=True) if parent else None
+    g_res = glob.glob('../**/{name}', recursive=True) if parent else None
     if not g_res:
-        raise Exception('%s%sCannot find file [%s]!%s' %
-                        (p.RED, p.BRIGHT, name, p.CLR_ALL))
+        raise Exception(
+            f'{p.RED}{ p.BRIGHT}Cannot find file [{name}]!{p.CLR_ALL}')
     return os.path.abspath(g_res[0])
 
 
@@ -189,7 +188,7 @@ if __name__ == '__main__':
     setup()
     tasks = schedule()
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
-        print(end='%s%s' % (p.MAGENTA, p.BRIGHT))
+        print(end=f'{p.MAGENTA}{p.BRIGHT}')
         p(' START! ', align='c', fill_ch='=')
         rets = []  # type: List[AsyncResult[Tuple[bool, str]]]
         for fn, args in tasks:
@@ -201,18 +200,18 @@ if __name__ == '__main__':
             (succ if x.get()[0] else fail).append(x.get()[1])
 
     if succ or fail:
-        print(end='%s%s' % (p.MAGENTA, p.BRIGHT))
+        print(end=f'{p.MAGENTA}{p.BRIGHT}')
         p(' SUMMARY ', align='c', fill_ch='=')
         digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + 1)))
         for i, x in enumerate(succ):
-            p(p.GREEN, ('%' + digit + 'd') % (i + 1), '. ', p.BRIGHT, x,
-              p.CLR_ALL, p.GREEN, ' ... OK!')
+            p(f'{p.GREEN}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.GREEN} ... OK!'
+              )
         i = 1
         for i, x in enumerate(fail):
-            p(p.RED, ('%' + digit + 'd') % (i + 1), '. ', p.BRIGHT, x,
-              p.CLR_ALL, p.RED, ' ... ERR!')
+            p(f'{p.RED}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.RED} ... ERR!'
+              )
 
-    print(end='%s%s' % (p.MAGENTA, p.BRIGHT))
+    print(end=f'{p.MAGENTA}{p.BRIGHT}')
     p(' DONE! ', align='c', fill_ch='=')
 
     try:
@@ -221,7 +220,7 @@ if __name__ == '__main__':
     except:
         try:
             import subprocess as sp
-            pname = sp.run('ps -p %d -o comm=' % os.getppid(),
+            pname = sp.run(f'ps -p {os.getppid()} -o comm=',
                            stderr=sp.DEVNULL).stdout.decode()
         except:
             ...
