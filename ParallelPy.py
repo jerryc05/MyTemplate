@@ -221,7 +221,7 @@ if __name__ == '__main__':
         try:
             import subprocess as sp
             pname = sp.run('ps -p %d -o comm=' % os.getppid(),
-                           stderr=sp.DEVNULL).stdout
+                           stderr=sp.DEVNULL).stdout.decode()
         except:
             ...
     try:
