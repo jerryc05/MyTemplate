@@ -13,7 +13,8 @@ import time
 from typing import Callable, Dict, List, TextIO, Tuple
 
 
-def run(G_VARS: Dict[str, object]) -> Tuple[bool, str]:
+def run(G_VARS):
+    # type: (Dict[str, object]) -> Tuple[bool, str]
     for _k, _v in G_VARS.items():
         if _k not in globals(): globals()[_k] = _v
     import random
@@ -35,9 +36,10 @@ def run(G_VARS: Dict[str, object]) -> Tuple[bool, str]:
     return (n > .5, str('testTrue' if n > .5 else 'testFalse'))
 
 
-def schedule() -> List[Tuple[Callable[..., object], Tuple[object, ...]]]:
+def schedule():
+    # type: () -> List[Tuple[Callable[..., object], Tuple[object, ...]]]
     global G_VARS
-    tasks: List[Tuple[Callable[..., object], Tuple[object, ...]]] = []
+    tasks = []  # type: List[Tuple[Callable[..., object], Tuple[object, ...]]]
     for _ in range(18):
         tasks.append((run, (G_VARS, )))
     return tasks
@@ -113,8 +115,6 @@ def setup() -> None:
 #
 #
 #
-#
-#
 
 
 class Print:
@@ -122,7 +122,7 @@ class Print:
     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, CLR_COLOR = 30, 31, 32, 33, 34, 35, 36, 37, 39
     L_BLACK_, L_RED_, L_GREEN_, L_YELLOW_, L_BLUE_, L_MAGENTA_, L_CYAN_, L_WHITE_ = 90, 91, 92, 93, 94, 95, 96, 97
 
-    def __init__(self):
+    def __init__(self) -> None:
         for name in dir(self):
             if not name.startswith('_'):
                 setattr(self, name, '\x1b[' + str(getattr(self, name)) + 'm')
@@ -134,7 +134,7 @@ class Print:
                  file: TextIO = sys.stdout,
                  flush: bool = True,
                  align: str = 'l',
-                 fill_ch: str = ' '):
+                 fill_ch: str = ' ') -> None:
         align = align.lower()
         if align != 'c' and align != 'r':
             print(*values,
@@ -152,7 +152,8 @@ class Print:
             print(s, self.CLR_ALL, sep=sep, end=end, file=file, flush=flush)
 
 
-def find_file(name: str, parent: bool = True) -> str:
+def find_file(name, parent=True) -> str:
+    # type: (str, bool) -> str
     if os.path.isfile(name):
         return os.path.abspath(name)
     g_res = glob.glob('../**/{name}', recursive=True) if parent else None
@@ -163,7 +164,8 @@ def find_file(name: str, parent: bool = True) -> str:
     return os.path.abspath(g_res[0])
 
 
-def add_to_g_vars(d: Dict[str, object]) -> None:
+def add_to_g_vars(d):
+    # type: (Dict[str, object]) -> None
     global G_VARS
     for _k, _v in d.items():
         if not _k.startswith('_') and \
@@ -193,8 +195,7 @@ if __name__ == '__main__':
         for fn, args in tasks:
             rets.append(pool.apply_async(fn, args))
 
-        succ: List[str] = []
-        fail: List[str] = []
+        succ, fail = [], []  # type: List[str], List[str]
         for x in rets:
             (succ if x.get()[0] else fail).append(x.get()[1])
 
@@ -220,7 +221,7 @@ if __name__ == '__main__':
         try:
             import subprocess as sp
             pname = sp.check_output(f'ps -p {os.getppid()} -o comm=',
-                           stderr=sp.DEVNULL).decode()
+                                    stderr=sp.DEVNULL).decode()
         except:
             ...
     try:
