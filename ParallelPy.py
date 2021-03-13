@@ -157,8 +157,9 @@ def find_file(name: str, parent: bool = True) -> str:
         return os.path.abspath(name)
     g_res = glob.glob('../**/{name}', recursive=True) if parent else None
     if not g_res:
-        raise Exception(
-            f'{p.RED}{ p.BRIGHT}Cannot find file [{name}]!{p.CLR_ALL}')
+        raise FileNotFoundError(
+            f'{p.RED}Cannot find file [{p.BRIGHT}{name}{p.CLR_ALL}{p.RED}]!{p.CLR_ALL}'
+        )
     return os.path.abspath(g_res[0])
 
 
@@ -179,16 +180,14 @@ if __name__ == '__main__':
     _N_PARALLEL = os.cpu_count() or 4
     DEF_TERM_SIZE = (30, -1)
     _TERM_SIZE = shutil.get_terminal_size(DEF_TERM_SIZE)
-    p(p.YELLOW, 'Parallel count: ', p.BRIGHT, _N_PARALLEL, '\t', p.CLR_ALL,
-      p.CYAN, 'Terminal window size: ', p.BRIGHT,
-      _TERM_SIZE[0] if _TERM_SIZE != DEF_TERM_SIZE else '?', ' x ',
-      _TERM_SIZE[1] if _TERM_SIZE != DEF_TERM_SIZE else '?')
+    p(f"{p.YELLOW}Parallel count: {p.BRIGHT}{_N_PARALLEL}\t{p.CLR_ALL}{p.CYAN}Terminal window size: {p.BRIGHT}{_TERM_SIZE[0] if _TERM_SIZE != DEF_TERM_SIZE else '?'} x {_TERM_SIZE[1] if _TERM_SIZE != DEF_TERM_SIZE else '?'}"
+      )
 
     add_to_g_vars(locals())
     setup()
     tasks = schedule()
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
-        print(end=f'{p.MAGENTA}{p.BRIGHT}')
+        p(end=f'{p.MAGENTA}{p.BRIGHT}')
         p(' START! ', align='c', fill_ch='=')
         rets = []  # type: List[AsyncResult[Tuple[bool, str]]]
         for fn, args in tasks:
@@ -200,7 +199,7 @@ if __name__ == '__main__':
             (succ if x.get()[0] else fail).append(x.get()[1])
 
     if succ or fail:
-        print(end=f'{p.MAGENTA}{p.BRIGHT}')
+        p(end=f'{p.MAGENTA}{p.BRIGHT}')
         p(' SUMMARY ', align='c', fill_ch='=')
         digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + 1)))
         for i, x in enumerate(succ):
@@ -211,7 +210,7 @@ if __name__ == '__main__':
             p(f'{p.RED}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.RED} ... ERR!'
               )
 
-    print(end=f'{p.MAGENTA}{p.BRIGHT}')
+    p(end=f'{p.MAGENTA}{p.BRIGHT}')
     p(' DONE! ', align='c', fill_ch='=')
 
     try:
@@ -226,7 +225,6 @@ if __name__ == '__main__':
             ...
     try:
         if not pname.endswith('sh') and not pname.startswith('python'):
-            input(pname +
-                  ': You can now terminate this program by [ENTER] ...')
+            input('You can now end this program by [ENTER] ...')
     except:
         ...
