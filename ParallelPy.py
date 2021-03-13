@@ -10,6 +10,7 @@ import shutil
 import subprocess as sp
 import sys
 import time
+import typing as tp
 from typing import Callable, Dict, List, TextIO, Tuple
 
 if __name__ == '__main__':
@@ -200,7 +201,9 @@ if __name__ == '__main__':
         # using str for type annotation for compatiblity
         rets: 'List[AsyncResult[Tuple[bool, str]]]' = []
         for fn, args in tasks:
-            rets.append(pool.apply_async(fn, args))
+            rets.append(
+                tp.cast('AsyncResult[Tuple[bool, str]]',
+                        pool.apply_async(fn, args)))
 
         succ: List[str] = []
         fail: List[str] = []
@@ -224,16 +227,13 @@ if __name__ == '__main__':
 
     try:
         import psutil
-        pname: str = psutil.Process(os.getppid()).name()
+        pname: 'str|None' = psutil.Process(os.getppid()).name()
     except:
         try:
             import subprocess as sp
             pname = sp.check_output(f'ps -p {os.getppid()} -o comm=',
                                     stderr=sp.DEVNULL).decode()
         except:
-            ...
-    try:
-        if not pname.endswith('sh') and not pname.startswith('python'):
-            input('You can now end this program by [ENTER] ...')
-    except:
-        ...
+            pname = None
+    if pname and not pname.endswith('sh') and not pname.startswith('python'):
+        input('You can now end this program by [ENTER] ...')
