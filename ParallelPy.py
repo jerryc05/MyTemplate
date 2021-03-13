@@ -12,9 +12,11 @@ import sys
 import time
 from typing import Callable, Dict, List, TextIO, Tuple
 
+if __name__ == '__main__':
+    G_VARS: Dict[str, object] = {}
 
-def run(G_VARS):
-    # type: (Dict[str, object]) -> Tuple[bool, str]
+
+def run(G_VARS: Dict[str, object]) -> Tuple[bool, str]:
     for _k, _v in G_VARS.items():
         if _k not in globals(): globals()[_k] = _v
     import random
@@ -36,10 +38,9 @@ def run(G_VARS):
     return (n > .5, str('testTrue' if n > .5 else 'testFalse'))
 
 
-def schedule():
-    # type: () -> List[Tuple[Callable[..., object], Tuple[object, ...]]]
+def schedule() -> List[Tuple[Callable[..., object], Tuple[object, ...]]]:
     global G_VARS
-    tasks = []  # type: List[Tuple[Callable[..., object], Tuple[object, ...]]]
+    tasks: List[Tuple[Callable[..., object], Tuple[object, ...]]] = []
     for _ in range(18):
         tasks.append((run, (G_VARS, )))
     return tasks
@@ -55,6 +56,15 @@ def setup() -> None:
     add_to_g_vars(locals())
 
 
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #
 #
 #
@@ -152,8 +162,7 @@ class Print:
             print(s, self.CLR_ALL, sep=sep, end=end, file=file, flush=flush)
 
 
-def find_file(name, parent=True) -> str:
-    # type: (str, bool) -> str
+def find_file(name: str, parent: bool = True) -> str:
     if os.path.isfile(name):
         return os.path.abspath(name)
     g_res = glob.glob('../**/{name}', recursive=True) if parent else None
@@ -164,8 +173,7 @@ def find_file(name, parent=True) -> str:
     return os.path.abspath(g_res[0])
 
 
-def add_to_g_vars(d):
-    # type: (Dict[str, object]) -> None
+def add_to_g_vars(d: Dict[str, object]) -> None:
     global G_VARS
     for _k, _v in d.items():
         if not _k.startswith('_') and \
@@ -177,8 +185,6 @@ def add_to_g_vars(d):
 
 if __name__ == '__main__':
     p, lock = Print(), mp.Manager().Lock()
-    G_VARS = {}  # type: Dict[str, object]
-
     _N_PARALLEL = os.cpu_count() or 4
     DEF_TERM_SIZE = (30, -1)
     _TERM_SIZE = shutil.get_terminal_size(DEF_TERM_SIZE)
@@ -191,11 +197,13 @@ if __name__ == '__main__':
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
         p(end=f'{p.MAGENTA}{p.BRIGHT}')
         p(' START! ', align='c', fill_ch='=')
-        rets = []  # type: List[AsyncResult[Tuple[bool, str]]]
+        # using str for type annotation for compatiblity
+        rets: 'List[AsyncResult[Tuple[bool, str]]]' = []
         for fn, args in tasks:
             rets.append(pool.apply_async(fn, args))
 
-        succ, fail = [], []  # type: List[str], List[str]
+        succ: List[str] = []
+        fail: List[str] = []
         for x in rets:
             (succ if x.get()[0] else fail).append(x.get()[1])
 
