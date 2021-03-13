@@ -219,8 +219,8 @@ if __name__ == '__main__':
     except:
         try:
             import subprocess as sp
-            pname = sp.run(f'ps -p {os.getppid()} -o comm=',
-                           stderr=sp.DEVNULL).stdout.decode()
+            pname = sp.check_output(f'ps -p {os.getppid()} -o comm=',
+                           stderr=sp.DEVNULL).decode()
         except:
             ...
     try:
