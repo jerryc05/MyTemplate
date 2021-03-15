@@ -6,6 +6,7 @@
 import glob
 import math
 import multiprocessing as mp
+import multiprocessing.managers
 from multiprocessing.pool import AsyncResult
 import os
 import re
@@ -30,13 +31,11 @@ def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
     n = random.random()
 
     # If you want to print something, don't forget to `align`
-    with lock:
-        p(f'Sleeping {n}s ...', align='l')
+    p(f'Sleeping {n}s ...', align='l')
 
     time.sleep(n)
 
-    with lock:
-        p(f'{n}s sleeping done!', align='r')
+    p(f'{n}s sleeping done!', align='r')
 
     # If you want a real-time process call:
     """
@@ -135,6 +134,7 @@ def setup() -> None:
 #
 #
 #
+#
 
 
 class Print:
@@ -143,7 +143,8 @@ class Print:
     L_BLACK_, L_RED_, L_GREEN_, L_YELLOW_, L_BLUE_, L_MAGENTA_, L_CYAN_, L_WHITE_ = 90, 91, 92, 93, 94, 95, 96, 97
     CUR_UP = '\x1b[F'
 
-    def __init__(self) -> None:
+    def __init__(self, lock=None) -> None:
+        self.lock = lock
         for name in dir(self):
             if isinstance(getattr(self, name), int):
                 setattr(self, name, f'\x1b[{getattr(self, name):02}m')
@@ -158,33 +159,43 @@ class Print:
                  fill_ch: str = ' ') -> None:
         assert align in (None, 'l', 'c', 'r')
         if align is None:
+            if self.lock is not None:
+                self.lock.acquire()
             print(*values,
-                  self.CLR_ALL,
                   sep=sep,
-                  end=end,
+                  end=f'{end}{self.CLR_ALL}',
                   file=file,
                   flush=flush)
+            if self.lock is not None:
+                self.lock.release()
         else:
             align = align.lower()
-            s = sep.join(list(map(str, values)))
             cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
             if align == 'l':
-                print(f'{" "*cols}\r{s}',
-                      self.CLR_ALL,
+                if self.lock is not None:
+                    self.lock.acquire()
+                print(end=f'{" "*cols}\r')
+                print(*values,
                       sep=sep,
-                      end=end,
+                      end=f'{end}{self.CLR_ALL}',
                       file=file,
                       flush=flush)
+                if self.lock is not None:
+                    self.lock.release()
             else:
                 orient = '^' if align == 'c' else '>'
+                s = sep.join(list(map(str, values)))
                 sz = cols + len(s) - strlen(s)
                 s = f'{s:{fill_ch[0]}{orient}{sz}}'
+                if self.lock is not None:
+                    self.lock.acquire()
                 print(s,
-                      self.CLR_ALL,
                       sep=sep,
-                      end=end,
+                      end=f'{end}{self.CLR_ALL}',
                       file=file,
                       flush=flush)
+                if self.lock is not None:
+                    self.lock.release()
 
 
 def find_file(name: str, parent: bool = True) -> str:
@@ -216,7 +227,8 @@ if __name__ == '__main__':
     DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
 
-    p, lock = Print(), mp.Manager().Lock()
+    lock = mp.Manager().RLock()
+    p = Print(lock)
     p(f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
       )
 
