@@ -174,8 +174,8 @@ class Print:
             if align == 'l':
                 if self.lock is not None:
                     self.lock.acquire()
-                print(end=f'{" "*cols}\r')
-                print(*values,
+                print(f'{" "*cols}\r',
+                      *values,
                       sep=sep,
                       end=f'{end}{self.CLR_ALL}',
                       file=file,
