@@ -32,7 +32,7 @@ def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
 
     time.sleep(n)
 
-    # If you want a process call:
+    # If you want a real-time process call:
     """
     proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
     while ...:
@@ -42,8 +42,12 @@ def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
             break  # Exited successfully
         if line:
             ...  # do something
-        # proc.kill()
     """
+
+    # If you want a normal process call:
+    '''
+    stdout = sp.check_output(('ping', 'localhost'), stderr=sp.DEVNULL)
+    '''
     return (n > .5, 'testTrue' if n > .5 else 'testFalse',
             time.time() - start_time)
 
@@ -63,9 +67,6 @@ def setup() -> None:
     add_to_g_vars(locals())
 
 
-#
-#
-#
 #
 #
 #
