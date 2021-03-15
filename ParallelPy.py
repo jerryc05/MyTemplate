@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# Copyright (c) 2019-2021 Ziyan "Jerry" Chen (@jerryc05).
+#                         All rights reserved.
+
 import glob
 import math
 import multiprocessing as mp
@@ -67,9 +70,6 @@ def setup() -> None:
     add_to_g_vars(locals())
 
 
-#
-#
-#
 #
 #
 #
