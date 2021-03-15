@@ -211,9 +211,13 @@ if __name__ == '__main__':
     DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
 
-    if any(sys.platform.startswith(x) for x in ('linux', 'darwin')):
+    p = Print()
+    try:
         mp.set_start_method('fork')
-    lock, p = mp.RLock(), Print()
+    except ValueError:
+        raise NotImplementedError(
+            f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
+    lock = mp.RLock()
     p(f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
       )
 
