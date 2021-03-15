@@ -194,6 +194,11 @@ def find_file(name: str, parent: bool = True) -> str:
     if not g_res:
         raise FileNotFoundError(
             f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
+    elif len(g_res) > 1:
+        s = f'{p.RED}Ambiguous files:'
+        for i, x in enumerate(g_res):
+            s += f'\n{i+1}) \t{x}'
+        raise RuntimeError(f'{s}{p.CLR_ALL}')
     return os.path.abspath(g_res[0])
 
 
