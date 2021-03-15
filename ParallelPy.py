@@ -29,11 +29,14 @@ def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
     import random
     n = random.random()
 
-    # If you really want to print something:
+    # If you want to print something, don't forget to `align`
     with lock:
-        p(f'Sleeping {n}s', align='l')
+        p(f'Sleeping {n}s ...', align='l')
 
     time.sleep(n)
+
+    with lock:
+        p(f'{n}s sleeping done!', align='r')
 
     # If you want a real-time process call:
     """
@@ -132,13 +135,10 @@ def setup() -> None:
 #
 #
 #
-#
-#
-#
 
 
 class Print:
-    BRIGHT, DIM, NORMAL, CLR_ALL = 1, 2, 22, 0
+    CLR_ALL, BOLD, DIM, UNDERLINE, REVERSE, NORMAL = 0, 1, 2, 4, 7, 22
     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, CLR_COLOR = 30, 31, 32, 33, 34, 35, 36, 37, 39
     L_BLACK_, L_RED_, L_GREEN_, L_YELLOW_, L_BLUE_, L_MAGENTA_, L_CYAN_, L_WHITE_ = 90, 91, 92, 93, 94, 95, 96, 97
     CUR_UP = '\x1b[F'
@@ -156,6 +156,7 @@ class Print:
                  flush: bool = True,
                  align: 'str|None' = None,
                  fill_ch: str = ' ') -> None:
+        assert align in (None, 'l', 'c', 'r')
         if align is None:
             print(*values,
                   self.CLR_ALL,
@@ -165,7 +166,6 @@ class Print:
                   flush=flush)
         else:
             align = align.lower()
-            assert align in ('l', 'c', 'r')
 
             s = sep.join(list(map(str, values)))
             cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
@@ -195,8 +195,7 @@ def find_file(name: str, parent: bool = True) -> str:
     g_res = glob.glob('../**/{name}', recursive=True) if parent else None
     if not g_res:
         raise FileNotFoundError(
-            f'{p.RED}Cannot find file [{p.BRIGHT}{name}{p.CLR_ALL}{p.RED}]!{p.CLR_ALL}'
-        )
+            f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
     return os.path.abspath(g_res[0])
 
 
@@ -220,14 +219,14 @@ if __name__ == '__main__':
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
 
     p, lock = Print(), mp.Manager().Lock()
-    p(f"{p.CYAN}Parallel count: {p.BRIGHT}{_N_PARALLEL}\t{p.CLR_ALL}{p.CYAN}Terminal window size: {p.BRIGHT}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
+    p(f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
       )
 
     add_to_g_vars(locals())
     setup()
     tasks = tuple(schedule())
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
-        p(end=f'{p.MAGENTA}{p.BRIGHT}')
+        p(end=f'{p.MAGENTA}{p.BOLD}')
         p(' START! ', align='c', fill_ch='=')
         rets: 'list[AsyncResult[tuple[bool, str, float]]]' = []
         succ, fail = tp.cast('list[list[tuple[str, float]]]', ([], []))
@@ -246,20 +245,23 @@ if __name__ == '__main__':
                     res = x.get(timeout=0)
                     (succ if res[0] else fail).append((res[1], res[2]))
                     rets.remove(x)
-                    percent = 1 - len(rets) / n_rets
-                    cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
-                    cols_ = cols - strlen(hint) - 17 - 2 * dg_rets
-                    s = f'Last task finished in {p.BLUE}{res[2]:.3f} s: {p.CLR_ALL}'
-                    if res[0]:
-                        s += f'{p.BRIGHT}{p.GREEN}{res[1]} {p.CLR_ALL}{p.GREEN}... {"OK!"}'
-                    else:
-                        s += f'{p.BRIGHT}{p.RED}{res[1]} {p.CLR_ALL}{p.RED}... {"ERR!"}'
 
-                    p1 = math.floor(cols_ * percent)
-                    p2 = math.floor((cols_ * percent - p1) * len(prog_bars))
-                    p3 = cols_ - p1 - (1 if p2 else 0)
+                    percent = 1 - len(rets) / n_rets
+                    cols = shutil.get_terminal_size(
+                        DEF_TERM_SIZE).columns - strlen(
+                            hint) - 17 - 2 * dg_rets
+                    s = f'Last task finished in {p.CYAN}{res[2]:.3f} s{p.CLR_ALL}: '
+                    if res[0]:
+                        s += f'{p.BOLD}{p.GREEN}{res[1]} {p.NORMAL}... {"OK!"}'
+                    else:
+                        s += f'{p.BOLD}{p.RED}{res[1]} {p.NORMAL}... {"ERR!"}'
+
+                    p1 = math.floor(cols * percent)
+                    p2 = math.floor((cols * percent - p1) * len(prog_bars))
+                    p3 = cols - p1 - (1 if p2 else 0)
                     with lock:
-                        p(f'{" "*cols}\n{s}{" "*(cols-strlen(s))}')
+                        p(' ', align='r')
+                        p(s, align='l')
                         p(end=
                           f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}{p.CUR_UP}{p.CUR_UP}\r'
                           )
@@ -268,23 +270,23 @@ if __name__ == '__main__':
         p('\n\n')
 
     if succ or fail:
-        p(end=f'{p.MAGENTA}{p.BRIGHT}')
+        p(end=f'{p.MAGENTA}{p.BOLD}')
         p(' SUMMARY ', align='c', fill_ch='=')
         digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + .5)))
         for i, (x, t) in enumerate(succ):
-            p(f'{p.GREEN}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.GREEN} ... OK! ({t:.3f} s)'
+            p(f'{p.GREEN}{i+1:>{digit}}.{p.BOLD}{x}{p.NORMAL} ... OK! ({t:.3f} s)'
               )
         i = 1
         for i, (x, t) in enumerate(fail):
-            p(f'{p.RED}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.RED} ... ERR! ({t:.3f} s)'
+            p(f'{p.RED}{i+1:>{digit}}.{p.BOLD}{x}{p.NORMAL} ... ERR! ({t:.3f} s)'
               )
-        res = f' {p.GREEN}PASSED: {p.BRIGHT}{len(succ)}{p.CLR_ALL}  {p.RED}FAILED: {p.BRIGHT}{len(fail)} '
+        res = f'{p.GREEN}PASSED: {p.BOLD}{len(succ)}{p.NORMAL}  {p.RED}FAILED: {p.BOLD}{len(fail)}'
         res_len = strlen(res)
 
         ul, ur, ll, lr, hs, vs = '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
-        p(f'{p.CYAN}{ul}{hs*(res_len)}{ur}')
-        p(f'{p.CYAN}{vs}{p.CLR_ALL}{res}{p.CYAN}{vs}')
-        p(f'{p.CYAN}{ll}{hs*(res_len)}{lr}')
+        p(f'{p.CYAN}{ul}{hs*(res_len+2)}{ur}')
+        p(f'{p.CYAN}{vs} {p.CLR_ALL}{res}{p.CYAN} {vs}')
+        p(f'{p.CYAN}{ll}{hs*(res_len+2)}{lr}')
 
-    p(end=f'{p.MAGENTA}{p.BRIGHT}')
+    p(end=f'{p.MAGENTA}{p.BOLD}')
     p(' DONE! ', align='c', fill_ch='=')
