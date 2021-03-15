@@ -229,13 +229,13 @@ if __name__ == '__main__':
                     else:
                         s += f'{p.BRIGHT}{p.RED}{res[1]} {p.CLR_ALL}{p.RED}{"ERR!"}'
 
+                    with lock:
                         p1 = math.floor(cols * percent)
                         p2 = math.floor((cols * percent - p1) * len(prog_bars))
                         p3 = cols - p1 - (1 if p2 else 0)
-                    with lock:
                         p(f'{p.CUR_UP}\r{s}{" "*(cols-strlen(s))}')
                         p(end=
-                           f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:5.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}} {p1} {p2} {p3} {p1+(1 if p2 else 0)+p3}'
+                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:5.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}'
                           )
                 except mp.TimeoutError:
                     continue
