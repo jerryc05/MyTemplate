@@ -11,40 +11,37 @@ import subprocess as sp
 import sys
 import time
 import typing as tp
-from typing import Callable, TextIO
+from typing import Callable, Iterator, TextIO
 
 if __name__ == '__main__':
     G_VARS: 'dict[str, object]' = {}
 
 
-def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str]':
+def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
+    '''Try not to print anything, or you will mess up the progress bar!'''
     for _k, _v in G_VARS.items():
         if _k not in globals(): globals()[_k] = _v
+    start_time = time.time()
+    # TODO Begin here...
     import random
     n = random.random()
-    # with lock:
-    #     p(f'start sleeping {n} sec, GLOBAL_VAR{int(n * 6)}={globals()[f"GLOBAL_VAR{int(n*6)}"]}'
-    #       )
     time.sleep(n)
-    # with lock:
-    #     p(f'end sleeping {n} sec', align='r')
-    proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
-    while ...:
-        line: bytes = proc.stdout.readline()
-        poll_res = proc.poll()
-        if not line and poll_res is not None:
-            break
-        if line:
-            proc.kill()
-    return (n > .5, str('testTrue' if n > .5 else 'testFalse'))
+    # proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
+    # while ...:
+    #     line: bytes = proc.stdout.readline()
+    #     poll = proc.poll()
+    #     if not line and poll is not None:
+    #         break  # Exited successfully
+    #     if line:
+    #         ...  # do something
+    #     # proc.kill()
+    return (n > .5, 'testTrue' if n > .5 else 'testFalse',
+            time.time() - start_time)
 
 
-def schedule() -> 'list[tuple[Callable[..., object], tuple[object, ...]]]':
-    global G_VARS
-    tasks: 'list[tuple[Callable[..., object], tuple[object, ...]]]' = []
-    for _ in range(20):
-        tasks.append((run, (G_VARS, )))
-    return tasks
+def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
+    for _ in range(30):
+        yield (run, (G_VARS, ))
 
 
 def setup() -> None:
@@ -200,54 +197,60 @@ if __name__ == '__main__':
 
     add_to_g_vars(locals())
     setup()
-    tasks = schedule()
+    tasks = tuple(schedule())
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
         p(end=f'{p.MAGENTA}{p.BRIGHT}')
         p(' START! ', align='c', fill_ch='=')
-        # using str for type annotation for compatiblity
-        rets: 'list[tuple[AsyncResult[tuple[bool, str]], float]]' = []
+        rets: 'list[AsyncResult[tuple[bool, str, float]]]' = []
+        succ, fail = tp.cast('list[list[tuple[str, float]]]', ([], []))
         for fn, args in tasks:
-            rets.append((tp.cast('AsyncResult[tuple[bool, str]]',
-                                 pool.apply_async(fn, args)), time.time()))
+            rets.append(
+                tp.cast('AsyncResult[tuple[bool, str, float]]',
+                        pool.apply_async(fn, args)))
         n_rets, dg_rets = len(rets), math.ceil(math.log10(len(rets) + .5))
 
-        succ, fail = tp.cast('list[str]', []), tp.cast('list[str]', [])
-        full_b, half_b, testing = '\u2588', '\u2027', 'Testing'
+        hint, ul, ur, ll, lr, hs, vs = '>>> Running', '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
+        prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c',
+                     '\u258b', '\u258a', '\u2589', '\u2588')
         p()
         while rets:
             for x in rets[:]:
                 try:
-                    res = x[0].get(timeout=0)
-                    (succ if res[0] else fail).append(res[1])
+                    res = x.get(timeout=0)
+                    (succ if res[0] else fail).append((res[1], res[2]))
                     rets.remove(x)
                     percent = 1 - len(rets) / n_rets
                     cols = shutil.get_terminal_size(
                         DEF_TERM_SIZE).columns - strlen(
-                            testing) - 11 - 2 * dg_rets
-                    s = f'Last finished in {p.BLUE}{time.time()-x[1]:3.2f}s: {p.CLR_ALL}'
+                            hint) - 15 - 2 * dg_rets - 90
+                    s = f'Last task finished in {p.BLUE}{res[2]:.3f} s: {p.CLR_ALL}'
                     if res[0]:
                         s += f'{p.BRIGHT}{p.GREEN}{res[1]} {p.CLR_ALL}{p.GREEN}{"OK!"}'
                     else:
                         s += f'{p.BRIGHT}{p.RED}{res[1]} {p.CLR_ALL}{p.RED}{"ERR!"}'
+
+                        p1 = math.floor(cols * percent)
+                        p2 = math.floor((cols * percent - p1) * len(prog_bars))
+                        p3 = cols - p1 - (1 if p2 else 0)
                     with lock:
                         p(f'{p.CUR_UP}\r{s}{" "*(cols-strlen(s))}')
                         p(end=
-                          f'\r{testing} {full_b*int(cols*percent)}{half_b*(cols-int(cols*(percent)))} {percent:2.0%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}'
+                           f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:5.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}} {p1} {p2} {p3} {p1+(1 if p2 else 0)+p3}'
                           )
                 except mp.TimeoutError:
-                    ...
+                    continue
         p()
 
     if succ or fail:
         p(end=f'{p.MAGENTA}{p.BRIGHT}')
         p(' SUMMARY ', align='c', fill_ch='=')
         digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + .5)))
-        for i, x in enumerate(succ):
-            p(f'{p.GREEN}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.GREEN} ... OK!'
+        for i, (x, t) in enumerate(succ):
+            p(f'{p.GREEN}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.GREEN} ... OK! ({t:.3f} s)'
               )
         i = 1
-        for i, x in enumerate(fail):
-            p(f'{p.RED}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.RED} ... ERR!'
+        for i, (x, t) in enumerate(fail):
+            p(f'{p.RED}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.RED} ... ERR! ({t:.3f} s)'
               )
         res = f' {p.GREEN}PASSED: {p.BRIGHT}{len(succ)}{p.CLR_ALL} {p.RED}FAILED: {p.BRIGHT}{len(fail)} '
         res_len = strlen(res)
