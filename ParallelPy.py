@@ -166,12 +166,10 @@ class Print:
                   flush=flush)
         else:
             align = align.lower()
-
             s = sep.join(list(map(str, values)))
             cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
-
             if align == 'l':
-                print(f'{s}{" "*(cols-strlen(s))}',
+                print(f'{" "*cols}\r{s}',
                       self.CLR_ALL,
                       sep=sep,
                       end=end,
