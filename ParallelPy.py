@@ -288,16 +288,3 @@ if __name__ == '__main__':
 
     p(end=f'{p.MAGENTA}{p.BRIGHT}')
     p(' DONE! ', align='c', fill_ch='=')
-
-    try:
-        import psutil
-        pname: 'str|None' = psutil.Process(os.getppid()).name()
-    except:
-        try:
-            import subprocess as sp
-            pname = sp.check_output(f'ps -p {os.getppid()} -o comm=',
-                                    stderr=sp.DEVNULL).decode()
-        except:
-            pname = None
-    if pname and not pname.endswith('sh') and not pname.startswith('python'):
-        input('You can now end this program by [ENTER] ...')
