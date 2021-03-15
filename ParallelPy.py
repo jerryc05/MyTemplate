@@ -41,10 +41,13 @@ def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
     while ...:
         line: bytes = proc.stdout.readline()
         poll = proc.poll()
-        if not line and poll is not None:
-            break  # Exited successfully
-        if line:
-            ...  # do something
+        if not line:
+            if poll is None:
+                continue  # Still running
+            else:
+                break  # Exited successfully
+        # Do something below:
+        ...
     """
 
     # If you want a normal process call:
@@ -70,9 +73,6 @@ def setup() -> None:
     add_to_g_vars(locals())
 
 
-#
-#
-#
 #
 #
 #
