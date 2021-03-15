@@ -18,23 +18,32 @@ if __name__ == '__main__':
 
 
 def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
-    '''Try not to print anything, or you will mess up the progress bar!'''
     for _k, _v in G_VARS.items():
         if _k not in globals(): globals()[_k] = _v
     start_time = time.time()
+
     # TODO Begin here...
     import random
     n = random.random()
+
+    # If you really want to print something:
+    with lock:
+        p(f'Sleeping {n}s', align='l')
+
     time.sleep(n)
-    # proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
-    # while ...:
-    #     line: bytes = proc.stdout.readline()
-    #     poll = proc.poll()
-    #     if not line and poll is not None:
-    #         break  # Exited successfully
-    #     if line:
-    #         ...  # do something
-    #     # proc.kill()
+
+    # If you want a process call:
+    """
+    proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
+    while ...:
+        line: bytes = proc.stdout.readline()
+        poll = proc.poll()
+        if not line and poll is not None:
+            break  # Exited successfully
+        if line:
+            ...  # do something
+        # proc.kill()
+    """
     return (n > .5, 'testTrue' if n > .5 else 'testFalse',
             time.time() - start_time)
 
@@ -142,12 +151,11 @@ class Print:
                  *values: object,
                  sep: str = '',
                  end: str = '\n',
-                 file: TextIO = sys.stdout,
+                 file: 'TextIO' = sys.stdout,
                  flush: bool = True,
-                 align: str = 'l',
+                 align: 'str|None' = None,
                  fill_ch: str = ' ') -> None:
-        align = align.lower()
-        if align != 'c' and align != 'r':
+        if align is None:
             print(*values,
                   self.CLR_ALL,
                   sep=sep,
@@ -155,12 +163,29 @@ class Print:
                   file=file,
                   flush=flush)
         else:
-            orient = '^' if align == 'c' else '>'
-            cols, _ = shutil.get_terminal_size(DEF_TERM_SIZE)
+            align = align.lower()
+            assert align in ('l', 'c', 'r')
+
             s = sep.join(list(map(str, values)))
-            sz = cols + len(s) - strlen(s)
-            s = f'{s:{fill_ch[0]}{orient}{sz}}'
-            print(s, self.CLR_ALL, sep=sep, end=end, file=file, flush=flush)
+            cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
+
+            if align == 'l':
+                print(f'{s}{" "*(cols-strlen(s))}',
+                      self.CLR_ALL,
+                      sep=sep,
+                      end=end,
+                      file=file,
+                      flush=flush)
+            else:
+                orient = '^' if align == 'c' else '>'
+                sz = cols + len(s) - strlen(s)
+                s = f'{s:{fill_ch[0]}{orient}{sz}}'
+                print(s,
+                      self.CLR_ALL,
+                      sep=sep,
+                      end=end,
+                      file=file,
+                      flush=flush)
 
 
 def find_file(name: str, parent: bool = True) -> str:
@@ -214,7 +239,6 @@ if __name__ == '__main__':
         hint, ul, ur, ll, lr, hs, vs = '>>> Running', '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
         prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c',
                      '\u258b', '\u258a', '\u2589', '\u2588')
-        p()
         while rets:
             for x in rets[:]:
                 try:
@@ -222,26 +246,25 @@ if __name__ == '__main__':
                     (succ if res[0] else fail).append((res[1], res[2]))
                     rets.remove(x)
                     percent = 1 - len(rets) / n_rets
-                    cols = shutil.get_terminal_size(
-                        DEF_TERM_SIZE).columns - strlen(
-                            hint) - 17 - 2 * dg_rets
+                    cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
+                    cols_ = cols - strlen(hint) - 17 - 2 * dg_rets
                     s = f'Last task finished in {p.BLUE}{res[2]:.3f} s: {p.CLR_ALL}'
                     if res[0]:
                         s += f'{p.BRIGHT}{p.GREEN}{res[1]} {p.CLR_ALL}{p.GREEN}... {"OK!"}'
                     else:
                         s += f'{p.BRIGHT}{p.RED}{res[1]} {p.CLR_ALL}{p.RED}... {"ERR!"}'
 
+                    p1 = math.floor(cols_ * percent)
+                    p2 = math.floor((cols_ * percent - p1) * len(prog_bars))
+                    p3 = cols_ - p1 - (1 if p2 else 0)
                     with lock:
-                        p1 = math.floor(cols * percent)
-                        p2 = math.floor((cols * percent - p1) * len(prog_bars))
-                        p3 = cols - p1 - (1 if p2 else 0)
-                        p(f'{p.CUR_UP}\r{s}{" "*(cols-strlen(s))}')
+                        p(f'{" "*cols}\n{s}{" "*(cols-strlen(s))}')
                         p(end=
-                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}'
+                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}{p.CUR_UP}{p.CUR_UP}\r'
                           )
                 except mp.TimeoutError:
                     continue
-        p()
+        p('\n\n')
 
     if succ or fail:
         p(end=f'{p.MAGENTA}{p.BRIGHT}')
@@ -254,7 +277,7 @@ if __name__ == '__main__':
         for i, (x, t) in enumerate(fail):
             p(f'{p.RED}{i+1:>{digit}}.{p.BRIGHT}{x}{p.CLR_ALL}{p.RED} ... ERR! ({t:.3f} s)'
               )
-        res = f' {p.GREEN}PASSED: {p.BRIGHT}{len(succ)}{p.CLR_ALL} {p.RED}FAILED: {p.BRIGHT}{len(fail)} '
+        res = f' {p.GREEN}PASSED: {p.BRIGHT}{len(succ)}{p.CLR_ALL}  {p.RED}FAILED: {p.BRIGHT}{len(fail)} '
         res_len = strlen(res)
 
         ul, ur, ll, lr, hs, vs = '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
