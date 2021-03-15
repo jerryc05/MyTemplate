@@ -123,6 +123,8 @@ def setup() -> None:
 #
 #
 #
+#
+#
 
 
 class Print:
@@ -222,12 +224,12 @@ if __name__ == '__main__':
                     percent = 1 - len(rets) / n_rets
                     cols = shutil.get_terminal_size(
                         DEF_TERM_SIZE).columns - strlen(
-                            hint) - 15 - 2 * dg_rets - 90
+                            hint) - 17 - 2 * dg_rets
                     s = f'Last task finished in {p.BLUE}{res[2]:.3f} s: {p.CLR_ALL}'
                     if res[0]:
-                        s += f'{p.BRIGHT}{p.GREEN}{res[1]} {p.CLR_ALL}{p.GREEN}{"OK!"}'
+                        s += f'{p.BRIGHT}{p.GREEN}{res[1]} {p.CLR_ALL}{p.GREEN}... {"OK!"}'
                     else:
-                        s += f'{p.BRIGHT}{p.RED}{res[1]} {p.CLR_ALL}{p.RED}{"ERR!"}'
+                        s += f'{p.BRIGHT}{p.RED}{res[1]} {p.CLR_ALL}{p.RED}... {"ERR!"}'
 
                     with lock:
                         p1 = math.floor(cols * percent)
@@ -235,7 +237,7 @@ if __name__ == '__main__':
                         p3 = cols - p1 - (1 if p2 else 0)
                         p(f'{p.CUR_UP}\r{s}{" "*(cols-strlen(s))}')
                         p(end=
-                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:5.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}'
+                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}'
                           )
                 except mp.TimeoutError:
                     continue
