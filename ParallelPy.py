@@ -6,7 +6,7 @@
 import glob
 import math
 import multiprocessing as mp
-import multiprocessing.managers
+import multiprocessing.synchronize as mp_sync
 from multiprocessing.pool import AsyncResult
 import os
 import re
@@ -21,9 +21,7 @@ if __name__ == '__main__':
     G_VARS: 'dict[str, object]' = {}
 
 
-def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
-    for _k, _v in G_VARS.items():
-        if _k not in globals(): globals()[_k] = _v
+def run() -> 'tuple[bool, str, float]':
     start_time = time.time()
 
     # TODO Begin here...
@@ -61,8 +59,8 @@ def run(G_VARS: 'dict[str, object]') -> 'tuple[bool, str, float]':
 
 
 def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
-    for _ in range(30):
-        yield (run, (G_VARS, ))
+    for _ in range(22):
+        yield (run, tuple())
 
 
 def setup() -> None:
@@ -72,9 +70,11 @@ def setup() -> None:
     GLOBAL_VAR3 = "v3"
     GLOBAL_VAR4 = "v4"
     GLOBAL_VAR5 = "v5"
-    add_to_g_vars(locals())
+    _add_to_g_vars(locals())
 
 
+#
+#
 #
 #
 #
@@ -143,7 +143,7 @@ class Print:
     L_BLACK_, L_RED_, L_GREEN_, L_YELLOW_, L_BLUE_, L_MAGENTA_, L_CYAN_, L_WHITE_ = 90, 91, 92, 93, 94, 95, 96, 97
     CUR_UP = '\x1b[F'
 
-    def __init__(self, lock=None) -> None:
+    def __init__(self, lock: 'mp_sync.SemLock|None' = None) -> None:
         self.lock = lock
         for name in dir(self):
             if isinstance(getattr(self, name), int):
@@ -208,7 +208,11 @@ def find_file(name: str, parent: bool = True) -> str:
     return os.path.abspath(g_res[0])
 
 
-def add_to_g_vars(d: 'dict[str, object]') -> None:
+def strlen(s: str) -> int:
+    return len(s) - 5 * s.count('\x1b[')
+
+
+def _add_to_g_vars(d: 'dict[str, object]') -> None:
     global G_VARS
     for _k, _v in d.items():
         if not _k.startswith('_') and \
@@ -218,8 +222,9 @@ def add_to_g_vars(d: 'dict[str, object]') -> None:
             G_VARS[_k] = _v
 
 
-def strlen(s: str) -> int:
-    return len(s) - 5 * s.count('\x1b[')
+def _copy_g_vars(g):
+    global G_VARS
+    G_VARS = g
 
 
 if __name__ == '__main__':
@@ -227,19 +232,21 @@ if __name__ == '__main__':
     DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
 
-    lock = mp.Manager().RLock()
+    lock, G_VARS = mp.RLock(), {}
     p = Print(lock)
     p(f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
       )
 
-    add_to_g_vars(locals())
+    _add_to_g_vars(locals())
     setup()
     tasks = tuple(schedule())
-    with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
-        p(end=f'{p.MAGENTA}{p.BOLD}')
-        p(' START! ', align='c', fill_ch='=')
+    with mp.Pool(max(1, min(_N_PARALLEL, len(tasks))),
+                 initializer=_copy_g_vars,
+                 initargs=(G_VARS, )) as pool:
         rets: 'list[AsyncResult[tuple[bool, str, float]]]' = []
         succ, fail = tp.cast('list[list[tuple[str, float]]]', ([], []))
+        print(end=f'{p.MAGENTA}{p.BOLD}')
+        p(' START! ', align='c', fill_ch='=')
         for fn, args in tasks:
             rets.append(
                 tp.cast('AsyncResult[tuple[bool, str, float]]',
@@ -280,7 +287,7 @@ if __name__ == '__main__':
         p('\n\n')
 
     if succ or fail:
-        p(end=f'{p.MAGENTA}{p.BOLD}')
+        print(end=f'{p.MAGENTA}{p.BOLD}')
         p(' SUMMARY ', align='c', fill_ch='=')
         digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + .5)))
         for i, (x, t) in enumerate(succ):
@@ -298,5 +305,5 @@ if __name__ == '__main__':
         p(f'{p.CYAN}{vs} {p.CLR_ALL}{res}{p.CYAN} {vs}')
         p(f'{p.CYAN}{ll}{hs*(res_len+2)}{lr}')
 
-    p(end=f'{p.MAGENTA}{p.BOLD}')
+    print(end=f'{p.MAGENTA}{p.BOLD}')
     p(' DONE! ', align='c', fill_ch='=')
