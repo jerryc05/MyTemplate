@@ -6,19 +6,14 @@
 import glob
 import math
 import multiprocessing as mp
-import multiprocessing.synchronize as mp_sync
 from multiprocessing.pool import AsyncResult
 import os
-import re
 import shutil
 import subprocess as sp
 import sys
 import time
 import typing as tp
 from typing import Callable, Iterator, TextIO
-
-if __name__ == '__main__':
-    G_VARS: 'dict[str, object]' = {}
 
 
 def run() -> 'tuple[bool, str, float]':
@@ -29,7 +24,7 @@ def run() -> 'tuple[bool, str, float]':
     n = random.random()
 
     # If you want to print something, don't forget to `align`
-    p(f'Sleeping {n}s ...', align='l')
+    p(f'{GLOBAL_VAR} {n}s ...', align='l')
 
     time.sleep(n)
 
@@ -64,13 +59,8 @@ def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
 
 
 def setup() -> None:
-    GLOBAL_VAR0 = "v0"
-    GLOBAL_VAR1 = "v1"
-    GLOBAL_VAR2 = "v2"
-    GLOBAL_VAR3 = "v3"
-    GLOBAL_VAR4 = "v4"
-    GLOBAL_VAR5 = "v5"
-    _add_to_g_vars(locals())
+    global GLOBAL_VAR
+    GLOBAL_VAR = 'Sleeping'
 
 
 #
@@ -143,8 +133,7 @@ class Print:
     L_BLACK_, L_RED_, L_GREEN_, L_YELLOW_, L_BLUE_, L_MAGENTA_, L_CYAN_, L_WHITE_ = 90, 91, 92, 93, 94, 95, 96, 97
     CUR_UP = '\x1b[F'
 
-    def __init__(self, lock: 'mp_sync.SemLock|None' = None) -> None:
-        self.lock = lock
+    def __init__(self) -> None:
         for name in dir(self):
             if isinstance(getattr(self, name), int):
                 setattr(self, name, f'\x1b[{getattr(self, name):02}m')
@@ -159,43 +148,43 @@ class Print:
                  fill_ch: str = ' ') -> None:
         assert align in (None, 'l', 'c', 'r')
         if align is None:
-            if self.lock is not None:
-                self.lock.acquire()
+            if lock is not None:
+                lock.acquire()
             print(*values,
                   sep=sep,
                   end=f'{end}{self.CLR_ALL}',
                   file=file,
                   flush=flush)
-            if self.lock is not None:
-                self.lock.release()
+            if lock is not None:
+                lock.release()
         else:
             align = align.lower()
             cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
             if align == 'l':
-                if self.lock is not None:
-                    self.lock.acquire()
+                if lock is not None:
+                    lock.acquire()
                 print(f'{" "*cols}\r',
                       *values,
                       sep=sep,
                       end=f'{end}{self.CLR_ALL}',
                       file=file,
                       flush=flush)
-                if self.lock is not None:
-                    self.lock.release()
+                if lock is not None:
+                    lock.release()
             else:
                 orient = '^' if align == 'c' else '>'
                 s = sep.join(list(map(str, values)))
                 sz = cols + len(s) - strlen(s)
                 s = f'{s:{fill_ch[0]}{orient}{sz}}'
-                if self.lock is not None:
-                    self.lock.acquire()
+                if lock is not None:
+                    lock.acquire()
                 print(s,
                       sep=sep,
                       end=f'{end}{self.CLR_ALL}',
                       file=file,
                       flush=flush)
-                if self.lock is not None:
-                    self.lock.release()
+                if lock is not None:
+                    lock.release()
 
 
 def find_file(name: str, parent: bool = True) -> str:
@@ -212,37 +201,20 @@ def strlen(s: str) -> int:
     return len(s) - 5 * s.count('\x1b[')
 
 
-def _add_to_g_vars(d: 'dict[str, object]') -> None:
-    global G_VARS
-    for _k, _v in d.items():
-        if not _k.startswith('_') and \
-            not any(re.match(x, str(type(_v))[8:-2]) for x in \
-                ('^function$', '^module$', '^type$', \
-                    r'^typing(\..+)?$')):
-            G_VARS[_k] = _v
-
-
-def _copy_g_vars(g):
-    global G_VARS
-    G_VARS = g
-
-
 if __name__ == '__main__':
     _N_PARALLEL = os.cpu_count() or 4
     DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
 
-    lock, G_VARS = mp.RLock(), {}
-    p = Print(lock)
+    if any(sys.platform.startswith(x) for x in ('linux', 'darwin')):
+        mp.set_start_method('fork')
+    lock, p = mp.RLock(), Print()
     p(f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
       )
 
-    _add_to_g_vars(locals())
     setup()
     tasks = tuple(schedule())
-    with mp.Pool(max(1, min(_N_PARALLEL, len(tasks))),
-                 initializer=_copy_g_vars,
-                 initargs=(G_VARS, )) as pool:
+    with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
         rets: 'list[AsyncResult[tuple[bool, str, float]]]' = []
         succ, fail = tp.cast('list[list[tuple[str, float]]]', ([], []))
         print(end=f'{p.MAGENTA}{p.BOLD}')
