@@ -215,7 +215,7 @@ def strlen(s: str) -> int:
 
 if __name__ == '__main__':
     _N_PARALLEL = os.cpu_count() or 4
-    DEF_TERM_SIZE = (30, -1)
+    DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
 
     p, lock = Print(), mp.Manager().Lock()
