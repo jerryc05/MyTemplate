@@ -3,11 +3,11 @@
 # Copyright (c) 2019-2021 Ziyan "Jerry" Chen (@jerryc05).
 #                         All rights reserved.
 
-import glob
 import math
 import multiprocessing as mp
 from multiprocessing.pool import AsyncResult
 import os
+import pathlib
 import shutil
 import subprocess as sp
 import sys
@@ -187,19 +187,26 @@ class Print:
                     lock.release()
 
 
-def find_file(name: str, parent: bool = True) -> str:
-    if os.path.isfile(name):
-        return os.path.abspath(name)
-    g_res = glob.glob(f'../**/{name}', recursive=True) if parent else None
+def find_file(name: str,
+              parent: bool = True,
+              multifile: bool = False) -> 'pathlib.Path|tuple[pathlib.Path]':
+    path_ = pathlib.Path(name)
+    if path_.is_file():
+        return path_
+    path_ = pathlib.Path(__file__).parent.absolute()
+    if parent: path_ = path_.parent
+    g_res = tuple(x for x in path_.rglob(name))
     if not g_res:
         raise FileNotFoundError(
             f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
+    elif multifile:
+        return g_res
     elif len(g_res) > 1:
         s = f'{p.RED}Ambiguous files:'
         for i, x in enumerate(g_res):
             s += f'\n{i+1}) \t{x}'
         raise RuntimeError(f'{s}{p.CLR_ALL}')
-    return os.path.abspath(g_res[0])
+    return g_res[0]
 
 
 def strlen(s: str) -> int:
