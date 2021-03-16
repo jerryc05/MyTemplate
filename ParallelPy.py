@@ -190,7 +190,7 @@ class Print:
 def find_file(name: str,
               parent: bool = True,
               multifile: bool = False) -> 'pathlib.Path|tuple[pathlib.Path]':
-    path_ = pathlib.Path(name)
+    path_ = pathlib.Path(name).absolute()
     if path_.is_file():
         return path_
     path_ = pathlib.Path(__file__).parent.absolute()
