@@ -187,26 +187,21 @@ class Print:
                     lock.release()
 
 
-def find_file(name: str,
-              parent: bool = True,
-              multifile: bool = False) -> 'pathlib.Path|tuple[pathlib.Path]':
-    path_ = pathlib.Path(name).absolute()
+def find_file(name: str, parent: bool = True) -> pathlib.Path:
+    path_ = pathlib.Path(name)
     if path_.is_file():
-        return path_
-    path_ = pathlib.Path(__file__).parent.absolute()
-    if parent: path_ = path_.parent
+        return path_.resolve()
+    path_ = FILE_PATH.parent if parent else FILE_PATH
     g_res = tuple(x for x in path_.rglob(name))
     if not g_res:
         raise FileNotFoundError(
             f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
-    elif multifile:
-        return g_res
     elif len(g_res) > 1:
         s = f'{p.RED}Ambiguous files:'
         for i, x in enumerate(g_res):
             s += f'\n{i+1}) \t{x}'
         raise RuntimeError(f'{s}{p.CLR_ALL}')
-    return g_res[0]
+    return pathlib.Path(g_res[0]).resolve()
 
 
 def strlen(s: str) -> int:
@@ -217,6 +212,8 @@ if __name__ == '__main__':
     _N_PARALLEL = os.cpu_count() or 4
     DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
+    global FILE_PATH
+    FILE_PATH = pathlib.Path(__file__).parent.resolve()
 
     p = Print()
     try:
