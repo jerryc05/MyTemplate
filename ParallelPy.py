@@ -190,7 +190,7 @@ class Print:
 def find_file(name: str, parent: bool = True) -> str:
     if os.path.isfile(name):
         return os.path.abspath(name)
-    g_res = glob.glob('../**/{name}', recursive=True) if parent else None
+    g_res = glob.glob(f'../**/{name}', recursive=True) if parent else None
     if not g_res:
         raise FileNotFoundError(
             f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
