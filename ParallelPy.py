@@ -16,12 +16,16 @@ import typing as tp
 from typing import Callable, Iterator, TextIO
 
 
-def run() -> 'tuple[bool, str, float]':
-    start_time = time.time()
+def run() -> 'tuple[bool, str, str, float]':
+    result, start_t = False, time.time()
+    test_name, reason = '', ''
 
     # TODO Begin here...
     import random
     n = random.random()
+    result = n > .5
+    test_name = 'testTrue' if result else 'testFalse'
+    reason = 'TLE'
 
     # If you want to print something, don't forget to `align`
     p(f'{GLOBAL_VAR} {n}s ...', align='l')
@@ -34,13 +38,10 @@ def run() -> 'tuple[bool, str, float]':
     """
     proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
     while ...:
-        line: bytes = proc.stdout.readline()
-        poll = proc.poll()
-        if not line:
-            if poll is None:
-                continue  # Still running
-            else:
-                break  # Exited successfully
+        line, poll = proc.stdout.readline(), proc.poll()
+        if not line and poll is not None:
+            result = result and poll == 0
+            break  # Exited
         # Do something below:
         ...
     """
@@ -49,8 +50,7 @@ def run() -> 'tuple[bool, str, float]':
     '''
     stdout = sp.check_output(('ping', 'localhost'), stderr=sp.DEVNULL)
     '''
-    return (n > .5, 'testTrue' if n > .5 else 'testFalse',
-            time.time() - start_time)
+    return (result, test_name, reason, time.time() - start_t)
 
 
 def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
@@ -229,15 +229,15 @@ if __name__ == '__main__':
     setup()
     tasks = tuple(schedule())
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
-        rets: 'list[AsyncResult[tuple[bool, str, float]]]' = []
-        succ, fail = tp.cast('list[list[tuple[str, float]]]', ([], []))
+        rets: 'list[AsyncResult[tuple[bool, str, str, float]]]' = []
+        succ, fail = tp.cast('list[list[tuple[str, str, float]]]', ([], []))
         print(end=f'{p.MAGENTA}{p.BOLD}')
         p(' START! ', align='c', fill_ch='=')
         for fn, args in tasks:
             rets.append(
-                tp.cast('AsyncResult[tuple[bool, str, float]]',
+                tp.cast('AsyncResult[tuple[bool, str, str, float]]',
                         pool.apply_async(fn, args)))
-        n_rets, dg_rets = len(rets), math.ceil(math.log10(len(rets) + .5))
+        n_rets, dg_rets = len(rets), len(str(len(rets)))
 
         hint, ul, ur, ll, lr, hs, vs = '>>> Running', '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
         prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c',
@@ -246,14 +246,14 @@ if __name__ == '__main__':
             for x in rets[:]:
                 try:
                     res = x.get(timeout=0)
-                    (succ if res[0] else fail).append((res[1], res[2]))
+                    (succ if res[0] else fail).append(tuple(res[1:]))
                     rets.remove(x)
 
                     percent = 1 - len(rets) / n_rets
                     cols = shutil.get_terminal_size(
                         DEF_TERM_SIZE).columns - strlen(
                             hint) - 17 - 2 * dg_rets
-                    s = f'Last task finished in {p.CYAN}{res[2]:.3f} s{p.CLR_ALL}: '
+                    s = f'Last task finished in {p.CYAN}{res[-1]:.3f} s{p.CLR_ALL}: '
                     if res[0]:
                         s += f'{p.BOLD}{p.GREEN}{res[1]} {p.NORMAL}... {"OK!"}'
                     else:
@@ -275,15 +275,14 @@ if __name__ == '__main__':
     if succ or fail:
         print(end=f'{p.MAGENTA}{p.BOLD}')
         p(' SUMMARY ', align='c', fill_ch='=')
-        succ.sort()
-        fail.sort()
-        digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + .5)))
-        for i, (x, t) in enumerate(succ):
-            p(f'{p.GREEN}{i+1:>{digit}}.{p.BOLD}{x}{p.NORMAL} ... OK! ({t:.3f} s)'
+        succ.sort(), fail.sort()
+        digit, sec_digit = len(str(max(len(succ), len(fail)))), 4
+        for i, (x, r, t) in enumerate(succ):
+            p(f'{p.GREEN}{i+1:>{digit}}. OK ({t:{sec_digit}.{max(0,sec_digit-1-len(str(math.ceil(t))))}f} s) {p.BOLD}{x}{p.NORMAL}'
               )
         i = 1
-        for i, (x, t) in enumerate(fail):
-            p(f'{p.RED}{i+1:>{digit}}.{p.BOLD}{x}{p.NORMAL} ... ERR! ({t:.3f} s)'
+        for i, (x, r, t) in enumerate(fail):
+            p(f'{p.RED}{i+1:>{digit}}.ERR ({t:{sec_digit}.{max(0,sec_digit-1-len(str(math.ceil(t))))}f} s) {p.BOLD}{x}{p.NORMAL} \t({r})'
               )
         res = f'{p.GREEN}PASSED: {p.BOLD}{len(succ)}{p.NORMAL}  {p.RED}FAILED: {p.BOLD}{len(fail)}'
         res_len = strlen(res)
