@@ -26,6 +26,7 @@ def run() -> 'tuple[bool, str, str, float]':
     result = n > .5
     test_name = 'testTrue' if result else 'testFalse'
     reason = 'TLE'
+    PROC_TASKS[mp.current_process().name] = test_name
 
     # If you want to print something, don't forget to `align`
     p(f'{GLOBAL_VAR} {n}s ...', align='l')
@@ -50,6 +51,7 @@ def run() -> 'tuple[bool, str, str, float]':
     '''
     stdout = sp.check_output(('ping', 'localhost'), stderr=sp.DEVNULL)
     '''
+    del PROC_TASKS[mp.current_process().name]
     return (result, test_name, reason, time.time() - start_t)
 
 
@@ -63,8 +65,6 @@ def setup() -> None:
     GLOBAL_VAR = 'Sleeping'
 
 
-#
-#
 #
 #
 #
@@ -227,7 +227,7 @@ if __name__ == '__main__':
       )
 
     setup()
-    tasks = tuple(schedule())
+    tasks, PROC_TASKS = tuple(schedule()), mp.Manager().dict(),
     with mp.Pool(max(1, min(_N_PARALLEL, len(tasks)))) as pool:
         rets: 'list[AsyncResult[tuple[bool, str, str, float]]]' = []
         succ, fail = tp.cast('list[list[tuple[str, str, float]]]', ([], []))
@@ -242,6 +242,7 @@ if __name__ == '__main__':
         hint, ul, ur, ll, lr, hs, vs = '>>> Running', '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
         prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c',
                      '\u258b', '\u258a', '\u2589', '\u2588')
+        active_proc = tuple()
         while rets:
             for x in rets[:]:
                 try:
@@ -259,18 +260,26 @@ if __name__ == '__main__':
                     else:
                         s += f'{p.BOLD}{p.RED}{res[1]} {p.NORMAL}... {"ERR!"}'
 
+                    active_proc = tuple(x for x in mp.active_children()
+                                        if not x.name.startswith('Sync'))
                     p1 = math.floor(cols * percent)
                     p2 = math.floor((cols * percent - p1) * len(prog_bars))
                     p3 = cols - p1 - (1 if p2 else 0)
+
                     with lock:
-                        p(' ', align='r')
+                        p(align='l')
+                        for proc in active_proc:
+                            status = PROC_TASKS.get(proc.name, None)
+                            p(f'{p.CYAN}{proc.name} ({f"Running): {status}" if status is not None else "Idle)"}',
+                              align='l')
+                        p('', align='l')
                         p(s, align='l')
                         p(end=
-                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}{p.CUR_UP}{p.CUR_UP}\r'
-                          )
+                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}{p.CUR_UP*(3+len(active_proc))}\r',
+                          align='l')
                 except mp.TimeoutError:
                     continue
-        p('\n\n')
+        p('\n' * (3 + len(active_proc)), align='l')
 
     if succ or fail:
         print(end=f'{p.MAGENTA}{p.BOLD}')
