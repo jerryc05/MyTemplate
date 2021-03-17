@@ -131,7 +131,7 @@ class Print:
     CLR_ALL, BOLD, DIM, UNDERLINE, REVERSE, NORMAL = 0, 1, 2, 4, 7, 22
     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, CLR_COLOR = 30, 31, 32, 33, 34, 35, 36, 37, 39
     L_BLACK_, L_RED_, L_GREEN_, L_YELLOW_, L_BLUE_, L_MAGENTA_, L_CYAN_, L_WHITE_ = 90, 91, 92, 93, 94, 95, 96, 97
-    CUR_UP = '\x1b[F'
+    CUR_UP = '\x1b[00F'
 
     def __init__(self) -> None:
         for name in dir(self):
@@ -187,15 +187,16 @@ class Print:
                     lock.release()
 
 
-def find_file(name: str, parent: bool = True) -> pathlib.Path:
+def find_file(name: str, parent: bool = True) -> 'pathlib.Path|None':
     path_ = pathlib.Path(name)
     if path_.is_file():
         return path_.resolve()
     path_ = FILE_PATH.parent if parent else FILE_PATH
     g_res = tuple(x for x in path_.rglob(name))
     if not g_res:
-        raise FileNotFoundError(
-            f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
+        return None
+        # raise FileNotFoundError(
+        #     f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
     elif len(g_res) > 1:
         s = f'{p.RED}Ambiguous files:'
         for i, x in enumerate(g_res):
@@ -205,15 +206,15 @@ def find_file(name: str, parent: bool = True) -> pathlib.Path:
 
 
 def strlen(s: str) -> int:
-    return len(s) - 5 * s.count('\x1b[')
+    return len(s) - len('\x1b[???') * s.count('\x1b[')
 
 
 if __name__ == '__main__':
     _N_PARALLEL = os.cpu_count() or 4
     DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
-    global FILE_PATH
     FILE_PATH = pathlib.Path(__file__).parent.resolve()
+    DBG_MODE = os.environ.get('DBG')
 
     p = Print()
     try:
@@ -274,6 +275,8 @@ if __name__ == '__main__':
     if succ or fail:
         print(end=f'{p.MAGENTA}{p.BOLD}')
         p(' SUMMARY ', align='c', fill_ch='=')
+        succ.sort()
+        fail.sort()
         digit = str(math.ceil(math.log10(max(len(succ), len(fail)) + .5)))
         for i, (x, t) in enumerate(succ):
             p(f'{p.GREEN}{i+1:>{digit}}.{p.BOLD}{x}{p.NORMAL} ... OK! ({t:.3f} s)'
