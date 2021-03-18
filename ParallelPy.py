@@ -41,7 +41,9 @@ def run() -> 'tuple[bool, str, str, float]':
     while ...:
         line, poll = proc.stdout.readline(), proc.poll()
         if not line and poll is not None:
-            result = result and poll == 0
+            if poll != 0:
+                result = False
+                reason = f'Subprocess Exited w/ Code {poll}'
             break  # Exited
         # Do something below:
         ...
