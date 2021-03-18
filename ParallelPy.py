@@ -37,13 +37,13 @@ def run() -> 'tuple[bool, str, str, float]':
 
     # If you want a real-time process call:
     """
-    proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.DEVNULL)
+    proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.PIPE)
     while ...:
         line, poll = proc.stdout.readline(), proc.poll()
         if not line and poll is not None:
             if poll != 0:
                 result = False
-                reason = f'Subprocess Exited w/ Code {poll}'
+                reason = f'Subprocess Exited {poll}: {proc.stderr.read() if DBG_MODE else "*"}'
             break  # Exited
         # Do something below:
         ...
