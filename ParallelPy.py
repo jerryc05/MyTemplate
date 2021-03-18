@@ -270,7 +270,7 @@ if __name__ == '__main__':
                         p(align='l')
                         for proc in active_proc:
                             status = PROC_TASKS.get(proc.name, None)
-                            p(f'{p.CYAN}{proc.name} ({f"Running): {status}" if status is not None else "Idle)"}',
+                            p(f'{p.CYAN}{proc.name[8:]:10} ({f"Running): {status}" if status is not None else "Idle)"}',
                               align='l')
                         p('', align='l')
                         p(s, align='l')
