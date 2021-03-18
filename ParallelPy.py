@@ -243,7 +243,7 @@ if __name__ == '__main__':
         hint, ul, ur, ll, lr, hs, vs = '>>> Running', '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
         prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c',
                      '\u258b', '\u258a', '\u2589', '\u2588')
-        proc_tasks = PROC_TASKS
+        proc_tasks = PROC_TASKS.copy()
         while rets:
             for x in rets[:]:
                 try:
