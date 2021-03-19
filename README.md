@@ -47,7 +47,7 @@ Use at your **OWN** risk.
 
 ##### Plugin manager: [`antigen`](https://github.com/zsh-users/antigen)
 
-- Installation: `curl git.io/antigen-nightly --output ~/antigen.zsh`
+- Installation: `curl -L git.io/antigen-nightly --output ~/antigen.zsh`
 
 <details><summary>Plugins detail (you can safely ignore these)</summary><p>
 
@@ -131,7 +131,7 @@ Use at your **OWN** risk.
 
 - Your `~/.sh-antigen` file should be very similar to [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
     - If you don't have `~/.sh-antigen` file:
-        - Download it using `curl https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.sh-antigen --output ~/.sh-antigen`
+        - Download it using `curl -L https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.sh-antigen --output ~/.sh-antigen`
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
   [ -f $HOME/.sh-antigen ] && . $HOME/.sh-antigen
