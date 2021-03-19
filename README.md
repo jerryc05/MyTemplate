@@ -131,7 +131,7 @@ Use at your **OWN** risk.
 
 - Your `~/.sh-antigen` file should be very similar to [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
     - If you don't have `~/.sh-antigen` file:
-        - Download it using `curl -L https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.sh-antigen --output ~/.sh-antigen`
+        - Download it using `curl -LOJ https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.sh-antigen`
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
   [ -f $HOME/.sh-antigen ] && . $HOME/.sh-antigen
