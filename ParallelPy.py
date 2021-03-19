@@ -125,8 +125,6 @@ def setup() -> None:
 #
 #
 #
-#
-#
 
 
 class Print:
@@ -140,37 +138,30 @@ class Print:
             if isinstance(getattr(self, name), int):
                 setattr(self, name, f'\x1b[{getattr(self, name):02}m')
 
-    def __call__(self,
-                 *values: object,
-                 sep: str = '',
-                 end: str = '\n',
-                 file: 'TextIO' = sys.stdout,
-                 flush: bool = True,
-                 align: 'str|None' = None,
-                 fill_ch: str = ' ') -> None:
+    def __call__(
+        self,
+        *values: object,
+        sep: str = '',
+        end: str = '\n',
+        file: 'TextIO' = sys.stdout,
+        flush: bool = True,
+        align: 'str|None' = None,
+        fill_ch: str = ' '
+    ) -> None:
         assert align in (None, 'l', 'c', 'r')
-        if align is None:
+        if align not in ('l', 'c', 'r'):
             if lock is not None:
                 lock.acquire()
-            print(*values,
-                  sep=sep,
-                  end=f'{end}{self.CLR_ALL}',
-                  file=file,
-                  flush=flush)
+            print(*values, sep=sep, end=f'{end}{self.CLR_ALL}', file=file, flush=flush)
             if lock is not None:
                 lock.release()
         else:
-            align = align.lower()
+            align = tp.cast(str, align).lower()
             cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
             if align == 'l':
                 if lock is not None:
                     lock.acquire()
-                print(f'{" "*cols}\r',
-                      *values,
-                      sep=sep,
-                      end=f'{end}{self.CLR_ALL}',
-                      file=file,
-                      flush=flush)
+                print(f'{" "*cols}\r', *values, sep=sep, end=f'{end}{self.CLR_ALL}', file=file, flush=flush)
                 if lock is not None:
                     lock.release()
             else:
@@ -180,11 +171,7 @@ class Print:
                 s = f'{s:{fill_ch[0]}{orient}{sz}}'
                 if lock is not None:
                     lock.acquire()
-                print(s,
-                      sep=sep,
-                      end=f'{end}{self.CLR_ALL}',
-                      file=file,
-                      flush=flush)
+                print(s, sep=sep, end=f'{end}{self.CLR_ALL}', file=file, flush=flush)
                 if lock is not None:
                     lock.release()
 
@@ -222,11 +209,11 @@ if __name__ == '__main__':
     try:
         mp.set_start_method('fork')
     except ValueError:
-        raise NotImplementedError(
-            f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
+        raise NotImplementedError(f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
     lock = mp.RLock()
-    p(f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
-      )
+    p(
+        f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
+    )
 
     setup()
     tasks = tuple(schedule())
@@ -237,14 +224,11 @@ if __name__ == '__main__':
         print(end=f'{p.MAGENTA}{p.BOLD}')
         p(' START! ', align='c', fill_ch='=')
         for fn, args in tasks:
-            rets.append(
-                tp.cast('AsyncResult[tuple[bool, str, str, float]]',
-                        pool.apply_async(fn, args)))
+            rets.append(tp.cast('AsyncResult[tuple[bool, str, str, float]]', pool.apply_async(fn, args)))
         n_rets, dg_rets = len(rets), len(str(len(rets)))
 
         hint, ul, ur, ll, lr, hs, vs = '>>> Running', '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
-        prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c',
-                     '\u258b', '\u258a', '\u2589', '\u2588')
+        prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c', '\u258b', '\u258a', '\u2589', '\u2588')
         proc_tasks = PROC_TASKS.copy()
         while rets:
             for x in rets[:]:
@@ -254,9 +238,7 @@ if __name__ == '__main__':
                     rets.remove(x)
 
                     percent = 1 - len(rets) / n_rets
-                    cols = shutil.get_terminal_size(
-                        DEF_TERM_SIZE).columns - strlen(
-                            hint) - 17 - 2 * dg_rets
+                    cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns - strlen(hint) - 17 - 2*dg_rets
                     s = f'Last task finished in {p.CYAN}{res[-1]:.3f} s{p.CLR_ALL}: '
                     if res[0]:
                         s += f'{p.BOLD}{p.GREEN}{res[1]} {p.NORMAL}... {"OK!"}'
@@ -264,20 +246,24 @@ if __name__ == '__main__':
                         s += f'{p.BOLD}{p.RED}{res[1]} {p.NORMAL}... {"ERR!"}'
 
                     p1, proc_tasks = math.floor(cols * percent), PROC_TASKS
-                    p2 = math.floor((cols * percent - p1) * len(prog_bars))
+                    p2 = math.floor((cols*percent - p1) * len(prog_bars))
                     p3 = cols - p1 - (1 if p2 else 0)
                     max_proc_name = len(max(proc_tasks.keys(), key=len))
 
                     with lock:
                         p(align='l')
                         for p_name, t_name in proc_tasks.items():
-                            p(f'{p.CYAN}{p_name:{max_proc_name}} ({f"Running): {t_name}" if t_name is not None else "Idle)"}',
-                              align='l')
+                            p(
+                                f'{p.CYAN}{p_name:{max_proc_name}} ({f"Running): {t_name}" if t_name is not None else "Idle)"}',
+                                align='l'
+                            )
                         p('', align='l')
                         p(s, align='l')
-                        p(end=
-                          f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}{p.CUR_UP*(3+len(proc_tasks))}\r',
-                          align='l')
+                        p(
+                            end=
+                            f'\r{hint}  {prog_bars[-1]*p1}{prog_bars[p2] if p2 else ""}{prog_bars[0]*p3}  {percent:7.2%} - {n_rets-len(rets):{dg_rets}}/{n_rets:{dg_rets}}{p.CUR_UP*(3+len(proc_tasks))}\r',
+                            align='l'
+                        )
                 except mp.TimeoutError:
                     continue
         p('\n' * (3 + len(proc_tasks)), align='l')
@@ -288,12 +274,14 @@ if __name__ == '__main__':
         succ.sort(), fail.sort()
         digit, sec_digit = len(str(max(len(succ), len(fail)))), 4
         for i, (x, r, t) in enumerate(succ):
-            p(f'{p.GREEN}{i+1:>{digit}}. OK ({t:{sec_digit}.{max(0,sec_digit-1-len(str(math.ceil(t))))}f} s) {p.BOLD}{x}{p.NORMAL}'
-              )
+            p(
+                f'{p.GREEN}{i+1:>{digit}}. OK ({t:{sec_digit}.{max(0,sec_digit-1-len(str(math.ceil(t))))}f} s) {p.BOLD}{x}{p.NORMAL}'
+            )
         i = 1
         for i, (x, r, t) in enumerate(fail):
-            p(f'{p.RED}{i+1:>{digit}}.ERR ({t:{sec_digit}.{max(0,sec_digit-1-len(str(math.ceil(t))))}f} s) {p.BOLD}{x}{p.NORMAL} \t({r})'
-              )
+            p(
+                f'{p.RED}{i+1:>{digit}}.ERR ({t:{sec_digit}.{max(0,sec_digit-1-len(str(math.ceil(t))))}f} s) {p.BOLD}{x}{p.NORMAL} \t({r})'
+            )
         res = f'{p.GREEN}PASSED: {p.BOLD}{len(succ)}{p.NORMAL}  {p.RED}FAILED: {p.BOLD}{len(fail)}'
         res_len = strlen(res)
 
