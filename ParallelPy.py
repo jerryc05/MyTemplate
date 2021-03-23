@@ -199,7 +199,8 @@ def strlen(s: str) -> int:
 
 
 if __name__ == '__main__':
-    _N_PARALLEL = os.cpu_count() or 4
+    VERSION = 1
+    _N_PARALLEL = len(os.sched_getaffinity(0)) or 4
     DEF_TERM_SIZE = (60, -1)
     _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
     FILE_PATH = pathlib.Path(__file__).parent.resolve()
@@ -212,7 +213,7 @@ if __name__ == '__main__':
         raise NotImplementedError(f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
     lock = mp.RLock()
     p(
-        f"{p.CYAN}Parallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
+        f"{p.CYAN}v{VERSION}\tParallel count: {p.BOLD}{_N_PARALLEL}\t{p.NORMAL}Terminal window size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
     )
 
     setup()
