@@ -15,7 +15,7 @@ import subprocess as sp
 import sys
 import time
 import typing as tp
-from typing import Callable, Iterator, TextIO
+from typing import Callable, Iterator, Literal, TextIO
 
 
 def run() -> 'tuple[bool, str, str, float]':
@@ -157,7 +157,7 @@ class Print:
         end: str = '\n',
         file: 'TextIO' = sys.stdout,
         flush: bool = True,
-        align: 'str|None' = None,
+        align: 'Literal["l"]|Literal["c"]|Literal["r"]|None' = None,
         fill_ch: str = ' '
     ) -> None:
         assert align in (None, 'l', 'c', 'r')
@@ -168,7 +168,6 @@ class Print:
             if lock is not None:
                 lock.release()
         else:
-            align = tp.cast(str, align).lower()
             cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
             if align == 'l':
                 if lock is not None:
