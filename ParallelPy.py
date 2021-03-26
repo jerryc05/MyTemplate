@@ -296,7 +296,7 @@ if __name__ == '__main__':
         i = 1
         for i, (x, r, t) in enumerate(fail):
             p(
-                f'{p.RED}{i+1:>{digit}}.ERR ({t:{sec_digit}.{max(0,sec_digit-1-len(str(ceil(t))))}f} s) \u274C {p.BOLD}{x}{p.NORMAL} \t({r})'
+                f'{p.RED}{i+1:>{digit}}.ERR ({t:{sec_digit}.{max(0,sec_digit-1-len(str(ceil(t))))}f} s) \u274C {p.BOLD}{x}{p.NORMAL}\t ({r})'
             )
         res = f'{p.GREEN}PASSED: {p.BOLD}{len(succ)}{p.NORMAL}  {p.RED}FAILED: {p.BOLD}{len(fail)}'
         res_len = strlen(res)
