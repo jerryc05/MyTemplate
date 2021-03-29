@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
+import atexit
+from contextlib import suppress
 import lzma as xz
 import os
 import os.path as path
+import re
 import sys
 import tarfile as tar
 import time
@@ -10,9 +13,10 @@ import time
 if __name__ == '__main__':
     XZ_LVL = 8
     TAR_FORMAT = tar.GNU_FORMAT
+    FLT_PATTERN = re.compile(r'(?:^|\/)_')
 
     def filter_file(tarinfo: tar.TarInfo) -> 'tar.TarInfo|None':
-        if tarinfo.name.startswith('_'): return None
+        if FLT_PATTERN.search(tarinfo.name): return None
         tarinfo.uid = tarinfo.gid = 0
         tarinfo.uname = tarinfo.gname = ''
         return tarinfo
@@ -38,6 +42,14 @@ if __name__ == '__main__':
         else: break
 
     tmpfname = f'{ofname}.tmp'
+
+    def clean_up():
+        with suppress(FileNotFoundError):
+            os.remove(tmpfname)
+
+    clean_up()
+    atexit.register(clean_up)
+
     try:
         with xz.open(tmpfname, 'wb', preset=XZ_LVL) as fxz:
             if ofname.endswith('.xz'):
@@ -50,10 +62,12 @@ if __name__ == '__main__':
                 with tar.open(fileobj=fxz, mode='w', format=TAR_FORMAT) as ftar:
                     relpath = path.dirname(sys.argv[1])
                     for x in sys.argv[1:]:
-                        ftar.add(path.relpath(x, relpath), filter=filter_file)
+                        ftar.add(x, arcname=path.relpath(x, relpath), filter=filter_file)
+        with suppress(FileNotFoundError):
+            os.remove(ofname)
         os.rename(tmpfname, ofname)
-    except:
-        os.remove(tmpfname)
+        print(f'File written to [{path.abspath(ofname)}]!')
+    except Exception as e:
+        print(f'ERR: [{e}]')
 
-    print(f'File written to [{path.abspath(ofname)}]!')
     time.sleep(5)
