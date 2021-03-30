@@ -59,7 +59,7 @@ if __name__ == '__main__':
                     while ...:
                         b: bytes = ff.read1(BUF_SZ)
                         if not b: break
-                        fxz.write(b) 
+                        fxz.write(b)
             else:
                 with tar.open(fileobj=fxz, mode='w', bufsize=BUF_SZ, format=TAR_FORMAT) as ftar:
                     relpath = path.dirname(sys.argv[1])
