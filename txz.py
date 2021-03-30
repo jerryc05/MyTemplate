@@ -15,6 +15,7 @@ if __name__ == '__main__':
     XZ_LVL = 8
     TAR_FORMAT = tar.GNU_FORMAT
     FLT_PTN = re.compile(r'(?:^|\/)_')
+    BUF_SZ = 256 * io.DEFAULT_BUFFER_SIZE
 
     def filter_file(tarinfo: tar.TarInfo) -> 'tar.TarInfo|None':
         if FLT_PTN.search(tarinfo.name): return None
@@ -56,11 +57,11 @@ if __name__ == '__main__':
             if ofname.endswith('.xz'):
                 with open(sys.argv[1], 'rb') as ff:
                     while ...:
-                        b = ff.read1(1024 * io.DEFAULT_BUFFER_SIZE)
+                        b: bytes = ff.read1(BUF_SZ)
                         if not b: break
-                        fxz.write(b)
+                        fxz.write(b) 
             else:
-                with tar.open(fileobj=fxz, mode='w', format=TAR_FORMAT) as ftar:
+                with tar.open(fileobj=fxz, mode='w', bufsize=BUF_SZ, format=TAR_FORMAT) as ftar:
                     relpath = path.dirname(sys.argv[1])
                     for x in sys.argv[1:]:
                         ftar.add(x, arcname=path.relpath(x, relpath), filter=filter_file)
