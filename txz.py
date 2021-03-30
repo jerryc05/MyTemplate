@@ -2,6 +2,7 @@
 
 import atexit
 from contextlib import suppress
+import io
 import lzma as xz
 import os
 import os.path as path
@@ -13,10 +14,10 @@ import time
 if __name__ == '__main__':
     XZ_LVL = 8
     TAR_FORMAT = tar.GNU_FORMAT
-    FLT_PATTERN = re.compile(r'(?:^|\/)_')
+    FLT_PTN = re.compile(r'(?:^|\/)_')
 
     def filter_file(tarinfo: tar.TarInfo) -> 'tar.TarInfo|None':
-        if FLT_PATTERN.search(tarinfo.name): return None
+        if FLT_PTN.search(tarinfo.name): return None
         tarinfo.uid = tarinfo.gid = 0
         tarinfo.uname = tarinfo.gname = ''
         return tarinfo
@@ -55,7 +56,7 @@ if __name__ == '__main__':
             if ofname.endswith('.xz'):
                 with open(sys.argv[1], 'rb') as ff:
                     while ...:
-                        b = ff.read1()
+                        b = ff.read1(1024 * io.DEFAULT_BUFFER_SIZE)
                         if not b: break
                         fxz.write(b)
             else:
