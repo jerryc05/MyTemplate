@@ -52,7 +52,7 @@ def run() -> 'tuple[bool, str, str, float]':
             if not line and poll is not None:
                 if poll != 0:
                     result = False
-                    reason = f'Subprocess Exited {poll}: {proc.stderr.read() if DBG_MODE else "*"}'
+                    reason = f'Subprocess Exited Code: {poll}{f": {proc.stderr.read()}" if DBG_MODE else ""}'
                 break  # Exited
             # Do something below:
             ...
