@@ -66,7 +66,7 @@ def run() -> 'tuple[bool, str, str, float]':
         sig.alarm(0)
     except TleErr:
         with suppress(NameError):  # remember to kill/term processes
-            proc.kill()  # pyright:reportUnboundVariable=false
+            proc.terminate()  # pyright:reportUnboundVariable=false
         result, reason = False, f'Time limit {time_limit} sec excceeded'
 
     PROC_TASKS[mp.current_process().name] = None
