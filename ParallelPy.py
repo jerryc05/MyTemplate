@@ -17,6 +17,17 @@ import time
 import typing as tp
 from typing import Callable, Iterator, Literal, TextIO
 
+if __name__ == '__main__':
+    VERSION = 1
+    DEF_TERM_SIZE = (60, -1)
+    term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
+    FILE_PATH = Path(__file__).parent.resolve()
+    DBG_MODE = os.environ.get('DBG')
+    n_cores = os.cpu_count() or 4
+    with suppress(AttributeError):
+        n_cores = len(os.sched_getaffinity(0))
+    n_cores = floor(n_cores * 1.5)
+
 
 def run() -> 'tuple[bool, str, str, float]':
     def sig_handler(signum: 'sig.Signals', frame: 'sig.FrameType'):
@@ -47,15 +58,18 @@ def run() -> 'tuple[bool, str, str, float]':
         # If you want a real-time process call:
         """
         proc = sp.Popen(('ping', 'localhost'), stdout=sp.PIPE, stderr=sp.PIPE)
-        while ...:
-            line, poll = proc.stdout.readline(), proc.poll()
-            if not line and poll is not None:
-                if poll != 0:
-                    result = False
-                    reason = f'Subprocess exited, code: {poll}{f"[{proc.stderr.read()}]" if DBG_MODE else ""}'
-                break  # Exited
-            # Do something below:
-            ...
+        if not proc.stdout or not proc.stderr:
+            reason = 'Cannot read stdout/stderr of subprocess'
+        else:
+            while ...:
+                line, poll = proc.stdout.readline(), proc.poll()
+                if not line and poll is not None:
+                    if poll != 0:
+                        result = False
+                        reason = f'Subprocess exited, code: {poll}{f" [{proc.stderr.read().strip()}]" if DBG_MODE else ""}'
+                    break  # Exited
+                # Do something below:
+                ...
         """
 
         # If you want a normal process call:
@@ -189,16 +203,15 @@ class TleErr(RuntimeError):
     ...
 
 
-def find_file(name: str, parent: bool = True) -> 'Path|None':
+def find_file(name: 'Path|str', parent: bool = True) -> 'Path|None':
     path_ = Path(name)
     if path_.is_file():
         return path_.resolve()
     path_ = FILE_PATH.parent if parent else FILE_PATH
-    g_res = tuple(x for x in path_.rglob(name))
+    g_res = tuple(x for x in path_.rglob(str(name)))
     if not g_res:
         return None
-        # raise FileNotFoundError(
-        #     f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
+        # raise FileNotFoundError(f'{p.RED}Cannot find file [{p.BOLD}{name}{p.NORMAL}]!{p.CLR_ALL}')
     elif len(g_res) > 1:
         s = f'{p.RED}Ambiguous files:'
         for i, x in enumerate(g_res):
@@ -212,15 +225,6 @@ def strlen(s: str) -> int:
 
 
 if __name__ == '__main__':
-    VERSION = 1
-    DEF_TERM_SIZE = (60, -1)
-    _term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
-    FILE_PATH = Path(__file__).parent.resolve()
-    DBG_MODE = os.environ.get('DBG')
-    n_cores = os.cpu_count() or 4
-    with suppress(AttributeError):
-        n_cores = len(os.sched_getaffinity(0))
-
     p = Print()
     try:
         mp.set_start_method('fork')  # Only Unix
@@ -228,7 +232,7 @@ if __name__ == '__main__':
         raise NotImplementedError(f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
     lock = mp.RLock()
     p(
-        f"{p.CYAN}v{VERSION}\tCPU core(s): {p.BOLD}{n_cores}\t{p.NORMAL}Term size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
+        f"{p.CYAN}v{VERSION}\tCPU core(s): {p.BOLD}{n_cores}\t{p.NORMAL}Term size: {p.BOLD}{term_sz[0] if term_sz != DEF_TERM_SIZE else '?'} x {term_sz[1] if term_sz != DEF_TERM_SIZE else '?'}"  # pyright:reportGeneralTypeIssues=false
     )
 
     tasks = tuple(schedule())
