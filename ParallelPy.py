@@ -33,13 +33,13 @@ def run() -> 'tuple[bool, str, str, float]':
     def sig_handler(signum: 'sig.Signals', frame: 'sig.FrameType'):
         raise TleErr
 
-    result, start_t, time_limit = False, time.time(), 2
-    test_name, reason = 'Sleep test', ''
-    PROC_TASKS[mp.current_process().name] = test_name
-    sig.signal(sig.SIGALRM, sig_handler)  # use signal.SIG_IGN as handler to ignore
-    sig.alarm(time_limit)  # Only Unix  # use `signal.alarm(0)` to clear the alarm
-
     try:
+        result, start_t, time_limit = False, time.time(), 2
+        test_name, reason = 'Sleep test', ''
+        PROC_TASKS[mp.current_process().name] = test_name
+        sig.signal(sig.SIGALRM, sig_handler)  # use signal.SIG_IGN as handler to ignore
+        sig.alarm(time_limit)  # Only Unix  # use `signal.alarm(0)` to clear the alarm
+
         # TODO Begin here...
         import random
         n = random.random() * 2.5
