@@ -34,7 +34,7 @@ def run() -> 'tuple[bool, str, str, float]':
         n = random.random() * 2.5
         result = n <= 1
         test_name = 'testTrue' if result else 'testFalse'
-        reason = 'Slept More Than 1 sec'
+        reason = 'Slept more than 1 sec'
         PROC_TASKS[mp.current_process().name] = test_name
 
         # If you want to print something, don't forget to `align`
@@ -52,7 +52,7 @@ def run() -> 'tuple[bool, str, str, float]':
             if not line and poll is not None:
                 if poll != 0:
                     result = False
-                    reason = f'Subprocess Exited Code: {poll}{f": {proc.stderr.read()}" if DBG_MODE else ""}'
+                    reason = f'Subprocess exited, code: {poll}{f"[{proc.stderr.read()}]" if DBG_MODE else ""}'
                 break  # Exited
             # Do something below:
             ...
@@ -67,7 +67,7 @@ def run() -> 'tuple[bool, str, str, float]':
     except TleErr:
         with suppress(NameError):  # remember to kill/term processes
             proc.kill()  # pyright:reportUnboundVariable=false
-        result, reason = False, f'Time Limit {time_limit} sec Excceeded'
+        result, reason = False, f'Time limit {time_limit} sec excceeded'
 
     PROC_TASKS[mp.current_process().name] = None
     return (result, test_name, reason, time.time() - start_t)
