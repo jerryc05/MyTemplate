@@ -77,11 +77,17 @@ def run() -> 'tuple[bool, str, str, float]':
         stdout = sp.check_output(('ping', 'localhost'), stderr=sp.DEVNULL)
         '''
 
-        sig.alarm(0)
     except TleErr:
+        result, reason = False, f'Time limit {time_limit} sec excceeded'
+
+    except BaseException as e:
+        ex_t, ex_v, ex_tb = sys.exc_info()
+        result, reason = False, f'Exception: [{ex_t.__name__}], msg: [{ex_v}]'
+
+    finally:
+        sig.alarm(0)
         with suppress(NameError):  # remember to kill/term processes
             proc.terminate()  # pyright:reportUnboundVariable=false
-        result, reason = False, f'Time limit {time_limit} sec excceeded'
 
     PROC_TASKS[mp.current_process().name] = None
     return (result, test_name, reason, time.time() - start_t)
