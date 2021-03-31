@@ -74,15 +74,13 @@ def run() -> 'tuple[bool, str, str, float]':
 
 
 def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
+    global GLOBAL_VAR
+    GLOBAL_VAR = 'Sleeping'
     for _ in range(33):
         yield (run, tuple())
 
 
-def setup() -> None:
-    global GLOBAL_VAR
-    GLOBAL_VAR = 'Sleeping'
-
-
+#
 #
 #
 #
@@ -233,7 +231,6 @@ if __name__ == '__main__':
         f"{p.CYAN}v{VERSION}\tCPU core(s): {p.BOLD}{n_cores}\t{p.NORMAL}Term size: {p.BOLD}{_term_sz[0] if _term_sz != DEF_TERM_SIZE else '?'} x {_term_sz[1] if _term_sz != DEF_TERM_SIZE else '?'}"
     )
 
-    setup()
     tasks = tuple(schedule())
     PROC_TASKS: 'dict[str, str|None]' = mp.Manager().dict()
     with mp.Pool(max(1, min(n_cores, len(tasks)))) as pool:
