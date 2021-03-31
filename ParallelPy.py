@@ -264,7 +264,7 @@ if __name__ == '__main__':
                     else:
                         s += f'{p.BOLD}{p.RED}{res[1]} {p.NORMAL}... {"ERR!"}'
 
-                    p1, proc_tasks = floor(cols * percent), PROC_TASKS
+                    p1, proc_tasks = floor(cols * percent), PROC_TASKS.copy()
                     p2 = floor((cols*percent - p1) * len(prog_bars))
                     p3 = cols - p1 - (1 if p2 else 0)
                     max_proc_name = len(max(proc_tasks.keys(), key=len))
