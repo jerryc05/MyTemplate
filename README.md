@@ -20,8 +20,8 @@ Use at your **OWN** risk.
 
 ### Commonly used scripts
 
-- Aliases: [`.sh-aliases`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-aliases)
-- Environment Variables: [`.sh-env-vars`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-env.vars)
+- Aliases: [`.aliases.sh`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.aliases.sh)
+- Environment Variables: [`.env-vars.sh`](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.env-vars.sh)
 
 ### Still Bash? No! Try Zsh! (Unix-like)
 
@@ -54,7 +54,7 @@ Use at your **OWN** risk.
 ##### Syntax highlighting: [`zsh-syntax-highlighting`](https://github.com/zsh-users/zsh-syntax-highlighting)
 
 - Installation:
-    - Append `antigen bundle zsh-users/zsh-syntax-highlighting` as the **LAST** (**LAST!** **LAST!**) `antigen bundle ...` in `~/.sh-antigen`.
+    - Append `antigen bundle zsh-users/zsh-syntax-highlighting` as the **LAST** (**LAST!** **LAST!**) `antigen bundle ...` in `~/.antigen-conf.sh`.
 - Configuration:
     - Maybe you will like to enable async mode:
         - Append `export ZSH_AUTOSUGGEST_USE_ASYNC=1` as well.
@@ -62,49 +62,49 @@ Use at your **OWN** risk.
 ##### Automatic suggestions: [`zsh-autosuggestions`](https://github.com/zsh-users/zsh-autosuggestions)
 
 - Installation:
-    - Append `antigen bundle zsh-users/zsh-autosuggestions` to `~/.sh-antigen`.
+    - Append `antigen bundle zsh-users/zsh-autosuggestions` to `~/.antigen-conf.sh`.
 
 ##### Zsh completion: [`zsh-completions`](https://github.com/zsh-users/zsh-completions)
 
 - Installation:
-    - Append `antigen bundle zsh-users/zsh-completions` to `~/.sh-antigen`.
+    - Append `antigen bundle zsh-users/zsh-completions` to `~/.antigen-conf.sh`.
 
 ##### Safer command pasting: [`safe-paste`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/safe-paste)
 
 - Installation:
-    - Append `antigen bundle safe-paste` to `~/.sh-antigen`.
+    - Append `antigen bundle safe-paste` to `~/.antigen-conf.sh`.
 
 ##### Filesystem navigation: [`z`](https://github.com/rupa/z)
 
 - Installation:
-    - Append `antigen bundle z` to `~/.sh-antigen`.
+    - Append `antigen bundle z` to `~/.antigen-conf.sh`.
 
 ##### Invalid command helper: [`command-not-found`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/command-not-found)
 
 - Installation:
-    - Append `antigen bundle command-not-found` to `~/.sh-antigen`.
+    - Append `antigen bundle command-not-found` to `~/.antigen-conf.sh`.
 
 ##### Automatic update: [`autoupdate-antigen.zshplugin`](https://github.com/unixorn/autoupdate-antigen.zshplugin)
 
 - Installation:
-    - Append `antigen bundle unixorn/autoupdate-antigen.zshplugin` to `~/.sh-antigen`.
+    - Append `antigen bundle unixorn/autoupdate-antigen.zshplugin` to `~/.antigen-conf.sh`.
 
 ##### Directory listing: [`k`](https://github.com/supercrabtree/k)
 
 - Installation:
-    - Append `antigen bundle supercrabtree/k` to `~/.sh-antigen`.
+    - Append `antigen bundle supercrabtree/k` to `~/.antigen-conf.sh`.
     - MacOS users might want to install `coreutils` to show file sizes in human-readable format. [More info](https://github.com/supercrabtree/k#file-weight-colours).
         - Append `which numfmt >/dev/null || { which brew >/dev/null && brew install coreutils }` as well.
 
 ##### Pip autocomplete: [`pip`](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/pip)
 
 - Installation:
-    - Append `antigen bundle pip` to `~/.sh-antigen`.
+    - Append `antigen bundle pip` to `~/.antigen-conf.sh`.
 
 ##### Terminal 256-color: [`zsh-256color`](https://github.com/chrissicool/zsh-256color)
 
 - Installation:
-    - Append `antigen bundle chrissicool/zsh-256color` to `~/.sh-antigen`.
+    - Append `antigen bundle chrissicool/zsh-256color` to `~/.antigen-conf.sh`.
 
 </p></details>
 
@@ -115,7 +115,7 @@ Use at your **OWN** risk.
 ##### [`powerlevel10k`](https://github.com/romkatv/powerlevel10k)
 
 - Installation:
-    - Append `antigen bundle romkatv/powerlevel10k` to `~/.sh-antigen`.
+    - Append `antigen bundle romkatv/powerlevel10k` to `~/.antigen-conf.sh`.
 
 </p></details>
 
@@ -123,18 +123,18 @@ Use at your **OWN** risk.
 
 <details><summary>Wrap up detail (you can safely ignore these)</summary><p>
 
-- Append `antigen apply` to `~/.sh-antigen`.
+- Append `antigen apply` to `~/.antigen-conf.sh`.
 
 </p></details>
 
 #### Summary
 
-- Your `~/.sh-antigen` file should be very similar to [`.sh-antigen` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.sh-antigen).
-    - If you don't have `~/.sh-antigen` file:
-        - Download it using `curl -LOJ https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.sh-antigen`
+- Your `~/.antigen-conf.sh` file should be very similar to [`.antigen-conf.sh` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.antigen-conf.sh).
+    - If you don't have `~/.antigen-conf.sh` file:
+        - Download it using `curl -LOJ https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.antigen-conf.sh`
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
-  [ -f $HOME/.sh-antigen ] && . $HOME/.sh-antigen
+  [ -f $HOME/.antigen-conf.sh ] && . $HOME/.antigen-conf.sh
   ```
 - **[OPTIONAL]** Change terminal's font to one that supports **Emoji** (or at least **Unicode**) characters.
     - Some recommended font-families:
