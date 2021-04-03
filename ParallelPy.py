@@ -82,7 +82,7 @@ def run() -> 'tuple[bool, str, str, float]':
 
     except:
         ex_t, ex_v, ex_tb = sys.exc_info()
-        assert (ex_t and ex_v and ex_tb)
+        assert ex_t and ex_v and ex_tb
         result, reason = False, f'Exception: [{ex_t.__name__}], msg: [{ex_v}]'
 
     finally:
