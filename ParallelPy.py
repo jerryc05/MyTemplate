@@ -90,7 +90,7 @@ def run() -> 'tuple[bool, str, str, float]':
         with suppress(NameError):  # remember to kill/term processes
             proc.terminate()  # pyright:reportUnboundVariable=false
         PROC_TASKS[mp.current_process().name] = None
-        return (result, test_name, reason, time.time() - start_t)
+    return (result, test_name, reason, time.time() - start_t)
 
 
 def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
