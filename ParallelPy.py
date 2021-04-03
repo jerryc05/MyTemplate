@@ -262,7 +262,7 @@ if __name__ == '__main__':
                     (succ if res[0] else fail).append(tuple(res[1:]))
                     rets.remove(x)
 
-                    if last_time and time.time() - last_time < 0.15: continue
+                    if last_time and time.time() - last_time < 1 / 60: continue
                     last_time = time.time()
                     percent = 1 - len(rets) / n_rets
                     cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
