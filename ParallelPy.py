@@ -254,7 +254,7 @@ if __name__ == '__main__':
 
         hint, ul, ur, ll, lr, hs, vs = '>>> Running', '\u250c', '\u2510', '\u2514', '\u2518', '\u2500', '\u2502'
         prog_bars = ('\u00b7', '\u258f', '\u258e', '\u258d', '\u258c', '\u258b', '\u258a', '\u2589', '\u2588')
-        proc_tasks = PROC_TASKS.copy()
+        proc_tasks, last_time = PROC_TASKS.copy(), None
         while rets:
             for x in rets[:]:
                 with suppress(mp.TimeoutError):
@@ -262,6 +262,8 @@ if __name__ == '__main__':
                     (succ if res[0] else fail).append(tuple(res[1:]))
                     rets.remove(x)
 
+                    if last_time and time.time() - last_time < 0.15: continue
+                    last_time = time.time()
                     percent = 1 - len(rets) / n_rets
                     cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
                     cols_ = cols - strlen(hint) - 17 - 2*dg_rets
