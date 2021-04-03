@@ -9,6 +9,7 @@ import multiprocessing as mp
 from multiprocessing.pool import AsyncResult
 import os
 from pathlib import Path
+import platform
 import shutil
 import signal as sig
 import subprocess as sp
@@ -33,10 +34,12 @@ def run() -> 'tuple[bool, str, str, float]':
     def sig_handler(signum: 'sig.Signals', frame: 'sig.FrameType'):
         raise TleErr
 
+    test_name, result, reason = 'Sleep test', False, ''
+    start_t, time_limit =  time.time(), 2
     try:
-        result, start_t, time_limit = False, time.time(), 2
-        test_name, reason = 'Sleep test', ''
+        if sema_tasks: sema_tasks.acquire()
         PROC_TASKS[mp.current_process().name] = test_name
+        if sema_tasks: sema_tasks.release()
         sig.signal(sig.SIGALRM, sig_handler)  # use signal.SIG_IGN as handler to ignore
         sig.alarm(time_limit)  # Only Unix  # use `signal.alarm(0)` to clear the alarm
 
@@ -46,7 +49,9 @@ def run() -> 'tuple[bool, str, str, float]':
         result = n <= 1
         test_name = 'testTrue' if result else 'testFalse'
         reason = 'Slept more than 1 sec'
+        if sema_tasks: sema_tasks.acquire()
         PROC_TASKS[mp.current_process().name] = test_name
+        if sema_tasks: sema_tasks.release()
 
         # If you want to print something, don't forget to `align`
         p(f'{GLOBAL_VAR} {n}s ...', align='l')
@@ -89,7 +94,9 @@ def run() -> 'tuple[bool, str, str, float]':
         sig.alarm(0)
         with suppress(NameError):  # remember to kill/term processes
             proc.terminate()  # pyright:reportUnboundVariable=false
+        if sema_tasks: sema_tasks.acquire()  # fixing bug on MacOS on 20+ parallel
         PROC_TASKS[mp.current_process().name] = None
+        if sema_tasks: sema_tasks.release()
     return (result, test_name, reason, time.time() - start_t)
 
 
@@ -236,13 +243,13 @@ if __name__ == '__main__':
         mp.set_start_method('fork')  # Only Unix
     except ValueError:
         raise NotImplementedError(f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
-    lock = mp.RLock()
+    lock, sema_tasks = mp.RLock(), (mp.Semaphore(19) if platform.system() == 'Darwin' else None)
     p(
         f"{p.CYAN}v{VERSION}\tCPU core(s): {p.BOLD}{n_cores}\t{p.NORMAL}Term size: {p.BOLD}{term_sz[0] if term_sz != DEF_TERM_SIZE else '?'} x {term_sz[1] if term_sz != DEF_TERM_SIZE else '?'}"  # pyright:reportGeneralTypeIssues=false
     )
 
-    tasks = tuple(schedule())
     PROC_TASKS: 'dict[str, str|None]' = mp.Manager().dict()
+    tasks = tuple(schedule())
     with mp.Pool(max(1, min(n_cores, len(tasks)))) as pool:
         rets: 'list[AsyncResult[tuple[bool, str, str, float]]]' = []
         succ, fail = tp.cast('list[list[tuple[str, str, float]]]', ([], []))
