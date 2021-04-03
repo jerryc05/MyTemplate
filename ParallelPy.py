@@ -286,7 +286,7 @@ if __name__ == '__main__':
                                 f'{p.CYAN}{p_name:{max_proc_name}} ({f"Running): {t_name}" if t_name is not None else "Idle)"}',
                                 align='l'
                             )
-                        p('', align='l')
+                        p(align='l')
                         p(s, align='l')
                         p(
                             end=
