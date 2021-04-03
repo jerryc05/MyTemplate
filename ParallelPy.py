@@ -264,16 +264,20 @@ if __name__ == '__main__':
                     rets.remove(x)
 
                     percent = 1 - len(rets) / n_rets
-                    cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns - strlen(hint) - 17 - 2*dg_rets
+                    cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
+                    cols_ = cols - strlen(hint) - 17 - 2*dg_rets
                     s = f'Last task finished in {p.CYAN}{res[-1]:.3f} s{p.CLR_ALL}: '
                     if res[0]:
-                        s += f'{p.BOLD}{p.GREEN}{res[1]} {p.NORMAL}... {"OK!"}'
+                        s += f'{p.BOLD}{p.GREEN}'
+                        s2 = f' {p.NORMAL}... OK!'
                     else:
-                        s += f'{p.BOLD}{p.RED}{res[1]} {p.NORMAL}... {"ERR!"}'
+                        s += f'{p.BOLD}{p.RED}'
+                        s2 = f' {p.NORMAL}... ERR!'
+                    s += f'{res[1][:cols-strlen(s)-strlen(s2)]}{s2}'
 
-                    p1, proc_tasks = floor(cols * percent), PROC_TASKS.copy()
-                    p2 = floor((cols*percent - p1) * len(prog_bars))
-                    p3 = cols - p1 - (1 if p2 else 0)
+                    p1, proc_tasks = floor(cols_ * percent), PROC_TASKS.copy()
+                    p2 = floor((cols_*percent - p1) * len(prog_bars))
+                    p3 = cols_ - p1 - (1 if p2 else 0)
                     max_proc_name = len(max(proc_tasks.keys(), key=len))
 
                     with lock:
