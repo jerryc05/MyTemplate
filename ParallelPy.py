@@ -20,10 +20,6 @@ from typing import Callable, Iterator, Literal, TextIO
 
 if __name__ == '__main__':
     VERSION = 1
-    DEF_TERM_SIZE = (60, -1)
-    term_sz = shutil.get_terminal_size(DEF_TERM_SIZE)
-    FILE_PATH = Path(__file__).parent.resolve()
-    DBG_MODE = os.environ.get('DBG')
     n_cores = os.cpu_count() or 4
     with suppress(AttributeError):
         n_cores = len(os.sched_getaffinity(0))
@@ -35,7 +31,7 @@ def run() -> 'tuple[bool, str, str, float]':
         raise TleErr
 
     test_name, result, reason = 'Sleep test', False, ''
-    start_t, time_limit =  time.time(), 2
+    start_t, time_limit = time.time(), 2
     try:
         if sema_tasks: sema_tasks.acquire()
         PROC_TASKS[mp.current_process().name] = test_name
@@ -103,13 +99,10 @@ def run() -> 'tuple[bool, str, str, float]':
 def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
     global GLOBAL_VAR
     GLOBAL_VAR = 'Sleeping'
-    for _ in range(33):
+    for _ in range(22):
         yield (run, tuple())
 
 
-#
-#
-#
 #
 #
 #
@@ -193,7 +186,7 @@ class Print:
             if lock is not None:
                 lock.release()
         else:
-            cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
+            cols = get_cols()
             if align == 'l':
                 if lock is not None:
                     lock.acquire()
@@ -237,16 +230,19 @@ def strlen(s: str) -> int:
     return len(s) - len('\x1b[???') * s.count('\x1b[')
 
 
+def get_cols() -> int:
+    return shutil.get_terminal_size(DEF_TERM_SIZE).columns or DEF_TERM_SIZE[0]
+
+
 if __name__ == '__main__':
-    p = Print()
+    DEF_TERM_SIZE, DBG_MODE = (60, -1), os.environ.get('DBG')
+    FILE_PATH, p, cols = Path(__file__).parent.resolve(), Print(), get_cols()
     try:
         mp.set_start_method('fork')  # Only Unix
     except ValueError:
         raise NotImplementedError(f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
     lock, sema_tasks = mp.RLock(), (mp.Semaphore(19) if platform.system() == 'Darwin' else None)
-    p(
-        f"{p.CYAN}v{VERSION}\tCPU core(s): {p.BOLD}{n_cores}\t{p.NORMAL}Term size: {p.BOLD}{term_sz[0] if term_sz != DEF_TERM_SIZE else '?'} x {term_sz[1] if term_sz != DEF_TERM_SIZE else '?'}"  # pyright:reportGeneralTypeIssues=false
-    )
+    p(f"{p.CYAN}v{VERSION}\tCPU core(s): {p.BOLD}{n_cores}\t{p.NORMAL}Term cols: {p.BOLD}{cols}")
 
     PROC_TASKS: 'dict[str, str|None]' = mp.Manager().dict()
     tasks = tuple(schedule())
@@ -266,13 +262,13 @@ if __name__ == '__main__':
             for x in rets[:]:
                 with suppress(mp.TimeoutError):
                     res = x.get(timeout=0)
-                    (succ if res[0] else fail).append(tuple(res[1:]))
+                    (succ if res[0] else fail).append(tuple(res[1:]))  # pyright:reportGeneralTypeIssues=false
                     rets.remove(x)
 
                     if last_time and time.time() - last_time < 1 / 60: continue
                     last_time = time.time()
                     percent = 1 - len(rets) / n_rets
-                    cols = shutil.get_terminal_size(DEF_TERM_SIZE).columns
+                    cols = get_cols()
                     cols_ = cols - strlen(hint) - 17 - 2*dg_rets
                     s = f'Last task finished in {p.CYAN}{res[-1]:.3f} s{p.CLR_ALL}: '
                     if res[0]:
