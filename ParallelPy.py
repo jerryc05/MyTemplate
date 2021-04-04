@@ -20,10 +20,10 @@ from typing import Callable, Iterator, Literal, TextIO
 
 if __name__ == '__main__':
     VERSION = 1
-    n_cores = os.cpu_count() or 4
+    n_pools = os.cpu_count() or 4
     with suppress(AttributeError):
-        n_cores = len(os.sched_getaffinity(0))
-    n_cores = floor(n_cores * 1.5)
+        n_pools = len(os.sched_getaffinity(0))
+    n_pools = floor(n_pools * 1.5)
 
 
 def run() -> 'tuple[bool, str, str, float]':
@@ -242,11 +242,11 @@ if __name__ == '__main__':
     except ValueError:
         raise NotImplementedError(f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
     lock, sema_tasks = mp.RLock(), (mp.Semaphore(19) if platform.system() == 'Darwin' else None)
-    p(f"{p.CYAN}v{VERSION}\tCPU core(s): {p.BOLD}{n_cores}\t{p.NORMAL}Term cols: {p.BOLD}{cols}")
+    p(f"{p.CYAN}v{VERSION}\t# of pools: {p.BOLD}{n_pools}\t{p.NORMAL}Term cols: {p.BOLD}{cols}")
 
     PROC_TASKS: 'dict[str, str|None]' = mp.Manager().dict()
     tasks = tuple(schedule())
-    with mp.Pool(max(1, min(n_cores, len(tasks)))) as pool:
+    with mp.Pool(max(1, min(n_pools, len(tasks)))) as pool:
         rets: 'list[AsyncResult[tuple[bool, str, str, float]]]' = []
         succ, fail = tp.cast('list[list[tuple[str, str, float]]]', ([], []))
         print(end=f'{p.MAGENTA}{p.BOLD}')
