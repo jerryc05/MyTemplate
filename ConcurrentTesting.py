@@ -67,7 +67,7 @@ def run() -> 'tuple[bool, str, str, float]':
                 if not line and poll is not None:
                     if poll != 0:
                         result = False
-                        reason = f'Err code: [{poll}], stderr: [{proc.stderr.read().strip().decode()}]'
+                        reason = f'Exit code: [{poll}], stderr: [{proc.stderr.read().strip().decode()}]'
                     break  # Exited
                 # Do something below:
                 ...
@@ -232,6 +232,48 @@ def strlen(s: str) -> int:
 
 def get_cols() -> int:
     return shutil.get_terminal_size(DEF_TERM_SIZE).columns or DEF_TERM_SIZE[0]
+
+
+def sig_to_str(code: int) -> 'str|None':
+    '''
+ 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL
+ 5) SIGTRAP      6) SIGABRT      7) SIGBUS       8) SIGFPE
+ 9) SIGKILL     10) SIGUSR1     11) SIGSEGV     12) SIGUSR2
+13) SIGPIPE     14) SIGALRM     15) SIGTERM     16) SIGSTKFLT
+17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU
+25) SIGXFSZ     26) SIGVTALRM   27) SIGPROF     28) SIGWINCH
+29) SIGIO       30) SIGPWR      31) SIGSYS      34) SIGRTMIN
+    '''
+    arr = [\
+        None,
+        'SIGHUP (terminal is closed)',
+        'SIGINT (interrupted)',
+        'SIGQUIT (quit requested + core dumped)',
+        'SIGILL (illegal instruction)',
+        'SIGTRAP (divide by zero)',
+        'SIGABRT (failed assertion)',
+        'SIGBUS (unaligned mem access)',
+        'SIGFPE (floating point exception/int overflow',
+        'SIGKILL (immediately terminate)',
+        None,
+        'SIGSEGV (segmentation fault)',
+        None,
+        'SIGPIPE (pipe not connected)',
+        'SIGALRM (alarm clock)',
+        'SIGTERM (gracefully terminate)',
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        'SIGXCPU (CPU time limit excceeded)',
+        'SIGXFSZ (file size limit excceeded)'
+    ]
+    return arr[-code] if 1 <= -code <= len(arr) - 1 else None
 
 
 if __name__ == '__main__':
