@@ -20,7 +20,7 @@ from typing import Callable, Iterator, TextIO
 
 if __name__ == '__main__' or os.environ.get(f'_RERUN_{os.path.basename(__file__)}'):
     VERSION = 1
-    n_pools = os.cpu_count() or 4
+    n_pools = os.cpu_count() or 6
     with suppress(AttributeError):
         n_pools = len(os.sched_getaffinity(0))
     n_pools = floor(n_pools * 1.5)
