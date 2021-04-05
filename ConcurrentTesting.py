@@ -18,7 +18,7 @@ import time
 import typing as tp
 from typing import Callable, Iterator, TextIO
 
-if __name__ == '__main__':
+if __name__ == '__main__' or os.environ.get(f'_RERUN_{os.path.basename(__file__)}'):
     VERSION = 1
     n_pools = os.cpu_count() or 4
     with suppress(AttributeError):
@@ -276,13 +276,26 @@ def sig_to_str(code: int) -> 'str|None':
     return arr[-code] if -code < len(arr) else None
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' or os.environ.get(f'_RERUN_{os.path.basename(__file__)}'):
     DEF_TERM_SIZE, DBG_MODE = (60, -1), os.environ.get('DBG')
     FILE_PATH, p, cols = Path(__file__).parent.resolve(), Print(), get_cols()
+    if 'utf' not in sys.stdout.encoding.lower():
+        if not os.environ.get(f'_RERUN_{os.path.basename(__file__)}'):
+            os.environ[f'_RERUN_{os.path.basename(__file__)}'] = '1'
+            os.environ['PYTHONIOENCODING'] = 'utf8'
+            try:
+                sp.check_call((sys.executable, os.path.abspath(__file__)), env=os.environ)
+            except:
+                import traceback
+                traceback.print_exc()
+            finally:
+                exit()
+        else:
+            raise RuntimeError(f'{p.RED}Failed to set UTF-8 encoding!{p.CLR_ALL}')
     try:
         mp.set_start_method('fork')  # Only Unix
     except ValueError:
-        raise NotImplementedError(f'{p.RED}Unsupported Operating System!{p.CLR_ALL}')
+        raise NotImplementedError(f'{p.RED}Current OS does not support {p.BOLD}fork()!{p.CLR_ALL}')
     lock, sema_tasks = mp.RLock(), (mp.Semaphore(19) if platform.system() == 'Darwin' else None)
     p(f"{p.CYAN}v{VERSION}\t# of pools: {p.BOLD}{n_pools}\t{p.NORMAL}Term cols: {p.BOLD}{cols}")
 
