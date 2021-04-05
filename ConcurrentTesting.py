@@ -67,9 +67,9 @@ def run() -> 'tuple[bool, str, str, float]':
                 if not line and poll is not None:
                     if poll != 0:
                         result = False
-                        code_desc = sig_to_str(poll)
-                        if code_desc: code_desc = f' {code_desc}'
-                        reason = f'Exit code: [{poll}{code_desc}], stderr: [{proc.stderr.read().strip().decode()}]'
+                        desc = sig_to_str(poll)
+                        desc = f' {desc}' if desc else ''
+                        reason = f'Exit code: [{poll}{desc}], stderr: [{proc.stderr.read().strip().decode()}]'
                     break  # Exited
                 # Do something below:
                 ...
