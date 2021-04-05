@@ -16,7 +16,7 @@ import subprocess as sp
 import sys
 import time
 import typing as tp
-from typing import Callable, Iterator, Literal, TextIO
+from typing import Callable, Iterator, TextIO
 
 if __name__ == '__main__':
     VERSION = 1
@@ -67,7 +67,9 @@ def run() -> 'tuple[bool, str, str, float]':
                 if not line and poll is not None:
                     if poll != 0:
                         result = False
-                        reason = f'Exit code: [{poll}], stderr: [{proc.stderr.read().strip().decode()}]'
+                        code_desc = sig_to_str(poll)
+                        if code_desc: code_desc = f' {code_desc}'
+                        reason = f'Exit code: [{poll}{code_desc}], stderr: [{proc.stderr.read().strip().decode()}]'
                     break  # Exited
                 # Do something below:
                 ...
@@ -153,8 +155,6 @@ def schedule() -> 'Iterator[tuple[Callable[..., object], tuple[object, ...]]]':
 #
 #
 #
-#
-#
 
 
 class Print:
@@ -175,7 +175,7 @@ class Print:
         end: str = '\n',
         file: 'TextIO' = sys.stdout,
         flush: bool = True,
-        align: 'Literal["l"]|Literal["c"]|Literal["r"]|None' = None,
+        align: 'tp.Literal["l"]|tp.Literal["c"]|tp.Literal["r"]|None' = None,
         fill_ch: str = ' '
     ) -> None:
         assert align in (None, 'l', 'c', 'r')
@@ -273,7 +273,7 @@ def sig_to_str(code: int) -> 'str|None':
         'SIGXCPU (CPU time limit excceeded)',
         'SIGXFSZ (file size limit excceeded)'
     ]
-    return arr[-code] if 1 <= -code <= len(arr) - 1 else None
+    return arr[-code] if -code < len(arr) else None
 
 
 if __name__ == '__main__':
