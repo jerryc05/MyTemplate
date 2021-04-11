@@ -185,6 +185,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # Last checked version: GCC 10
 -O0 -g3 \
 \
 -D_FORTIFY_SOURCE=2 \
+-D_GLIBCXX_DEBUG \
 -fcf-protection=full \
 -fexceptions \
 -fstack-protector-all \
@@ -531,6 +532,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")  # Last checked version: Clang 1
 -O0 -g3 \
 \
 -D_FORTIFY_SOURCE=2 \
+-D_GLIBCXX_DEBUG \
 -fcf-protection=full \
 -fcxx-exceptions \
 -fexceptions \
