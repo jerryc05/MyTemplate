@@ -40,7 +40,7 @@ if __name__ == '__main__':
                 f'>>> '
         option = input(s).strip()
         print()
-        if option: ofname = f'{option}.{"" if len(sys.argv[1:]) == 1 else "t"}xz'
+        if option: ofname = f'{option}.{"" if len(sys.argv[1:]) == 1 && path.isfile(sys.argv[1]) else "t"}xz'
         else: break
 
     tmpfname = f'{ofname}.tmp'
