@@ -34,7 +34,7 @@ if (__USE_ANALYZER__)
 
             set(__CLANG_TIDY_ARGS__
                     --allow-enabling-analyzer-alpha-checkers
-                    --checks=*,-android-*,-altera-*,-clang-analyzer-alpha.fuchsia.*,-clang-analyzer-alpha.llvm.*,-clang-analyzer-alpha.nondeterminism.PointerIteration,-clang-analyzer-alpha.webkit.*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-init-variables,-darwin-*,-fuchsia-*,-google-readability-todo,-google-runtime-references,-llvm-*,-llvmlibc-*,-modernize-use-trailing-return-type,-objc-*,-readability-isolate-declaration,-zircon-*
+                    --checks=*,-android-*,-altera-*,-clang-analyzer-alpha.fuchsia.*,-clang-analyzer-alpha.llvm.*,-clang-analyzer-alpha.nondeterminism.PointerIteration,-clang-analyzer-alpha.webkit.*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-type-vararg,-cppcoreguidelines-init-variables,-darwin-*,-fuchsia-*,-google-readability-todo,-google-runtime-references,-llvm-*,-llvmlibc-*,-modernize-use-trailing-return-type,-objc-*,-readability-isolate-declaration,-zircon-*
                     --format-style=google
                     --use-color
 
