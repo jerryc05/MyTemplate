@@ -42,10 +42,9 @@ _Assume you __ALREADY__ have __Python3__ installed!_
   ```
 
 - Other system? Try:
-
   https://graphviz.org/download/
 
-# Install `gprof2dot` from pip
+# Install `gprof2dot` from `pip`
 
 _You know what to do!_
 
@@ -64,9 +63,9 @@ dot dot_analysis.txt -Tpng -o gprof.png
 #                    Output format
 ```
 
-# One liner*
+# One liner for graphviz*
 
 ```shell
-gcc -pg [CFLAGS] [source_file.c ...] [-o out_program]
+# compilation and execution goes here ...
 gprof ./out_program | gprof2dot | dot -Tpng -o gprof.png
 ```
