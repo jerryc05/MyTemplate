@@ -27,9 +27,9 @@ perf report [--no-children] [-G]
 #            Add this flag to remove call chain (display self-time instead of accumulate-time)
 ```
 
-# Annotate source code
+# Annotate source code*
 
-__Try annotate source code via `perf report` instead!__
+__Try annotate source code in `perf report` instead!__
 
 ```shell
 perf annotate --tui -s symbol_name
@@ -56,6 +56,7 @@ _Assume you __ALREADY__ have __Python3__ installed!_
   ```
 
 - Other system? Try:
+
   https://graphviz.org/download/
 
 # Install `gprof2dot` from `pip`
