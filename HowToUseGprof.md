@@ -67,5 +67,5 @@ dot dot_analysis.txt -Tpng -o gprof.png
 
 ```shell
 # compilation and execution goes here ...
-gprof ./out_program | gprof2dot | dot -Tpng -o gprof.png
+gprof ./out_program | gprof2dot | dot -Tsvg -o gprof.svg
 ```
