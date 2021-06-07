@@ -66,5 +66,5 @@ _You know what to do!_
 
 ```shell
 # [perf record] goes here ...
-perf script | c++filt | gprof2dot -f perf | dot -Tpng -o perf.png
+perf script | c++filt | gprof2dot -f perf | dot -Tsvg -o perf.svg
 ```
