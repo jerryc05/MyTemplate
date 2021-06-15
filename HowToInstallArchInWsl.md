@@ -37,6 +37,8 @@ See https://github.com/yuk7/ArchWSL
 
 0.  Edit `/etc/pacman.conf`, uncomment the line `Color` under `# Misc options` ans save
 
+0.  Edit `/etc/pacman.d/mirrorlist`, uncomment all mirrors you want to enable
+
 0.  ```
     pacman -Syyu
     pacman -S archlinux-keyring grep sudo
@@ -75,3 +77,10 @@ See https://github.com/yuk7/ArchWSL
             ```
             LxRunOffline.exe su -n <distro_name> -v <uid>
             ```
+
+0.  Login with user other than `root` and install `yay`:
+    ```
+    cd /tmp
+    curl -JOL https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=yay-bin
+    makepkg -si
+    ```
