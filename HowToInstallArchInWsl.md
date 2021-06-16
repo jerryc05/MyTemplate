@@ -26,6 +26,8 @@ See https://github.com/yuk7/ArchWSL
 
 # 2. Configure `Arch Linux`
 
+0.  WSL2 Linux Kernel update: https://www.catalog.update.microsoft.com/Search.aspx?q=wsl
+
 0.  ___OPTIONAL:___ Set as WSL2 (windows): `wsl --set-version <distro_name> 2`
 
 0.  Launch `Arch Linux`
