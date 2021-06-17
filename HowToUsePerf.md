@@ -1,13 +1,14 @@
 # Additional compile flags
 
 ```shell
-gcc [CFLAGS] -g3 \
-             -fno-omit-frame-pointer \
-             -fno-optimize-sibling-calls \    
-             -fno-inline-functions \
-             -fno-inline-functions-called-once \
-#            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-             [source_file.c ...] [-o out_program]
+g++ <other_compile_flags> \
+    -g3 \
+    -fno-omit-frame-pointer \
+    -fno-optimize-sibling-calls \
+    -fno-inline-functions \
+    -fno-inline-functions-called-once \
+#   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    [source_files.cpp ...] [-o out_program]
 ```
 
 # Run program with `perf record`
