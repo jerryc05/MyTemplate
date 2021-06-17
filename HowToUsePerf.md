@@ -13,8 +13,8 @@ gcc [CFLAGS] -g3 \
 # Run program with `perf record`
 
 ```shell
-perf record -g --call-graph dwarf -F 499 ./out_program [--args ...] > /dev/null
-#           ^~ ^~~~~~~~~~~~~~~~~~ ^~~~~~                              ^~~~~~~~~
+perf record -g --call-graph dwarf -F 499 ./out_program [--args ...] > /tmp/out
+#           ^~ ^~~~~~~~~~~~~~~~~~ ^~~~~~                              ^~~~~~~~
 #           |  |                  |                                   |
 #           |  |                  |                                   Might be useful
 #           |  |                  Sampling rate, don't be multiples of 100
