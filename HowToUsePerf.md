@@ -7,7 +7,6 @@ g++ <other_compile_flags> \
     -fno-optimize-sibling-calls \
     -fno-inline-functions \
     -fno-inline-functions-called-once \
-#   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     [source_files.cpp ...] [-o out_program]
 ```
 
