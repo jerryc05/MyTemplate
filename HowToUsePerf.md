@@ -1,8 +1,13 @@
 # Additional compile flags
 
 ```shell
-gcc [CFLAGS] -g3 -fno-omit-frame-pointer [source_file.c ...] [-o out_program]
-#            ^~~ ^~~~~~~~~~~~~~~~~~~~~~~
+gcc [CFLAGS] -g3 \
+             -fno-omit-frame-pointer \
+             -fno-optimize-sibling-calls \    
+             -fno-inline-functions \
+             -fno-inline-functions-called-once \
+#            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             [source_file.c ...] [-o out_program]
 ```
 
 # Run program with `perf record`
@@ -67,5 +72,5 @@ _You know what to do!_
 
 ```shell
 # [perf record] goes here ...
-perf script | c++filt | gprof2dot -f perf | dot -Tsvg -o perf.svg
+perf script | c++filt | gprof2dot -f perf -n0.1 -e0.001 | dot -Tsvg -o perf.svg
 ```
