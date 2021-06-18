@@ -5,8 +5,6 @@ g++ <other_compile_flags> \
     -g3 \
     -fno-omit-frame-pointer \
     -fno-optimize-sibling-calls \
-    -fno-inline-functions \
-    -fno-inline-functions-called-once \
     [source_files.cpp ...] [-o out_program]
 ```
 
@@ -72,5 +70,5 @@ _You know what to do!_
 
 ```shell
 # [perf record] goes here ...
-perf script | c++filt | gprof2dot -f perf -n0.2 -e0.05 | dot -Tsvg -o perf.svg
+perf script | c++filt | gprof2dot -f perf | dot -Tsvg -o perf.svg
 ```
