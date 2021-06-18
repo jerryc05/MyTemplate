@@ -2,9 +2,7 @@
 
 ```shell
 g++ <other_compile_flags> \
-    -g3 \
-    -fno-omit-frame-pointer \
-    -fno-optimize-sibling-calls \
+    -g3 -fno-omit-frame-pointer \
     [source_files.cpp ...] [-o out_program]
 ```
 
