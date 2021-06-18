@@ -72,5 +72,5 @@ _You know what to do!_
 
 ```shell
 # [perf record] goes here ...
-perf script | c++filt | gprof2dot -f perf -n0.1 -e0.001 | dot -Tsvg -o perf.svg
+perf script | c++filt | gprof2dot -f perf -n0.2 -e0.05 | dot -Tsvg -o perf.svg
 ```
