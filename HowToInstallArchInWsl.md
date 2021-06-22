@@ -68,7 +68,7 @@ See https://github.com/yuk7/ArchWSL
         ```
         <Arch.exe> config --default-user <username>
         ```
-    2.
+    2.  `LxRunOffline`:
         1.  Get `uid` of user:
             ```
             $ id -u <username>
