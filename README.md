@@ -138,7 +138,8 @@ Use at your **OWN** risk.
 
 #### Summary
 
-- Make sure you have `git` installed
+- Make sure you have `git`, `less`, `tar`, `gzip` installed
+- Make sure `echo $langinfo[CODESET]` prints someting like `UTF-8`
 - Your `~/.antigen-conf.sh` file should be very similar to [`.antigen-conf.sh` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.antigen-conf.sh).
     - If you don't have `~/.antigen-conf.sh` file, create one
 - Append these lines to `~/.zshrc` to enable `antigen`:
