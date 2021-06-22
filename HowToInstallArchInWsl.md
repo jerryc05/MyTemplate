@@ -41,7 +41,9 @@ See https://github.com/yuk7/ArchWSL
 
 0.  ```
     pacman -Syyu
-    pacman -S archlinux-keyring grep sudo
+    pacman -S archlinux-keyring 
+    gpgconf --kill all
+    pacman -S grep sudo
     ```
 
 0.  Edit `/etc/pacman.conf`, uncomment the line `Color` under `# Misc options` ans save
