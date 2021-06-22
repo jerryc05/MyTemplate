@@ -130,9 +130,9 @@ Use at your **OWN** risk.
 
 #### Summary
 
+- Make sure you have `git` installed
 - Your `~/.antigen-conf.sh` file should be very similar to [`.antigen-conf.sh` in the repo](https://github.com/jerryc05/MyTemplate/blob/__env-settings/.antigen-conf.sh).
-    - If you don't have `~/.antigen-conf.sh` file:
-        - Download it using `curl -LOJ https://raw.githubusercontent.com/jerryc05/MyTemplate/__env-settings/.antigen-conf.sh`
+    - If you don't have `~/.antigen-conf.sh` file, create one
 - Append these lines to `~/.zshrc` to enable `antigen`:
   ```sh
   [ -f $HOME/.antigen-conf.sh ] && . $HOME/.antigen-conf.sh
