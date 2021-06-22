@@ -43,44 +43,50 @@ See https://github.com/yuk7/ArchWSL
     pacman -Syyu
     pacman -S archlinux-keyring 
     gpgconf --kill all
-    pacman -S grep sudo
     ```
 
-0.  Edit `/etc/pacman.conf`, uncomment the line `Color` under `# Misc options` ans save
+0.  Edit `/etc/pacman.conf`, uncomment the line `Color` under `# Misc options` and save
+
+0.  Locale:
+    1.  `pacman -S sed`
+    2.  Edit `/etc/locale.gen`, uncomment the line of locale you want to use, save it, and run `locale-gen`
 
 0.  Set password for `root` user: `passwd`
 
-0.  Edit `/etc/sudoers`, uncomment the following lines and save:
-    ```
-    # %wheel ALL=(ALL) ALL
-    ```
-    ```
-    # Defaults targetpw  # Ask for the password of the target user
-    # ALL ALL=(ALL) ALL  # WARNING: only use this together with 'Defaults targetpw'
-    ```
+0.  `sudo`:
+    1.  `pacman -S sudo`
+    2.  Edit `/etc/sudoers`, uncomment the following lines and save:
+        ```
+        # %wheel ALL=(ALL) ALL
+        ```
+        ```
+        # Defaults targetpw  # Ask for the password of the target user
+        # ALL ALL=(ALL) ALL  # WARNING: only use this together with 'Defaults targetpw'
+        ```
 
 0.  Add new user:
-    1. admin user: `useradd -m -G wheel <username>`
-    2. normal user: `useradd -m <username>`
+    1.  Add:  
+        1.  admin user: `useradd -m -G wheel <username>`
+        2.  normal user: `useradd -m <username>`
+    
+    2.  Set password: `passwd <username>`
 
-0.  Set password: `passwd <username>`
-
-0.  Set default login user (windows):
-    1.  `wsldl`:
-        ```
-        <Arch.exe> config --default-user <username>
-        ```
-    2.  `LxRunOffline`:
-        1.  Get `uid` of user:
+    3.  Set default login user (windows):
+        1.  `wsldl`:
             ```
-            $ id -u <username>
-            uid=1000(username) ...
+            <Arch.exe> config --default-user <username>
             ```
-            In this case, `uid` is `1000`
         2.  `LxRunOffline`:
-            ```
-            LxRunOffline.exe su -n <distro_name> -v <uid>
-            ```
+            1.  Get `uid` of user:
+                ```
+                $ id -u <username>
+                uid=1000(username) ...
+                ```
+                In this case, `uid` is `1000`
+            2.  `LxRunOffline`:
+                ```
+                LxRunOffline.exe su -n <distro_name> -v <uid>
+                ```
 
 0.  Login with user other than `root` and install `yay`:
     ```
