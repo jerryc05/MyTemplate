@@ -37,14 +37,14 @@ See https://github.com/yuk7/ArchWSL
     pacman-key --populate
     ```
 
-0.  Edit `/etc/pacman.conf`, uncomment the line `Color` under `# Misc options` ans save
-
 0.  Edit `/etc/pacman.d/mirrorlist`, uncomment all mirrors you want to enable
 
 0.  ```
     pacman -Syyu
     pacman -S archlinux-keyring grep sudo
     ```
+
+0.  Edit `/etc/pacman.conf`, uncomment the line `Color` under `# Misc options` ans save
 
 0.  Set password for `root` user: `passwd`
 
