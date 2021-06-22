@@ -48,7 +48,15 @@ Use at your **OWN** risk.
 
 ##### Plugin manager: [`antigen`](https://github.com/zsh-users/antigen)
 
-- Installation: `curl -L git.io/antigen-nightly --output ~/antigen.zsh`
+- Installation: 
+  ```sh
+  curl -L git.io/antigen-nightly --output ~/antigen.zsh
+  
+  scr="\
+  -e 's/git clone /git clone --single-branch --depth=1 /g' \
+  -e 's/\([ -]\)git pull/\1git pull --depth=1/g'"
+  eval "sed $scr -i ./antigen.zsh || sed $scr -i '' ./antigen.zsh"
+  ```
 
 <details><summary>Plugins detail (you can safely ignore these)</summary><p>
 
@@ -148,10 +156,9 @@ Use at your **OWN** risk.
         - Change the font of the terminal.
 - Restart terminal.
 - If you are using `powerlevel10k` (default theme of this tutorial):
-    - Run the following script in terminal (just for customization):
-        - Linux:
+    -   Run the following script in terminal (just for customization):
         ```sh
-        sed -i \
+        scr="\
         -e 's/# *node_version/node_version/g' \
         -e 's/# *go_version/go_version/g' \
         -e 's/# *rust_version/rust_version/g' \
@@ -165,29 +172,9 @@ Use at your **OWN** risk.
         -e 's/# *disk_usage/disk_usage/g' \
         -e 's/# *ram/ram/g' \
         -e 's/# *battery/battery/g' \
-        -e 's/# *wifi  /wifi  /g' \
-        ~/.p10k.zsh && \
+        -e 's/# *wifi  /wifi  /g'"
+        eval "sed $scr -i ~/.p10k.zsh || sed $scr -i '' ~/.p10k.zsh"
         . ~/.p10k.zsh
         ```
-        - MacOS:
-        ```sh
-        sed \
-        -e 's/# *node_version/node_version/g' \
-        -e 's/# *go_version/go_version/g' \
-        -e 's/# *rust_version/rust_version/g' \
-        -e 's/# *dotnet_version/dotnet_version/g' \
-        -e 's/# *php_version/php_version/g' \
-        -e 's/# *laravel_version/laravel_version/g' \
-        -e 's/# *java_version/java_version/g' \
-        -e 's/# *package/package/g' \
-        -e 's/# *vpn_ip/vpn_ip/g' \
-        -e 's/# *load/load/g' \
-        -e 's/# *disk_usage/disk_usage/g' \
-        -e 's/# *ram/ram/g' \
-        -e 's/# *battery/battery/g' \
-        -e 's/# *wifi  /wifi  /g' \
-        -i '' ~/.p10k.zsh && \
-        . ~/.p10k.zsh
-        ```
-    - You can tweak `~/.p10k.zsh` yourself as well if you are interested.
-        - Don't forget to run `. ~/.p10k.zsh` afterwards to apply changes.
+    -   You can tweak `~/.p10k.zsh` yourself as well if you are interested.
+        -   Don't forget to run `. ~/.p10k.zsh` afterwards to apply changes.
