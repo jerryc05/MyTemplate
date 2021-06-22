@@ -31,10 +31,11 @@ Use at your **OWN** risk.
 0. If you are already running `zsh`, skip this section.
 0. Install `zsh` by yourself.
     - Linux (`apt`): `apt install zsh`
+    - Linux (`pacman`): `pacman -S zsh`
     - MacOS (`brew`): `brew install zsh`
 0. Set `zsh` as default:
     - If you are using MacOS, run this first: `echo $(which zsh) | sudo tee -a /etc/shells`
-    - Run `chsh -s $(which zsh)`
+    - Run `chsh -s $(which zsh)` (you might want to `cat /etc/shells`)
 0. **[OPTIONAL]** Now, you might want to copy (or link) your previous settings to `zsh`.
     0. `~/.zshenv` contains environment variables.
     0. `~/.zshrc` contains aliases, functions, and key bindings.
