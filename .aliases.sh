@@ -23,6 +23,13 @@ command -v delta >/dev/null && function xdelta {
   out__=$(delta --width $(tput cols) -ns $*) && echo $out__ && [ -z $out__ ]
 }
 
+# Fix button functionality for zsh
+[[ "$0" == *"zsh" ]] && {
+  bindkey  "^[[H"   beginning-of-line;
+  bindkey  "^[[F"   end-of-line;
+  bindkey  "^[[3~"  delete-char;
+}
+
 # More helpful tar/untar
 command -v tar >/dev/null && function xtar {
   echo "XZ_OPT=-8 tar acvf $* \n"
