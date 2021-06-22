@@ -4,7 +4,7 @@
 
 See https://github.com/yuk7/ArchWSL
 
-## 2. Use `wsldl`
+## 2. Use `wsldl` (might not work properly)
 
 0.  Download `Launcher.exe` from https://github.com/yuk7/wsldl
 
