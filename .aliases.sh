@@ -25,9 +25,9 @@ command -v delta >/dev/null && function xdelta {
 
 # More helpful tar/untar
 command -v tar >/dev/null && function xtar {
-  echo "XZ_OPT=-8 tar acvkf $* \n"
-        XZ_OPT=-8 tar acvkf $*
+  echo "XZ_OPT=-8 tar acvf $* \n"
+        XZ_OPT=-8 tar acvf $*
 } && function xuntar {
-  echo "tar  xvkf $* \n"
-        tar  xvkf $*
+  echo "tar xvf $* \n"
+        tar xvf $*
 }
