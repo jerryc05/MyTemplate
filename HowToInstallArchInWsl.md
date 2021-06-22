@@ -6,7 +6,7 @@ See https://github.com/yuk7/ArchWSL
 
 ## 2. Use `wsldl`
 
-0.  Download `Launcher.exe` from https://github.com/yuk7/ArchWSL
+0.  Download `Launcher.exe` from https://github.com/yuk7/wsldl
 
 0.  Rename `Launcher.exe` to any distro name you want, e.g. `Arch.exe`
 
