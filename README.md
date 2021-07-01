@@ -14,7 +14,7 @@ Use at your **OWN** risk.
         - [Configure themes](#configure-themes)
         - [Wrap up](#wrap-up)
         - [Summary](#summary)
-0. [Git]
+0. [Git](#git)
     - [Config](#git-config)
 
 ## Terminal
