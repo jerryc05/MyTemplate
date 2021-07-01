@@ -14,7 +14,8 @@ Use at your **OWN** risk.
         - [Configure themes](#configure-themes)
         - [Wrap up](#wrap-up)
         - [Summary](#summary)
-0. Todo ...
+0. [Git]
+    - [Config](#git-config)
 
 ## Terminal
 
@@ -48,10 +49,10 @@ Use at your **OWN** risk.
 
 ##### Plugin manager: [`antigen`](https://github.com/zsh-users/antigen)
 
-- Installation: 
+- Installation:
   ```sh
   curl -L git.io/antigen-nightly --output ~/antigen.zsh
-  
+
   scr="\
   -e 's/git clone /git clone --single-branch --depth=1 /g' \
   -e 's/\([ -]\)git pull/\1git pull --depth=1/g'"
@@ -179,3 +180,29 @@ Use at your **OWN** risk.
         ```
     -   You can tweak `~/.p10k.zsh` yourself as well if you are interested.
         -   Don't forget to run `. ~/.p10k.zsh` afterwards to apply changes.
+
+## Git
+
+### Git Config
+```sh
+git config --global user.name   'Ziyan "Jerry" Chen'
+git config --global user.email  "jerryc443@gmail.com"
+git config --get-regexp user.*
+
+git config --global core.autocrlf   input
+git config --global core.eol        lf
+git config --global core.safecrlf   true
+git config --global core.longpaths  true
+git config --get-regexp core.*
+
+#git config --global commit.gpgsign  true
+#git config --global tag.gpgsign     true
+#git config --global user.signingkey 9611836BA79323A18C3B0ED9B965A9B81A81CA96
+
+git config --global init.defaultBranch          main
+git config --global push.recursesubmodules      check
+git config --global core.usebuiltinfsmonitor    true
+
+pacman -S kdiff3 || apt install kdiff3 || brew install --cask kdiff3
+git config --global merge.tool kdiff3
+```
