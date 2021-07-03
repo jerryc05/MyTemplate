@@ -1,5 +1,5 @@
 # Color! More color! But not all on MacOS!
-[ "$(uname -s)" = "Linux" ] && alias ls='ls --color=auto'
+[ "$(uname -s)" = "Linux" ] && alias ls='ls --color=auto' || alias ls='ls -G'
 [ "$(uname -s)" = "Linux" ] && alias dir='dir --color=auto'
 [ "$(uname -s)" = "Linux" ] && alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
@@ -29,6 +29,9 @@ command -v delta >/dev/null && function xdelta {
   bindkey  "^[[F"   end-of-line;
   bindkey  "^[[3~"  delete-char;
 }
+
+# Show hidden files in iFinder
+[ "$(uname -s)" = "Darwin" ] && defaults write com.apple.finder AppleShowAllFiles YES
 
 # More helpful tar/untar
 command -v tar >/dev/null && function xtar {
