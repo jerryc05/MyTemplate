@@ -174,7 +174,8 @@ Use at your **OWN** risk.
         -e 's/# *disk_usage/disk_usage/g' \
         -e 's/# *ram/ram/g' \
         -e 's/# *battery/battery/g' \
-        -e 's/# *wifi  /wifi  /g'"
+        -e 's/# *wifi  /wifi  /g' \
+        -e 's/^\( *\)context/#\1context/g'"
         eval "sed $scr -i ~/.p10k.zsh || sed $scr -i '' ~/.p10k.zsh"
         . ~/.p10k.zsh
         ```
