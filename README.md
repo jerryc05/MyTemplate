@@ -188,14 +188,14 @@ Use at your **OWN** risk.
 ```sh
 git config --global user.name   'Ziyan "Jerry" Chen'
 git config --global user.email  "jerryc443@gmail.com"
-git config --get-regexp user.*
+git config --get-regexp 'user.*'
 
 git config --global core.autocrlf   input
 git config --global core.eol        lf
 git config --global core.fileMode   true
 git config --global core.safecrlf   true
 git config --global core.longpaths  true
-git config --get-regexp core.*
+git config --get-regexp 'core.*'
 
 #git config --global commit.gpgsign  true
 #git config --global tag.gpgsign     true
