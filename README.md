@@ -193,7 +193,7 @@ git config --get-regexp 'user.*'
 git config --global core.autocrlf   input
 git config --global core.eol        lf
 git config --global core.fileMode   true
-git config --global core.safecrlf   true
+git config --global core.safecrlf   warn
 git config --global core.longpaths  true
 git config --get-regexp 'core.*'
 
