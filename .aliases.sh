@@ -24,7 +24,7 @@ command -v delta >/dev/null && function xdelta {
 }
 
 # Fix button functionality for zsh
-command -v bindkey && {
+command -v bindkey >/dev/null && {
   bindkey  "^[[H"   beginning-of-line;
   bindkey  "^[[F"   end-of-line;
   bindkey  "^[[3~"  delete-char;
